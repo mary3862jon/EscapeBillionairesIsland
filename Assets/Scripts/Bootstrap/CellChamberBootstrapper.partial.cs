@@ -99,6 +99,8 @@ namespace Spoonacci
         {
             spoon = new GameObject("Sir Spoonacci");
             spoon.transform.position = new Vector3(0f, 1f, -2.5f);
+            spoon.AddComponent<Rigidbody>();
+            spoon.AddComponent<CapsuleCollider>();
             spoon.AddComponent<ProceduralSpoonBuilder>();
             spoon.AddComponent<SpoonController>();
         }

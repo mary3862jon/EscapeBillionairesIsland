@@ -45,7 +45,10 @@ namespace Spoonacci
         {
             spoon = new GameObject("Sir Spoonacci");
             spoon.transform.position = new Vector3(0f, 1f, 0f);
-            spoon.AddComponent<ProceduralSpoonBuilder>(); // (auto-adds Rigidbody+CapsuleCollider)
+            // Explicit AddComponent order (don't rely on RequireComponent at runtime)
+            spoon.AddComponent<Rigidbody>();
+            spoon.AddComponent<CapsuleCollider>();
+            spoon.AddComponent<ProceduralSpoonBuilder>();
             spoon.AddComponent<SpoonController>();
         }
 

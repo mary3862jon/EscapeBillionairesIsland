@@ -26,8 +26,7 @@ namespace Spoonacci
             if (Object.FindFirstObjectByType<CellChamberBootstrapper>() != null) return;
 
             var go = new GameObject("[Auto Bootstrap]");
-            Object.DontDestroyOnLoad(go);
-
+            // intentionally NOT DontDestroyOnLoad — we want each scene load to spawn the right bootstrapper fresh
             string name = s.name ?? "";
             if (name.Contains("Cutlery") || name.Contains("Cell"))
                 go.AddComponent<CellChamberBootstrapper>();
