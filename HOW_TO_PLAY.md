@@ -2,11 +2,17 @@
 
 > Updated after Step A. Pull latest → open Unity → press **Play**. No clicking around the Inspector required.
 
-## What works right now (Step A — v0.1)
+## What works right now (Step A + B — v0.2)
 
-- **Open island demo** loads when you Play `Assets/Scenes/SampleScene.unity`
-- You spawn as **Sir Spoonacci** (procedural silver spoon) on a sandy beach
-- **Salon Cucchiaio** (pink kiosk) is to your right — walk into it and press **E** to cycle through 12 skins
+### Scene 1 — Island beach (`Assets/Scenes/SampleScene.unity`)
+- Spawn as **Sir Spoonacci** (procedural silver spoon) on a sandy beach
+- **Salon Cucchiaio** (pink kiosk to your right) — walk in, press **E** to cycle 12 skins
+- Palm trees scattered around for vibes
+
+### Scene 2 — Cutlery Chamber (`Assets/Scenes/CutleryChamber.unity`)
+- Dark stone cell with prison bars, hay pile, single torch
+- Talk to the **Cell Crew** — Big Bjørn, Plastic Pete, Goldie, Tasting Tina, The Ladle — walk close, press **E** to advance dialogue
+- Each has a 3-line intro. Tone-setting only for now; the tunnel-dig gameplay comes next milestone.
 
 ## Controls
 
