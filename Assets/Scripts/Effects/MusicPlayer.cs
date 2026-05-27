@@ -31,15 +31,15 @@ namespace Spoonacci
         int current;
         float toastUntil;
         bool muted;
-        float volume = 0.55f;
 
         void Awake()
         {
             src = gameObject.AddComponent<AudioSource>();
             src.loop = true;
             src.spatialBlend = 0f;
-            src.volume = volume;
+            src.volume = SettingsManager.EffectiveMusic;
             src.bypassEffects = true;
+            SettingsManager.OnChanged += RefreshVolume;
 
             // 1) try Resources/Music/*.mp3 (real CC-BY tracks if present)
             var loaded = Resources.LoadAll<AudioClip>("Music");
@@ -76,9 +76,23 @@ namespace Spoonacci
             if (kb.jKey.wasPressedThisFrame) Play((current - 1 + tracks.Count) % tracks.Count);
             if (kb.kKey.wasPressedThisFrame) Play((current + 1) % tracks.Count);
             if (kb.mKey.wasPressedThisFrame) { muted = !muted; src.mute = muted; Toast(muted ? "♪ MUTED" : "♪ unmuted"); }
-            if (kb.minusKey.wasPressedThisFrame || kb.numpadMinusKey.wasPressedThisFrame) { volume = Mathf.Clamp01(volume - 0.1f); src.volume = volume; Toast("♪ vol " + Mathf.RoundToInt(volume * 100) + "%"); }
-            if (kb.equalsKey.wasPressedThisFrame || kb.numpadPlusKey.wasPressedThisFrame) { volume = Mathf.Clamp01(volume + 0.1f); src.volume = volume; Toast("♪ vol " + Mathf.RoundToInt(volume * 100) + "%"); }
+            if (kb.minusKey.wasPressedThisFrame || kb.numpadMinusKey.wasPressedThisFrame)
+            {
+                SettingsManager.MusicVolume = Mathf.Clamp01(SettingsManager.MusicVolume - 0.1f);
+                SettingsManager.Save();
+                Toast("♪ music " + Mathf.RoundToInt(SettingsManager.MusicVolume * 100) + "%");
+            }
+            if (kb.equalsKey.wasPressedThisFrame || kb.numpadPlusKey.wasPressedThisFrame)
+            {
+                SettingsManager.MusicVolume = Mathf.Clamp01(SettingsManager.MusicVolume + 0.1f);
+                SettingsManager.Save();
+                Toast("♪ music " + Mathf.RoundToInt(SettingsManager.MusicVolume * 100) + "%");
+            }
+            // refresh continuously so slider changes take effect immediately
+            if (src != null) src.volume = SettingsManager.EffectiveMusic;
         }
+
+        void RefreshVolume() { if (src != null) src.volume = SettingsManager.EffectiveMusic; }
 
         void Play(int idx, bool announce = true)
         {

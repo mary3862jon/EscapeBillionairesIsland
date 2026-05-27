@@ -151,14 +151,14 @@ namespace Spoonacci
             var salon = new GameObject("Salon Cucchiaio");
             salon.transform.position = new Vector3(12f, 0f, 8f);
             // building
-            var bld = MakePrimCube("Salon Body", salon.transform, new Vector3(0f, 1.6f, 0f), new Vector3(5f, 3.2f, 3.6f), new Color(1.0f, 0.65f, 0.8f), 0.05f, 0.5f);
+            var bld = MakePrimCubeTex("Salon Body", salon.transform, new Vector3(0f, 1.6f, 0f), new Vector3(5f, 3.2f, 3.6f), ProceduralTextures.Marble, new Color(1.0f, 0.78f, 0.88f), 0.05f, 0.5f, new Vector2(3f, 2f));
             // roof
-            MakePrimCube("Roof", salon.transform, new Vector3(0f, 3.3f, 0f), new Vector3(5.5f, 0.25f, 4f), new Color(0.92f, 0.45f, 0.7f), 0.3f, 0.6f);
+            MakePrimCubeTex("Roof", salon.transform, new Vector3(0f, 3.3f, 0f), new Vector3(5.5f, 0.25f, 4f), ProceduralTextures.Marble, new Color(0.95f, 0.55f, 0.75f), 0.3f, 0.6f, new Vector2(3f, 2f));
             // sign
             var sign = MakePrimCube("Sign", salon.transform, new Vector3(0f, 4.1f, -1.85f), new Vector3(4.6f, 0.9f, 0.1f), new Color(0.98f, 0.96f, 0.92f), 0.1f, 0.4f);
             AddLabel(sign, "✨ SALON  CUCCHIAIO ✨", new Color(0.6f, 0.15f, 0.45f), 36, new Vector3(0f, 0f, -0.1f));
             // counter
-            MakePrimCube("Counter", salon.transform, new Vector3(0f, 0.55f, -2.1f), new Vector3(4f, 1.1f, 0.8f), new Color(0.95f, 0.88f, 0.78f), 0f, 0.4f);
+            MakePrimCubeTex("Counter", salon.transform, new Vector3(0f, 0.55f, -2.1f), new Vector3(4f, 1.1f, 0.8f), ProceduralTextures.Wood, new Color(0.95f, 0.88f, 0.78f), 0f, 0.4f, new Vector2(4f, 1f));
             MakePrimCube("Trim",    salon.transform, new Vector3(0f, 1.1f, -2.1f), new Vector3(4.1f, 0.08f, 0.82f), new Color(0.95f, 0.78f, 0.25f), 1f, 0.9f);
 
             // attendant spoon
@@ -206,8 +206,8 @@ namespace Spoonacci
         {
             var pool = new GameObject("Pool");
             pool.transform.position = new Vector3(-15f, 0f, -2f);
-            MakePrimCube("Deck", pool.transform, new Vector3(0f, 0.05f, 0f), new Vector3(16f, 0.1f, 12f), new Color(0.97f, 0.93f, 0.85f), 0f, 0.4f);
-            var water = MakePrimCube("Water", pool.transform, new Vector3(0f, 0.12f, 0f), new Vector3(12f, 0.15f, 8f), new Color(0.22f, 0.7f, 0.88f), 0.3f, 0.95f);
+            MakePrimCubeTex("Deck", pool.transform, new Vector3(0f, 0.05f, 0f), new Vector3(16f, 0.1f, 12f), ProceduralTextures.Stone, new Color(1f, 0.98f, 0.92f), 0f, 0.4f, new Vector2(8f, 6f));
+            var water = MakePrimCubeTex("Water", pool.transform, new Vector3(0f, 0.12f, 0f), new Vector3(12f, 0.15f, 8f), ProceduralTextures.Water, new Color(0.6f, 0.95f, 1f), 0.3f, 0.95f, new Vector2(6f, 4f));
             Destroy(water.GetComponent<Collider>());
             // label
             var lbl = new GameObject("PoolLabel");
@@ -230,10 +230,10 @@ namespace Spoonacci
         {
             var bar = new GameObject("Tiki Bar");
             bar.transform.position = new Vector3(22f, 0f, -10f);
-            MakePrimCube("Counter", bar.transform, new Vector3(0f, 0.55f, 0f), new Vector3(6f, 1.1f, 1.5f), new Color(0.45f, 0.3f, 0.18f), 0f, 0.35f);
+            MakePrimCubeTex("Counter", bar.transform, new Vector3(0f, 0.55f, 0f), new Vector3(6f, 1.1f, 1.5f), ProceduralTextures.Wood, new Color(0.7f, 0.5f, 0.3f), 0f, 0.35f, new Vector2(6f, 1.5f));
             for (int i = -1; i <= 1; i += 2)
                 MakePrimCylinder("Pole", bar.transform, new Vector3(2.9f * i, 1.6f, 0.4f), new Vector3(0.15f, 1.6f, 0.15f), new Color(0.7f, 0.55f, 0.3f), 0f, 0.4f);
-            var roof = MakePrimCube("Roof", bar.transform, new Vector3(0f, 3.3f, 0.4f), new Vector3(6.5f, 0.2f, 2.0f), new Color(0.55f, 0.4f, 0.2f), 0f, 0.3f);
+            var roof = MakePrimCubeTex("Roof", bar.transform, new Vector3(0f, 3.3f, 0.4f), new Vector3(6.5f, 0.2f, 2.0f), ProceduralTextures.Leaves, new Color(0.85f, 0.65f, 0.4f), 0f, 0.3f, new Vector2(4f, 2f));
             roof.transform.localRotation = Quaternion.Euler(15f, 0f, 0f);
             var lbl = new GameObject("BarLabel"); lbl.transform.SetParent(bar.transform, false); lbl.transform.localPosition = new Vector3(0f, 4f, 0f);
             var l = lbl.AddComponent<WorldLabel>(); l.text = "🍹 TIKI BAR"; l.color = new Color(0.55f, 0.3f, 0.05f); l.fontSize = 26;
@@ -361,9 +361,9 @@ namespace Spoonacci
             AddLabel(z, "💰  MAGNUS TUSK MANSION", new Color(0.95f, 0.8f, 0.2f), 32, new Vector3(0f, 12f, 0f));
 
             // marble patio
-            MakePrimCube("Patio", z.transform, new Vector3(0f, 0.05f, 0f), new Vector3(20f, 0.2f, 14f), new Color(0.92f, 0.92f, 0.95f), 0.1f, 0.7f);
+            MakePrimCubeTex("Patio", z.transform, new Vector3(0f, 0.05f, 0f), new Vector3(20f, 0.2f, 14f), ProceduralTextures.Marble, new Color(0.97f, 0.97f, 1f), 0.1f, 0.7f, new Vector2(10f, 7f));
             // mansion body
-            MakePrimCube("Mansion", z.transform, new Vector3(0f, 3f, 5f), new Vector3(18f, 6f, 8f), new Color(0.97f, 0.94f, 0.86f), 0.1f, 0.6f);
+            MakePrimCubeTex("Mansion", z.transform, new Vector3(0f, 3f, 5f), new Vector3(18f, 6f, 8f), ProceduralTextures.Marble, new Color(1f, 0.97f, 0.9f), 0.1f, 0.6f, new Vector2(9f, 4f));
             // gold columns
             for (int side = -1; side <= 1; side += 2)
                 for (int row = 0; row < 3; row++)
@@ -492,6 +492,17 @@ namespace Spoonacci
             if (shirt.HasValue) c.shirtColor = shirt.Value;
             if (pants.HasValue) c.pantsColor = pants.Value;
             return c;
+        }
+
+        GameObject MakePrimCubeTex(string name, Transform parent, Vector3 pos, Vector3 scale, Texture2D tex, Color tint, float metallic, float smoothness, Vector2 tile)
+        {
+            var g = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            g.name = name;
+            if (parent != null) { g.transform.SetParent(parent, false); g.transform.localPosition = pos; }
+            else                  g.transform.position = pos;
+            g.transform.localScale = scale;
+            g.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(tex, tint, metallic, smoothness, tile);
+            return g;
         }
 
         GameObject MakePrimCube(string name, Transform parent, Vector3 pos, Vector3 scale, Color color, float metallic, float smoothness)

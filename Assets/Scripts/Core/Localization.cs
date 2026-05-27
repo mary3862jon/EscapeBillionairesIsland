@@ -59,6 +59,24 @@ namespace Spoonacci
 
             // missions panel
             { "obj.title", ("ACTIVE MISSIONS", "АКТИВНЫЕ ЗАДАНИЯ") },
+
+            // pause menu (additions)
+            { "pause.settings", ("SETTINGS", "НАСТРОЙКИ") },
+            { "pause.exit",     ("EXIT",     "ВЫЙТИ") },
+
+            // settings
+            { "settings.title",      ("SETTINGS",    "НАСТРОЙКИ") },
+            { "settings.resolution", ("Resolution",  "Разрешение") },
+            { "settings.framerate",  ("Frame Rate",  "Частота кадров") },
+            { "settings.fullscreen", ("Fullscreen",  "Полный экран") },
+            { "settings.master",     ("Master Volume",   "Общая громкость") },
+            { "settings.music",      ("Music Volume",    "Громкость музыки") },
+            { "settings.sfx",        ("SFX Volume",      "Громкость эффектов") },
+            { "settings.dialogue",   ("Dialogue Volume", "Громкость диалогов") },
+            { "settings.fov",        ("Field of View",   "Угол обзора") },
+            { "common.on",   ("ON",  "ВКЛ") },
+            { "common.off",  ("OFF", "ВЫКЛ") },
+            { "common.back", ("BACK", "НАЗАД") },
         };
 
         public static string T(string key)

@@ -19,9 +19,11 @@ namespace Spoonacci
             _ = SoundFx.Instance;
             _ = SaveSystem.Instance;
             MissionManager.BootstrapDefaults();
+            SettingsManager.Load();
             _ = MusicPlayer.Instance;
             gameObject.AddComponent<PostFxBoost>();
             gameObject.AddComponent<LanguageToggle>();
+            gameObject.AddComponent<PauseMenu>(); // ESC works on title too (opens settings)
             BuildScene();
         }
 
@@ -65,11 +67,11 @@ namespace Spoonacci
             p.intensity = 4f;
             p.range = 10f;
 
-            // floor (pink/gold gradient via two squares)
+            // floor — pink marble
             var floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
             floor.transform.position = Vector3.zero;
             floor.transform.localScale = new Vector3(6f, 1f, 6f);
-            floor.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.95f, 0.5f, 0.7f), 0.05f, 0.5f);
+            floor.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(ProceduralTextures.Marble, new Color(1f, 0.7f, 0.85f), 0.1f, 0.6f, new Vector2(8f, 8f));
 
             // big rotating spoon
             bigSpoon = new GameObject("Title Spoon");

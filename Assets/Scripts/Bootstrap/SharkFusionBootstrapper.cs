@@ -46,7 +46,7 @@ namespace Spoonacci
             sand.name = "Beach";
             sand.transform.position = new Vector3(0f, -0.05f, 18f);
             sand.transform.localScale = new Vector3(80f, 0.2f, 40f);
-            sand.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.97f, 0.88f, 0.62f), 0f, 0.18f);
+            sand.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(ProceduralTextures.Sand, new Color(0.97f, 0.93f, 0.75f), 0f, 0.18f, new Vector2(30f, 15f));
         }
 
         void BuildOcean()
@@ -55,7 +55,7 @@ namespace Spoonacci
             ocean.name = "Ocean";
             ocean.transform.position = new Vector3(0f, -1.0f, -22f);
             ocean.transform.localScale = new Vector3(160f, 2.1f, 80f);
-            ocean.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.1f, 0.4f, 0.65f), 0.2f, 0.95f);
+            ocean.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(ProceduralTextures.Water, new Color(0.65f, 0.92f, 1f), 0.2f, 0.95f, new Vector2(40f, 20f));
             Destroy(ocean.GetComponent<Collider>());
 
             var trig = new GameObject("Water Edge Trigger");

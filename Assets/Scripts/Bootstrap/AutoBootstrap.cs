@@ -22,6 +22,7 @@ namespace Spoonacci
         static void Spawn(Scene s)
         {
             // ensure singletons exist + missions registered
+            SettingsManager.Load();
             var _ = SoundFx.Instance;
             var __ = SaveSystem.Instance;
             var ___ = MusicPlayer.Instance;

@@ -44,15 +44,18 @@ namespace Spoonacci
             sirenSrc.clip = sirenLoop;
         }
 
-        public void Bonk()    { if (audio != null && bonkClip != null) audio.PlayOneShot(bonkClip); }
-        public void Swoosh()  { if (audio != null && swooshClip != null) audio.PlayOneShot(swooshClip, 0.6f); }
-        public void Chime()   { if (audio != null && chimeClip != null) audio.PlayOneShot(chimeClip); }
-        public void LevelUp() { if (audio != null && levelUpClip != null) audio.PlayOneShot(levelUpClip); }
-        public void Ouch()    { if (audio != null && ouchClip != null) audio.PlayOneShot(ouchClip, 0.7f); }
-        public void Sparkle() { if (audio != null && sparkleClip != null) audio.PlayOneShot(sparkleClip, 0.6f); }
-        public void Saved()   { if (audio != null && savedClip != null) audio.PlayOneShot(savedClip, 0.5f); }
-        public void StartSiren() { if (sirenSrc != null && !sirenSrc.isPlaying) sirenSrc.Play(); }
+        float Sfx => SettingsManager.EffectiveSfx;
+        float Dlg => SettingsManager.EffectiveDialogue;
+        public void Bonk()    { if (audio != null && bonkClip    != null) audio.PlayOneShot(bonkClip,    Sfx); }
+        public void Swoosh()  { if (audio != null && swooshClip  != null) audio.PlayOneShot(swooshClip,  Sfx * 0.6f); }
+        public void Chime()   { if (audio != null && chimeClip   != null) audio.PlayOneShot(chimeClip,   Dlg); }
+        public void LevelUp() { if (audio != null && levelUpClip != null) audio.PlayOneShot(levelUpClip, Dlg); }
+        public void Ouch()    { if (audio != null && ouchClip    != null) audio.PlayOneShot(ouchClip,    Dlg * 0.7f); }
+        public void Sparkle() { if (audio != null && sparkleClip != null) audio.PlayOneShot(sparkleClip, Sfx * 0.6f); }
+        public void Saved()   { if (audio != null && savedClip   != null) audio.PlayOneShot(savedClip,   Dlg * 0.5f); }
+        public void StartSiren() { if (sirenSrc != null && !sirenSrc.isPlaying) { sirenSrc.volume = 0.45f * SettingsManager.EffectiveSfx; sirenSrc.Play(); } }
         public void StopSiren()  { if (sirenSrc != null && sirenSrc.isPlaying) sirenSrc.Stop(); }
+        void Update() { if (sirenSrc != null && sirenSrc.isPlaying) sirenSrc.volume = 0.45f * SettingsManager.EffectiveSfx; }
 
         AudioClip MakeBonk()
         {
