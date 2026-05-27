@@ -19,7 +19,7 @@ namespace Spoonacci
             bowl.transform.localScale = Vector3.one;
             Destroy(bowl.GetComponent<Collider>());
 
-            var sh = Shader.Find("Universal Render Pipeline/Lit");
+            var sh = ShaderCache.Lit;
             mat = new Material(sh) { color = new Color(0.85f, 0.1f, 0.1f) };
             mat.SetFloat("_Metallic", 0.05f);
             mat.SetFloat("_Smoothness", 0.7f);

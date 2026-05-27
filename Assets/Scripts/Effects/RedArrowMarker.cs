@@ -40,7 +40,7 @@ namespace Spoonacci
             tip.transform.localScale = new Vector3(0.55f, 0.5f, 0.55f);
             Destroy(tip.GetComponent<Collider>());
 
-            var sh = Shader.Find("Universal Render Pipeline/Lit");
+            var sh = ShaderCache.Lit;
             mat = new Material(sh) { color = new Color(1f, 0.1f, 0.1f) };
             mat.SetFloat("_Metallic", 0.1f);
             mat.SetFloat("_Smoothness", 0.6f);

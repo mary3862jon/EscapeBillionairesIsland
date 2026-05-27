@@ -56,7 +56,7 @@ namespace Spoonacci
             lockGO.transform.localPosition = new Vector3(0f, 1.5f, 0.15f);
             lockGO.transform.localScale = Vector3.one * 0.25f;
             Destroy(lockGO.GetComponent<Collider>());
-            var lockMat = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = new Color(1f, 0.2f, 0.2f) };
+            var lockMat = new Material(ShaderCache.Lit) { color = new Color(1f, 0.2f, 0.2f) };
             lockMat.SetFloat("_Metallic", 0.3f); lockMat.SetFloat("_Smoothness", 0.6f);
             lockMat.EnableKeyword("_EMISSION");
             lockMat.SetColor("_EmissionColor", new Color(0.8f, 0f, 0f));
@@ -109,7 +109,7 @@ namespace Spoonacci
 
         static Material MakeMat(Color c, float metallic, float smoothness)
         {
-            var sh = Shader.Find("Universal Render Pipeline/Lit");
+            var sh = ShaderCache.Lit;
             var m = new Material(sh) { color = c };
             m.SetFloat("_Metallic", metallic);
             m.SetFloat("_Smoothness", smoothness);

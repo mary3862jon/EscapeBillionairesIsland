@@ -224,7 +224,7 @@ namespace Spoonacci
             bar.transform.SetParent(go.transform, false);
             bar.transform.localScale = new Vector3(2.6f, 0.12f, 0.3f);
             Destroy(bar.GetComponent<Collider>());
-            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = new Color(1f, 0.97f, 0.85f) };
+            var mat = new Material(ShaderCache.Lit) { color = new Color(1f, 0.97f, 0.85f) };
             mat.SetFloat("_Metallic", 0.2f); mat.SetFloat("_Smoothness", 0.3f);
             mat.EnableKeyword("_EMISSION");
             mat.SetColor("_EmissionColor", new Color(2.5f, 2.2f, 1.5f));
@@ -250,7 +250,7 @@ namespace Spoonacci
             flame.transform.localPosition = new Vector3(0f, 0.45f, 0f);
             flame.transform.localScale = new Vector3(0.3f, 0.55f, 0.3f);
             Destroy(flame.GetComponent<Collider>());
-            var fm = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = new Color(1f, 0.6f, 0.2f) };
+            var fm = new Material(ShaderCache.Lit) { color = new Color(1f, 0.6f, 0.2f) };
             fm.EnableKeyword("_EMISSION");
             fm.SetColor("_EmissionColor", new Color(2.5f, 1.2f, 0.4f));
             flame.GetComponent<Renderer>().sharedMaterial = fm;
@@ -325,7 +325,7 @@ namespace Spoonacci
 
         static Material MakeMat(Color c, float metallic, float smoothness)
         {
-            var sh = Shader.Find("Universal Render Pipeline/Lit");
+            var sh = ShaderCache.Lit;
             var m = new Material(sh) { color = c };
             m.SetFloat("_Metallic", metallic);
             m.SetFloat("_Smoothness", smoothness);

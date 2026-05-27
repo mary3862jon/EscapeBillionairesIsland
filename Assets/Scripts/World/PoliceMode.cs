@@ -94,7 +94,7 @@ namespace Spoonacci
             badge.transform.localPosition = new Vector3(0f, 1.55f, 0f);
             badge.transform.localScale = new Vector3(0.5f, 0.12f, 0.5f);
             Destroy(badge.GetComponent<Collider>());
-            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = new Color(1f, 0.85f, 0.1f) };
+            var mat = new Material(ShaderCache.Lit) { color = new Color(1f, 0.85f, 0.1f) };
             mat.SetFloat("_Metallic", 1f); mat.SetFloat("_Smoothness", 0.9f);
             mat.EnableKeyword("_EMISSION");
             mat.SetColor("_EmissionColor", new Color(0.5f, 0.4f, 0f));

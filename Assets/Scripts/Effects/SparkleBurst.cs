@@ -31,7 +31,7 @@ namespace Spoonacci
             shape.shapeType = ParticleSystemShapeType.Sphere;
             shape.radius = 0.6f;
             var rend = p.GetComponent<ParticleSystemRenderer>();
-            rend.material = new Material(Shader.Find("Sprites/Default")) { color = tint };
+            rend.material = new Material(ShaderCache.SpritesDefault) { color = tint };
             var fade = p.colorOverLifetime;
             fade.enabled = true;
             var grad = new Gradient();

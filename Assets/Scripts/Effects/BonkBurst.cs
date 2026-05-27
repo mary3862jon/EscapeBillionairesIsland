@@ -33,7 +33,7 @@ namespace Spoonacci
             shape.shapeType = ParticleSystemShapeType.Hemisphere;
             shape.radius = 0.3f;
             var rend = pDust.GetComponent<ParticleSystemRenderer>();
-            rend.material = new Material(Shader.Find("Sprites/Default")) { color = new Color(0.7f, 0.55f, 0.35f, 0.7f) };
+            rend.material = new Material(ShaderCache.SpritesDefault) { color = new Color(0.7f, 0.55f, 0.35f, 0.7f) };
             var coCol = pDust.colorOverLifetime;
             coCol.enabled = true;
             var grad = new Gradient();
@@ -65,7 +65,7 @@ namespace Spoonacci
             shapeS.shapeType = ParticleSystemShapeType.Sphere;
             shapeS.radius = 0.15f;
             var rendS = pStars.GetComponent<ParticleSystemRenderer>();
-            rendS.material = new Material(Shader.Find("Sprites/Default")) { color = new Color(1f, 0.9f, 0.3f, 1f) };
+            rendS.material = new Material(ShaderCache.SpritesDefault) { color = new Color(1f, 0.9f, 0.3f, 1f) };
             pStars.Play();
 
             Destroy(gameObject, 1.6f);

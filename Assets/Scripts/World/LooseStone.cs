@@ -25,7 +25,7 @@ namespace Spoonacci
             stone.transform.SetParent(transform, false);
             stone.transform.localPosition = Vector3.zero;
             stone.transform.localScale = new Vector3(1.2f, 0.7f, 1.2f);
-            var sh = Shader.Find("Universal Render Pipeline/Lit");
+            var sh = ShaderCache.Lit;
             mat = new Material(sh) { color = new Color(0.3f, 0.3f, 0.32f) };
             mat.SetFloat("_Metallic", 0.0f);
             mat.SetFloat("_Smoothness", 0.25f);

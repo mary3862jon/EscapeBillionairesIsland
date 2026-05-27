@@ -59,7 +59,7 @@ namespace Spoonacci
 
         static Material MakeMat(Color c, float metallic, float smoothness)
         {
-            var sh = Shader.Find("Universal Render Pipeline/Lit");
+            var sh = ShaderCache.Lit;
             var m = new Material(sh) { color = c };
             m.SetFloat("_Metallic", metallic);
             m.SetFloat("_Smoothness", smoothness);
