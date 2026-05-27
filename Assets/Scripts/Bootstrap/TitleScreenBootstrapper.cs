@@ -12,9 +12,14 @@ namespace Spoonacci
 
         void Awake()
         {
+            // make sure cursor is usable in built games (some setups hide it by default)
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
             _ = SoundFx.Instance;
             _ = SaveSystem.Instance;
             MissionManager.BootstrapDefaults();
+            _ = MusicPlayer.Instance; // start background music
             gameObject.AddComponent<PostFxBoost>();
             BuildScene();
         }
@@ -146,19 +151,42 @@ namespace Spoonacci
 
         void StartNew()
         {
-            GameState.Reset();
-            MissionManager.RehydrateCompleted(null);
-            SoundFx.Instance.LevelUp();
-            SceneManager.LoadScene("CutleryChamber");
+            try
+            {
+                GameState.Reset();
+                MissionManager.RehydrateCompleted(null);
+                SoundFx.Instance.LevelUp();
+                Debug.Log("[Title] Loading CutleryChamber...");
+                SceneManager.LoadScene("CutleryChamber");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("[Title] StartNew failed: " + e.Message + " — scene 'CutleryChamber' likely not in Build Settings.");
+                LoadIndexFallback(2); // CutleryChamber is index 2 per build settings
+            }
         }
 
         void Continue()
         {
-            SoundFx.Instance.Chime();
-            // save was loaded on SaveSystem.Awake; jump to wherever the player should resume
-            // Heuristic: if TunnelDug, go to SampleScene; else CutleryChamber
-            string next = GameState.TunnelDug ? "SampleScene" : "CutleryChamber";
-            SceneManager.LoadScene(next);
+            try
+            {
+                SoundFx.Instance.Chime();
+                string next = GameState.TunnelDug ? "SampleScene" : "CutleryChamber";
+                Debug.Log("[Title] Continue → " + next);
+                SceneManager.LoadScene(next);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("[Title] Continue failed: " + e.Message);
+                LoadIndexFallback(GameState.TunnelDug ? 1 : 2);
+            }
+        }
+
+        void LoadIndexFallback(int idx)
+        {
+            // Try by build index as a last resort
+            try { SceneManager.LoadScene(idx); }
+            catch (System.Exception e) { Debug.LogError("[Title] Even index load failed: " + e.Message + " — check Build Profiles → Scenes In Build."); }
         }
 
         void Quit()

@@ -24,6 +24,7 @@ namespace Spoonacci
             // ensure singletons exist + missions registered
             var _ = SoundFx.Instance;
             var __ = SaveSystem.Instance;
+            var ___ = MusicPlayer.Instance;
             MissionManager.BootstrapDefaults();
 
             // already spawned? skip.
