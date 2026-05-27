@@ -159,11 +159,11 @@ namespace Spoonacci
         void EnsureStyles()
         {
             if (promptStyle == null)
-                promptStyle = new GUIStyle(GUI.skin.label) { fontSize = 30, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.3f) } };
+                promptStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(30), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.3f) } };
             if (comboStyle == null)
-                comboStyle = new GUIStyle(GUI.skin.label) { fontSize = 44, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = new Color(1f, 0.55f, 0.15f) } };
+                comboStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(44), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = new Color(1f, 0.55f, 0.15f) } };
             if (controlsStyle == null)
-                controlsStyle = new GUIStyle(GUI.skin.label) { fontSize = 16, alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.white } };
+                controlsStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(16), alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.white } };
         }
     }
 }

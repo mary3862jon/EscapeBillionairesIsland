@@ -99,7 +99,7 @@ namespace Spoonacci
         {
             if (unlocked || !playerInside) return;
             if (promptStyle == null)
-                promptStyle = new GUIStyle(GUI.skin.label) { fontSize = 26, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.3f) } };
+                promptStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(26), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.3f) } };
             string txt = "🔓 PRESS E TO UNLOCK " + cellLabel;
             float w = 600f;
             var sh = new GUIStyle(promptStyle); sh.normal.textColor = Color.black;

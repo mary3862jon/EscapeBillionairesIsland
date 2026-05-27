@@ -18,7 +18,7 @@ namespace Spoonacci
             {
                 style = new GUIStyle(GUI.skin.label)
                 {
-                    fontSize = 32,
+                    fontSize = UiScale.Font(32),
                     fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.MiddleCenter,
                     normal = { textColor = Color.white }

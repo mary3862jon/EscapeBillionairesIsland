@@ -128,7 +128,7 @@ namespace Spoonacci
 
         void OnGUI()
         {
-            var s = new GUIStyle(GUI.skin.label) { fontSize = 22, fontStyle = FontStyle.Bold,
+            var s = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(22), fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleCenter,
                 normal = { textColor = GameState.PoliceMode ? new Color(0.4f, 0.85f, 1f) : new Color(0.8f, 0.8f, 0.8f, 0.6f) } };
             string txt = GameState.PoliceMode ? "🚨 POLICE MODE — siren active" : "Press [P] for Police Mode";

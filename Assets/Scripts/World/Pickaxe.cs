@@ -85,7 +85,7 @@ namespace Spoonacci
         void OnGUI()
         {
             if (PickaxeState.Found || !playerInside) return;
-            var s = new GUIStyle(GUI.skin.label) { fontSize = 24, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter,
+            var s = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(24), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter,
                 normal = { textColor = new Color(1f, 0.85f, 0.3f) } };
             float w = 500f;
             var sh = new GUIStyle(s); sh.normal.textColor = Color.black;

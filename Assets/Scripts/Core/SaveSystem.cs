@@ -124,7 +124,7 @@ namespace Spoonacci
         {
             if (Time.time > toastEndsAt) return;
             if (toastStyle == null)
-                toastStyle = new GUIStyle(GUI.skin.label) { fontSize = 22, fontStyle = FontStyle.Bold, normal = { textColor = new Color(0.5f, 1f, 0.6f) }, alignment = TextAnchor.MiddleCenter };
+                toastStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(22), fontStyle = FontStyle.Bold, normal = { textColor = new Color(0.5f, 1f, 0.6f) }, alignment = TextAnchor.MiddleCenter };
             float w = 320f;
             var sh = new GUIStyle(toastStyle); sh.normal.textColor = Color.black;
             float x = (Screen.width - w) * 0.5f;

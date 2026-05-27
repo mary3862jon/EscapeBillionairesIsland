@@ -111,7 +111,7 @@ namespace Spoonacci
             GUI.Label(new Rect(tx + 4, ty + 4, tw, th), title, sh);
             GUI.Label(new Rect(tx, ty, tw, th), title, titleStyle);
 
-            var sub = new GUIStyle(GUI.skin.label) { fontSize = 26, fontStyle = FontStyle.Italic, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
+            var sub = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(26), fontStyle = FontStyle.Italic, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
             GUI.Label(new Rect(tx, ty + 90f, tw, 40f), "Escape the Billionaire's Island", sub);
 
             // buttons
@@ -137,11 +137,11 @@ namespace Spoonacci
         void EnsureStyles()
         {
             if (titleStyle == null)
-                titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 80, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.95f, 0.7f) } };
+                titleStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(80), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.95f, 0.7f) } };
             if (btnStyle == null)
-                btnStyle = new GUIStyle(GUI.skin.button) { fontSize = 30, fontStyle = FontStyle.Bold };
+                btnStyle = new GUIStyle(GUI.skin.button) { fontSize = UiScale.Font(30), fontStyle = FontStyle.Bold };
             if (footerStyle == null)
-                footerStyle = new GUIStyle(GUI.skin.label) { fontSize = 16, normal = { textColor = new Color(0.95f, 0.95f, 0.95f, 0.7f) } };
+                footerStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(16), normal = { textColor = new Color(0.95f, 0.95f, 0.95f, 0.7f) } };
         }
 
         void StartNew()

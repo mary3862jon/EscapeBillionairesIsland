@@ -143,7 +143,7 @@ namespace Spoonacci
             GUI.color = Color.white;
 
             GUI.Label(new Rect(x, y + 8f, w, 32f), "DITCH THE POLICE UNIFORM", menuStyle);
-            var s = new GUIStyle(menuStyle) { fontSize = 22, fontStyle = FontStyle.Normal };
+            var s = new GUIStyle(menuStyle) { fontSize = UiScale.Font(22), fontStyle = FontStyle.Normal };
             GUI.Label(new Rect(x, y + 50f, w, 28f), "[E] Pay 30 Troll Tokens  (you have " + GameState.TrollTokens + ")", s);
             GUI.Label(new Rect(x, y + 84f, w, 28f), "[Q] Threaten the Coiffeur (free, but rude)", s);
         }
@@ -151,7 +151,7 @@ namespace Spoonacci
         void EnsureStyles()
         {
             if (menuStyle == null)
-                menuStyle = new GUIStyle(GUI.skin.label) { fontSize = 26, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
+                menuStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(26), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
         }
     }
 

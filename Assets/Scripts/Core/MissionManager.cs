@@ -37,9 +37,11 @@ namespace Spoonacci
 
         public static IEnumerable<Mission> ActiveFor(string sceneName)
         {
+            sceneName = sceneName ?? "";
             foreach (var m in _all.Values)
             {
-                if (m.scene != null && m.scene != sceneName) continue;
+                // accept partial matches so "Cutlery" matches "CutleryChamber", "Sample" matches "SampleScene", etc.
+                if (m.scene != null && !sceneName.Contains(m.scene)) continue;
                 if (_completedIds.Contains(m.id)) continue;
                 bool ready = true;
                 foreach (var r in m.requires)

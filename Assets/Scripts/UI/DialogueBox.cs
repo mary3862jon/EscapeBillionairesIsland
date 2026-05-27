@@ -59,8 +59,8 @@ namespace Spoonacci
 
             if (nameStyle == null)
             {
-                nameStyle = new GUIStyle(GUI.skin.label) { fontSize = 30, fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
-                bodyStyle = new GUIStyle(GUI.skin.label) { fontSize = 26, wordWrap = true, normal = { textColor = Color.white } };
+                nameStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(30), fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
+                bodyStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(26), wordWrap = true, normal = { textColor = Color.white } };
             }
 
             float w = Mathf.Min(Screen.width * 0.88f, 1300f);
