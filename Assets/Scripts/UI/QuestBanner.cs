@@ -17,12 +17,12 @@ namespace Spoonacci
         {
             EnsureStyles();
 
-            // get the first incomplete mission
+            // get the first incomplete mission (title is now a translation key)
             string task = null;
             foreach (var m in MissionManager.ActiveFor(sceneKey))
             {
                 if (m.isComplete != null && m.isComplete()) continue;
-                task = m.title;
+                task = Loc.T(m.title);
                 break;
             }
             if (task == null) task = Loc.T("quest.freeroam");

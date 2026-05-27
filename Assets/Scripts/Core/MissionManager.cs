@@ -68,27 +68,24 @@ namespace Spoonacci
 
         public static void BootstrapDefaults()
         {
-            // Cell scene — BIG prison flow
-            Register(new Mission("cell.pickaxe",    "Find the pickaxe (hay pile in your cell)", () => PickaxeState.Found, "Cutlery"));
-            Register(new Mission("cell.unlock",     "Unlock the other 4 cells (E on each door)", () => PrisonState.Unlocked >= 4, "Cutlery"));
-            Register(new Mission("cell.persuade",   "Persuade all 15 inmates (E to ask, Q to bonk refusers)", () => PrisonState.Persuaded >= 15, "Cutlery", "cell.unlock"));
-            Register(new Mission("cell.dig",        "Dig the loose stone (E, 3 stages)",         () => GameState.TunnelDug, "Cutlery", "cell.pickaxe", "cell.persuade"));
+            // mission.title is now a localization KEY, looked up at render time via Loc.T()
+            Register(new Mission("cell.pickaxe",  "mission.cell.pickaxe",  () => PickaxeState.Found, "Cutlery"));
+            Register(new Mission("cell.unlock",   "mission.cell.unlock",   () => PrisonState.Unlocked >= 4, "Cutlery"));
+            Register(new Mission("cell.persuade", "mission.cell.persuade", () => PrisonState.Persuaded >= 15, "Cutlery", "cell.unlock"));
+            Register(new Mission("cell.dig",      "mission.cell.dig",      () => GameState.TunnelDug, "Cutlery", "cell.pickaxe", "cell.persuade"));
 
-            // Island arrival (post-escape)
-            Register(new Mission("island.salon",    "Ditch the police uniform at Salon Cucchiaio (E)", () => GameState.WearingCivilianClothes, "Sample", "cell.dig"));
+            Register(new Mission("island.salon",  "mission.island.salon",  () => GameState.WearingCivilianClothes, "Sample", "cell.dig"));
 
-            // Sandbox / chaos missions
-            Register(new Mission("isle.bonk5",      "Bonk 5 violators",                       () => GameState.PerfectBonks >= 5, "Sample"));
-            Register(new Mission("isle.tokens100",  "Earn 100 Troll Tokens",                  () => GameState.TrollTokens >= 100, "Sample"));
-            Register(new Mission("isle.bust",       "Enter Police Mode (P) and bust dealers", () => GameState.PoliceMode && GameState.PerfectBonks >= 10, "Sample"));
-            Register(new Mission("isle.tusk",       "Bonk Magnus Tusk (mansion)",             () => BillionaireRegistry.IsBonked("Magnus Tusk"), "Sample"));
-            Register(new Mission("isle.beff",       "Bonk Beff Jezos (yacht NW)",             () => BillionaireRegistry.IsBonked("Beff Jezos"), "Sample"));
-            Register(new Mission("isle.chad",       "Bonk Crypto Chad (vault NE)",            () => BillionaireRegistry.IsBonked("Crypto Chad"), "Sample"));
-            Register(new Mission("isle.zuck",       "Bonk Mark Zuckersnort (lab SW)",         () => BillionaireRegistry.IsBonked("Mark Zuckersnort"), "Sample"));
-            Register(new Mission("isle.all4",       "Bonk all 4 billionaires",                () => BillionaireRegistry.BonkedCount >= 4, "Sample", "isle.tusk", "isle.beff", "isle.chad", "isle.zuck"));
+            Register(new Mission("isle.bonk5",    "mission.isle.bonk5",    () => GameState.PerfectBonks >= 5, "Sample"));
+            Register(new Mission("isle.tokens100","mission.isle.tokens100",() => GameState.TrollTokens >= 100, "Sample"));
+            Register(new Mission("isle.bust",     "mission.isle.bust",     () => GameState.PoliceMode && GameState.PerfectBonks >= 10, "Sample"));
+            Register(new Mission("isle.tusk",     "mission.isle.tusk",     () => BillionaireRegistry.IsBonked("Magnus Tusk"), "Sample"));
+            Register(new Mission("isle.beff",     "mission.isle.beff",     () => BillionaireRegistry.IsBonked("Beff Jezos"), "Sample"));
+            Register(new Mission("isle.chad",     "mission.isle.chad",     () => BillionaireRegistry.IsBonked("Crypto Chad"), "Sample"));
+            Register(new Mission("isle.zuck",     "mission.isle.zuck",     () => BillionaireRegistry.IsBonked("Mark Zuckersnort"), "Sample"));
+            Register(new Mission("isle.all4",     "mission.isle.all4",     () => BillionaireRegistry.BonkedCount >= 4, "Sample", "isle.tusk", "isle.beff", "isle.chad", "isle.zuck"));
 
-            // Ocean / shark
-            Register(new Mission("shark.fuse",      "Walk into the ocean → fuse with the Shark", () => SharkFusionState.Fused, "Shark"));
+            Register(new Mission("shark.fuse",    "mission.shark.fuse",    () => SharkFusionState.Fused, "Shark"));
         }
     }
 

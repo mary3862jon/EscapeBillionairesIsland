@@ -124,7 +124,7 @@ namespace Spoonacci
         {
             var hudGo = new GameObject("HUD");
             hud = hudGo.AddComponent<HudText>();
-            hud.Set("THE ISLE OF LASCIVIOUS REPOSE — 4 billionaire zones across the compass. Find them all. F to bonk violators, Q manual swing.");
+            hud.Set(Loc.T("intro.island"));
             Invoke(nameof(ClearHud), 12f);
         }
 
@@ -156,7 +156,7 @@ namespace Spoonacci
             MakePrimCubeTex("Roof", salon.transform, new Vector3(0f, 3.3f, 0f), new Vector3(5.5f, 0.25f, 4f), ProceduralTextures.Marble, new Color(0.95f, 0.55f, 0.75f), 0.3f, 0.6f, new Vector2(3f, 2f));
             // sign
             var sign = MakePrimCube("Sign", salon.transform, new Vector3(0f, 4.1f, -1.85f), new Vector3(4.6f, 0.9f, 0.1f), new Color(0.98f, 0.96f, 0.92f), 0.1f, 0.4f);
-            AddLabel(sign, "✨ SALON  CUCCHIAIO ✨", new Color(0.6f, 0.15f, 0.45f), 36, new Vector3(0f, 0f, -0.1f));
+            AddLabel(sign, "sign.salon", new Color(0.6f, 0.15f, 0.45f), 36, new Vector3(0f, 0f, -0.1f));
             // counter
             MakePrimCubeTex("Counter", salon.transform, new Vector3(0f, 0.55f, -2.1f), new Vector3(4f, 1.1f, 0.8f), ProceduralTextures.Wood, new Color(0.95f, 0.88f, 0.78f), 0f, 0.4f, new Vector2(4f, 1f));
             MakePrimCube("Trim",    salon.transform, new Vector3(0f, 1.1f, -2.1f), new Vector3(4.1f, 0.08f, 0.82f), new Color(0.95f, 0.78f, 0.25f), 1f, 0.9f);
@@ -214,7 +214,7 @@ namespace Spoonacci
             lbl.transform.SetParent(pool.transform, false);
             lbl.transform.localPosition = new Vector3(0f, 4f, 6f);
             var l = lbl.AddComponent<WorldLabel>();
-            l.text = "🏊 INFINITY POOL"; l.color = new Color(0.1f, 0.4f, 0.7f); l.fontSize = 28;
+            l.text = "sign.pool"; l.color = new Color(0.1f, 0.4f, 0.7f); l.fontSize = 28;
             // 3 swimmers + 3 loungers
             for (int i = 0; i < 3; i++)
             {
@@ -236,7 +236,7 @@ namespace Spoonacci
             var roof = MakePrimCubeTex("Roof", bar.transform, new Vector3(0f, 3.3f, 0.4f), new Vector3(6.5f, 0.2f, 2.0f), ProceduralTextures.Leaves, new Color(0.85f, 0.65f, 0.4f), 0f, 0.3f, new Vector2(4f, 2f));
             roof.transform.localRotation = Quaternion.Euler(15f, 0f, 0f);
             var lbl = new GameObject("BarLabel"); lbl.transform.SetParent(bar.transform, false); lbl.transform.localPosition = new Vector3(0f, 4f, 0f);
-            var l = lbl.AddComponent<WorldLabel>(); l.text = "🍹 TIKI BAR"; l.color = new Color(0.55f, 0.3f, 0.05f); l.fontSize = 26;
+            var l = lbl.AddComponent<WorldLabel>(); l.text = "sign.bar"; l.color = new Color(0.55f, 0.3f, 0.05f); l.fontSize = 26;
             // bottles
             for (int i = -3; i <= 3; i++)
                 MakePrimCylinder("Bottle", bar.transform, new Vector3(i * 0.65f, 1.3f, -0.2f), new Vector3(0.13f, 0.22f, 0.13f), i % 2 == 0 ? new Color(0.3f, 0.6f, 0.3f) : new Color(0.7f, 0.4f, 0.2f), 0.4f, 0.9f);
@@ -268,7 +268,7 @@ namespace Spoonacci
         {
             var z = new GameObject("Beff Jezos Yacht Zone");
             z.transform.position = new Vector3(-ZONE_R, 0f, -ZONE_R);
-            AddLabel(z, "🛥  BEFF JEZOS YACHT", new Color(0.95f, 0.85f, 0.3f), 32, new Vector3(0f, 12f, 0f));
+            AddLabel(z, "sign.yacht", new Color(0.95f, 0.85f, 0.3f), 32, new Vector3(0f, 12f, 0f));
 
             // dock
             MakePrimCube("Dock", z.transform, new Vector3(0f, 0.1f, 8f), new Vector3(6f, 0.3f, 16f), new Color(0.5f, 0.35f, 0.18f), 0f, 0.35f);
@@ -302,7 +302,7 @@ namespace Spoonacci
         {
             var z = new GameObject("Crypto Chad Vault Zone");
             z.transform.position = new Vector3(ZONE_R, 0f, -ZONE_R);
-            AddLabel(z, "💎  CRYPTO CHAD VAULT", new Color(0.4f, 0.95f, 0.9f), 32, new Vector3(0f, 12f, 0f));
+            AddLabel(z, "sign.vault", new Color(0.4f, 0.95f, 0.9f), 32, new Vector3(0f, 12f, 0f));
 
             // glass cube building (semi-transparent feel via white emission)
             var vault = MakePrimCube("Vault", z.transform, new Vector3(0f, 4f, 0f), new Vector3(10f, 8f, 10f), new Color(0.6f, 0.9f, 1f), 0.4f, 0.95f);
@@ -330,7 +330,7 @@ namespace Spoonacci
         {
             var z = new GameObject("Zuckersnort Lab Zone");
             z.transform.position = new Vector3(-ZONE_R, 0f, ZONE_R);
-            AddLabel(z, "🧪  ZUCKERSNORT AI LAB", new Color(0.6f, 1f, 0.4f), 32, new Vector3(0f, 12f, 0f));
+            AddLabel(z, "sign.lab", new Color(0.6f, 1f, 0.4f), 32, new Vector3(0f, 12f, 0f));
 
             // sterile white box
             MakePrimCube("Lab Building", z.transform, new Vector3(0f, 3f, 0f), new Vector3(14f, 6f, 10f), new Color(0.95f, 0.97f, 0.97f), 0.1f, 0.7f);
@@ -358,7 +358,7 @@ namespace Spoonacci
         {
             var z = new GameObject("Magnus Tusk Mansion Zone");
             z.transform.position = new Vector3(ZONE_R, 0f, ZONE_R);
-            AddLabel(z, "💰  MAGNUS TUSK MANSION", new Color(0.95f, 0.8f, 0.2f), 32, new Vector3(0f, 12f, 0f));
+            AddLabel(z, "sign.tusk", new Color(0.95f, 0.8f, 0.2f), 32, new Vector3(0f, 12f, 0f));
 
             // marble patio
             MakePrimCubeTex("Patio", z.transform, new Vector3(0f, 0.05f, 0f), new Vector3(20f, 0.2f, 14f), ProceduralTextures.Marble, new Color(0.97f, 0.97f, 1f), 0.1f, 0.7f, new Vector2(10f, 7f));
@@ -413,7 +413,7 @@ namespace Spoonacci
             var lbl = new GameObject("AlleyLabel");
             lbl.transform.SetParent(alley.transform, false);
             lbl.transform.localPosition = new Vector3(0f, 6f, -6.5f);
-            var l = lbl.AddComponent<WorldLabel>(); l.text = "⚠ SHADY ALLEY — Police Mode (P) to bust"; l.color = new Color(1f, 0.4f, 0.3f); l.fontSize = 24;
+            var l = lbl.AddComponent<WorldLabel>(); l.text = "sign.alley"; l.color = new Color(1f, 0.4f, 0.3f); l.fontSize = 24;
 
             // 3 drug dealers
             for (int i = 0; i < 3; i++)

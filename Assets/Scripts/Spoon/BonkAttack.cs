@@ -128,7 +128,7 @@ namespace Spoonacci
             EnsureStyles();
 
             // Bottom bar: controls always visible
-            string controls = "[WASD] walk  ·  [SPACE] hop  ·  [Q] manual BONK  ·  [F] auto-lock BONK violators  ·  [E] interact  ·  [P] toggle Police Mode";
+            string controls = Loc.T("hud.controls");
             float cw = Mathf.Min(Screen.width * 0.95f, 1500f);
             float cx = (Screen.width - cw) * 0.5f;
             float cy = Screen.height - 30f;
@@ -142,14 +142,15 @@ namespace Spoonacci
                 float x = (Screen.width - w) * 0.5f;
                 float y = Screen.height * 0.14f;
                 var sh = new GUIStyle(promptStyle); sh.normal.textColor = Color.black;
-                string txt = "⚠ VIOLATOR: " + CurrentLockOn.ViolationLabel + " — Press F to AUTO-BONK!";
+                string crime = Loc.T("crime." + CurrentLockOn.ViolationLabel);
+                string txt = "⚠ " + Loc.T("hud.violator") + ": " + crime + " — " + Loc.T("hud.press_f");
                 GUI.Label(new Rect(x + 3, y + 3, w, 50f), txt, sh);
                 GUI.Label(new Rect(x, y, w, 50f), txt, promptStyle);
             }
 
             if (Combo > 1)
             {
-                string c = "x" + Combo + " COMBO!";
+                string c = "x" + Combo + " " + Loc.T("hud.combo");
                 var sh = new GUIStyle(comboStyle); sh.normal.textColor = Color.black;
                 GUI.Label(new Rect(24f, 24f, 360f, 60f), c, sh);
                 GUI.Label(new Rect(20f, 20f, 360f, 60f), c, comboStyle);

@@ -132,14 +132,14 @@ namespace Spoonacci
                 GUI.color = new Color(0.95f, 0.5f, 0.15f);
                 GUI.DrawTexture(new Rect(bx, by, barW * total, barH), Texture2D.whiteTexture);
                 GUI.color = Color.white;
-                GUI.Label(new Rect(bx, by + barH + 4f, barW, 24f), "DIG STAGE " + (stagesDone + (digging ? 1 : 0)) + "/" + stages, promptStyle);
+                GUI.Label(new Rect(bx, by + barH + 4f, barW, 24f), Loc.T("prompt.dig_stage") + " " + (stagesDone + (digging ? 1 : 0)) + "/" + stages, promptStyle);
             }
 
             if (playerInside && Active() && !digging)
             {
                 var s = new GUIStyle(promptStyle); s.normal.textColor = new Color(1f, 0.85f, 0.3f);
                 var sh = new GUIStyle(s); sh.normal.textColor = Color.black;
-                string txt = stagesDone == 0 ? "⛏ PRESS E TO START DIGGING" : "⛏ PRESS E AGAIN (" + stagesDone + "/" + stages + ")";
+                string txt = stagesDone == 0 ? Loc.T("prompt.dig_start") : Loc.T("prompt.dig_again") + " (" + stagesDone + "/" + stages + ")";
                 GUI.Label(new Rect(x + 2, y + 2, w, 40f), txt, sh);
                 GUI.Label(new Rect(x, y, w, 40f), txt, s);
             }
@@ -147,12 +147,9 @@ namespace Spoonacci
             {
                 var s = new GUIStyle(promptStyle); s.normal.textColor = new Color(0.8f, 0.8f, 0.8f);
                 string txt;
-                if (!PickaxeState.Found)
-                    txt = "...you need a pickaxe. (Check the hay pile in your cell.)";
-                else if (PrisonState.Persuaded < 15)
-                    txt = "...the stone won't budge alone. Persuade all 15 inmates first (" + PrisonState.Persuaded + "/15)";
-                else
-                    txt = "...something is missing.";
+                if (!PickaxeState.Found)        txt = Loc.T("prompt.need_pickaxe");
+                else if (PrisonState.Persuaded < 15) txt = Loc.T("prompt.need_persuade") + " (" + PrisonState.Persuaded + "/15)";
+                else                              txt = "...";
                 GUI.Label(new Rect((Screen.width - w) * 0.5f, y, w, 40f), txt, s);
             }
         }

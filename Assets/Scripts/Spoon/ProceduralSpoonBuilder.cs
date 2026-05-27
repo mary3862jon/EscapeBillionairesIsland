@@ -49,6 +49,24 @@ namespace Spoonacci
             visualGo.transform.SetParent(transform, false);
             Visual = visualGo.transform;
 
+            // 1) Try real CC0 spoon model from Resources (drummyfish/opengameart, public domain)
+            var realPrefab = Resources.Load<GameObject>("Models/spoon");
+            if (realPrefab != null)
+            {
+                var instance = Instantiate(realPrefab, Visual);
+                instance.name = "Real Spoon Model";
+                // The OBJ is laid flat — stand it up, scale to character size, center vertically
+                instance.transform.localPosition = new Vector3(0f, bodyHeight * 0.5f + 0.05f, 0f);
+                instance.transform.localRotation = Quaternion.Euler(-90f, 90f, 0f); // bowl up, handle vertical
+                instance.transform.localScale = Vector3.one * 0.75f;
+                // collect every Renderer for skin re-tint
+                metalParts = instance.GetComponentsInChildren<Renderer>();
+                // tiny eyes on the bowl so it still has Spoonacci-ness
+                if (addFace) AddSimpleEyes(Visual, new Vector3(0f, bodyHeight + 0.05f, 0.15f));
+                return;
+            }
+            // 2) Procedural fallback (capsule-based bowl)
+
             // HANDLE — thin vertical cylinder
             var handle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             handle.name = "Handle";
@@ -173,6 +191,20 @@ namespace Spoonacci
                 runtimeMat.SetFloat("_Smoothness", smooth);
             }
             if (metalParts != null) foreach (var r in metalParts) if (r != null) r.sharedMaterial = runtimeMat;
+        }
+
+        void AddSimpleEyes(Transform parent, Vector3 center)
+        {
+            var black = MakeMat(new Color(0.02f, 0.02f, 0.02f), 0f, 0.1f);
+            for (int side = -1; side <= 1; side += 2)
+            {
+                var eye = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                eye.transform.SetParent(parent, false);
+                eye.transform.localPosition = center + new Vector3(side * 0.07f, 0.0f, 0.0f);
+                eye.transform.localScale = Vector3.one * 0.07f;
+                Destroy(eye.GetComponent<Collider>());
+                eye.GetComponent<Renderer>().sharedMaterial = black;
+            }
         }
 
         static Material MakeMat(Color c, float metallic, float smoothness)

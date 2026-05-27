@@ -156,7 +156,7 @@ namespace Spoonacci
         {
             var hudGo = new GameObject("HUD");
             hud = hudGo.AddComponent<HudText>();
-            hud.Set("ACT 3 — Walk into the ocean. A shark awaits.");
+            hud.Set(Loc.T("intro.shark"));
             Invoke(nameof(ClearHud), 8f);
         }
 
@@ -217,7 +217,7 @@ namespace Spoonacci
             // hand control to the shark
             shark.AddComponent<SharkController>();
             if (follow != null) { follow.target = shark.transform; follow.distance = 11f; follow.height = 3.5f; }
-            hud.Set("🦈 SPOON-SHARK MODE — WASD swim · SPACE dash · roam the ocean");
+            hud.Set(Loc.T("intro.shark2"));
             SoundFx.Instance.LevelUp();
             SharkFusionState.Fused = true;
             SaveSystem.Instance.Save("Spoon-Shark formed!");

@@ -89,8 +89,9 @@ namespace Spoonacci
                 normal = { textColor = new Color(1f, 0.85f, 0.3f) } };
             float w = 500f;
             var sh = new GUIStyle(s); sh.normal.textColor = Color.black;
-            GUI.Label(new Rect((Screen.width - w) * 0.5f + 2, Screen.height * 0.6f + 2, w, 32f), "⛏ PRESS E TO GRAB THE PICKAXE", sh);
-            GUI.Label(new Rect((Screen.width - w) * 0.5f, Screen.height * 0.6f, w, 32f), "⛏ PRESS E TO GRAB THE PICKAXE", s);
+            string t = Loc.T("prompt.pickaxe");
+            GUI.Label(new Rect((Screen.width - w) * 0.5f + 2, Screen.height * 0.6f + 2, w, 32f), t, sh);
+            GUI.Label(new Rect((Screen.width - w) * 0.5f, Screen.height * 0.6f, w, 32f), t, s);
         }
 
         static Material MakeMat(Color c, float metallic, float smoothness)

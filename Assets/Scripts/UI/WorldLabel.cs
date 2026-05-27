@@ -35,12 +35,15 @@ namespace Spoonacci
             Vector3 sp = cam.WorldToScreenPoint(wp);
             if (sp.z < 0f) return;
 
+            // Loc.T returns the key as-is when not found, so literal labels still render unchanged.
+            string display = Loc.T(text);
+
             float w = 360f, h = 40f;
             var r = new Rect(sp.x - w * 0.5f, Screen.height - sp.y - h * 0.5f, w, h);
             var shadow = new GUIStyle(style);
             shadow.normal.textColor = new Color(1f, 1f, 1f, 0.85f);
-            GUI.Label(new Rect(r.x + 2, r.y + 2, w, h), text, shadow);
-            GUI.Label(r, text, style);
+            GUI.Label(new Rect(r.x + 2, r.y + 2, w, h), display, shadow);
+            GUI.Label(r, display, style);
         }
     }
 }

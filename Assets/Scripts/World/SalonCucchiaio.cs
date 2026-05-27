@@ -67,12 +67,12 @@ namespace Spoonacci
             if (prompt == null) return;
             if (InNegotiationMode)
             {
-                prompt.Set("✨ SALON CUCCHIAIO ✨  [E] PAY 30 tokens for disguise   ·   [Q] THREATEN attendant for free");
+                prompt.Set(Loc.T("salon.entry_neg"));
             }
             else
             {
                 string current = SpoonSkinLibrary.All[GameState.CurrentSkinIndex].name;
-                prompt.Set("✨ SALON CUCCHIAIO ✨   Wearing: " + current + "   ·   [E] next skin");
+                prompt.Set(Loc.Tf("salon.entry_cycle", current));
             }
         }
 
@@ -80,13 +80,13 @@ namespace Spoonacci
         {
             if (GameState.TrollTokens < 30)
             {
-                if (prompt != null) prompt.Set("...not enough tokens (need 30). Bonk more violators or [Q] threaten.");
+                if (prompt != null) prompt.Set(Loc.T("salon.no_tokens"));
                 SoundFx.Instance.Ouch();
                 return;
             }
             GameState.SpendTokens(30);
             GiveCivilianDisguise();
-            if (prompt != null) prompt.Set("✨ The Coiffeur smiles. You blend in beautifully now.");
+            if (prompt != null) prompt.Set(Loc.T("salon.paid_ok"));
             SaveSystem.Instance.Save("Bought disguise");
         }
 
@@ -101,7 +101,7 @@ namespace Spoonacci
             SoundFx.Instance.Bonk();
             SoundFx.Instance.Ouch();
             GiveCivilianDisguise();
-            if (prompt != null) prompt.Set("⚠ You threatened the Coiffeur. She fled in tears. You wear what you like now.");
+            if (prompt != null) prompt.Set(Loc.T("salon.threatened"));
             SaveSystem.Instance.Save("Threatened salon");
         }
 
@@ -127,7 +127,7 @@ namespace Spoonacci
             cachedBuilder.ApplySkin(s.color, s.metallic, s.smoothness);
             if (cachedAnim != null) cachedAnim.TriggerLandSquash();
             SoundFx.Instance.Sparkle();
-            if (prompt != null) prompt.Set("✨ Now wearing: " + s.name + "   ·   [E] next");
+            if (prompt != null) prompt.Set(Loc.Tf("salon.now_wearing", s.name));
         }
 
         void OnGUI()
@@ -142,10 +142,10 @@ namespace Spoonacci
             GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
             GUI.color = Color.white;
 
-            GUI.Label(new Rect(x, y + 8f, w, 32f), "DITCH THE POLICE UNIFORM", menuStyle);
+            GUI.Label(new Rect(x, y + 8f, w, 32f), Loc.T("salon.menu_title"), menuStyle);
             var s = new GUIStyle(menuStyle) { fontSize = UiScale.Font(22), fontStyle = FontStyle.Normal };
-            GUI.Label(new Rect(x, y + 50f, w, 28f), "[E] Pay 30 Troll Tokens  (you have " + GameState.TrollTokens + ")", s);
-            GUI.Label(new Rect(x, y + 84f, w, 28f), "[Q] Threaten the Coiffeur (free, but rude)", s);
+            GUI.Label(new Rect(x, y + 50f, w, 28f), Loc.Tf("salon.pay", GameState.TrollTokens), s);
+            GUI.Label(new Rect(x, y + 84f, w, 28f), Loc.T("salon.threaten"), s);
         }
 
         void EnsureStyles()

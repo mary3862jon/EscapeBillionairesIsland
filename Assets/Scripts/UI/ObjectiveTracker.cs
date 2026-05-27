@@ -38,7 +38,7 @@ namespace Spoonacci
             GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
             GUI.color = prev;
 
-            GUI.Label(new Rect(x + 14f, y + 8f, w - 28f, 32f), "ACTIVE MISSIONS", titleStyle);
+            GUI.Label(new Rect(x + 14f, y + 8f, w - 28f, 32f), Loc.T("obj.title"), titleStyle);
             float oy = y + 46f;
             for (int i = 0; i < n; i++)
             {
@@ -46,7 +46,7 @@ namespace Spoonacci
                 bool done = m.isComplete != null && m.isComplete();
                 string mark = done ? "✔" : "▢";
                 var s = done ? doneStyle : objStyle;
-                GUI.Label(new Rect(x + 14f, oy, w - 28f, 32f), mark + "  " + m.title, s);
+                GUI.Label(new Rect(x + 14f, oy, w - 28f, 32f), mark + "  " + Loc.T(m.title), s);
                 oy += 34f;
             }
 
@@ -55,7 +55,7 @@ namespace Spoonacci
             GUI.color = new Color(0f, 0f, 0f, 0.6f);
             GUI.DrawTexture(new Rect(x, ty, w, 48f), Texture2D.whiteTexture);
             GUI.color = prev;
-            GUI.Label(new Rect(x + 14f, ty + 8f, w - 28f, 36f), "💰 " + GameState.TrollTokens + " TROLL TOKENS", tokenStyle);
+            GUI.Label(new Rect(x + 14f, ty + 8f, w - 28f, 36f), "💰 " + GameState.TrollTokens + " " + Loc.T("hud.tokens"), tokenStyle);
 
             // PRISON STATS panel (only in Cutlery scene) — below the missions
             if (sceneKey.Contains("Cutlery") || sceneKey.Contains("Cell"))
@@ -65,12 +65,12 @@ namespace Spoonacci
                 GUI.color = new Color(0f, 0f, 0f, 0.65f);
                 GUI.DrawTexture(new Rect(x, py, w, ph), Texture2D.whiteTexture);
                 GUI.color = prev;
-                GUI.Label(new Rect(x + 14f, py + 8f, w - 28f, 32f), "PRISON STATS", titleStyle);
+                GUI.Label(new Rect(x + 14f, py + 8f, w - 28f, 32f), Loc.T("prison.stats"), titleStyle);
 
                 int rem = Mathf.Max(0, PrisonState.Total - PrisonState.Persuaded);
-                string s1 = "🔓 Cells unlocked:  " + PrisonState.Unlocked + " / " + PrisonState.TotalCells;
-                string s2 = "🥄 Persuaded:       " + PrisonState.Persuaded + " / " + PrisonState.Total;
-                string s3 = "💢 Still resisting: " + rem;
+                string s1 = Loc.T("prison.cells")     + "  " + PrisonState.Unlocked + " / " + PrisonState.TotalCells;
+                string s2 = Loc.T("prison.persuaded") + "  " + PrisonState.Persuaded + " / " + PrisonState.Total;
+                string s3 = Loc.T("prison.resisting") + " " + rem;
                 GUI.Label(new Rect(x + 14f, py + 44f, w - 28f, 28f), s1, objStyle);
                 GUI.Label(new Rect(x + 14f, py + 72f, w - 28f, 28f), s2, objStyle);
                 GUI.Label(new Rect(x + 14f, py + 100f, w - 28f, 28f), s3, objStyle);

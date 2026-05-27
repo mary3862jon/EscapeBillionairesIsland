@@ -14,6 +14,10 @@ Licensed under **Creative Commons BY 3.0** — https://creativecommons.org/licen
 
 These tracks may be redistributed and modified provided attribution to Kevin MacLeod / incompetech.com is preserved.
 
+## 3D Models
+
+- `Assets/Resources/Models/spoon.{obj,mtl,png}` — **CC0 public domain** spoon model by **drummyfish** (opengameart.org). No attribution required, but credited here voluntarily.
+
 ## To add your own music
 
 Drop additional `.mp3` or `.ogg` files into `Assets/Resources/Music/` with any name (sorted alphabetically). The `MusicPlayer` auto-discovers them at startup. Use `K/J` in-game to cycle.

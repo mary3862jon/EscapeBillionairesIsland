@@ -114,7 +114,7 @@ namespace Spoonacci
             var signGo = new GameObject("PrisonSign");
             signGo.transform.position = new Vector3(0f, PRISON_H + 0.8f, -PRISON_D * 0.5f - 0.5f);
             var lbl = signGo.AddComponent<WorldLabel>();
-            lbl.text = "🏚 THE CUTLERY CHAMBER — Prison Wing 7";
+            lbl.text = "sign.prison";
             lbl.color = new Color(0.95f, 0.85f, 0.3f);
             lbl.fontSize = 30;
         }
@@ -317,7 +317,7 @@ namespace Spoonacci
         {
             var hudGo = new GameObject("HUD");
             hud = hudGo.AddComponent<HudText>();
-            hud.Set("ACT 2 — Cutlery Chamber. Grab the pickaxe, unlock the 4 other cells, persuade all 15 spoons to dig.");
+            hud.Set(Loc.T("intro.cell"));
             Invoke(nameof(ClearHud), 12f);
         }
 

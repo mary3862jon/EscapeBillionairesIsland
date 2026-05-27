@@ -25,7 +25,7 @@ namespace Spoonacci
             banner.transform.localScale = new Vector3(6.4f, 0.4f, 0.12f);
             banner.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.95f, 0.5f, 0.75f), 0.3f, 0.6f);
             var label = banner.AddComponent<WorldLabel>();
-            label.text = "✨ SKIN COLLECTION ✨";
+            label.text = "sign.skinkit";
             label.color = new Color(0.6f, 0.15f, 0.45f);
             label.fontSize = 22;
 
