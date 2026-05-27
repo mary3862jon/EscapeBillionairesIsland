@@ -68,7 +68,14 @@ namespace Spoonacci
             {
                 m.mainTexture = tex;
                 m.SetTexture("_BaseMap", tex);
-                if (tile.HasValue) m.mainTextureScale = tile.Value;
+                if (tile.HasValue)
+                {
+                    // URP/Lit reads _BaseMap_ST — must set scale on _BaseMap specifically
+                    m.SetTextureScale("_BaseMap", tile.Value);
+                    m.mainTextureScale = tile.Value;
+                }
+                // make sure URP doesn't strip the texture sampler
+                m.EnableKeyword("_BASEMAP");
             }
             return m;
         }

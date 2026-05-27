@@ -2,20 +2,19 @@ using UnityEngine;
 
 namespace Spoonacci
 {
-    // Builds Sir Spoonacci as a UPRIGHT character — handle vertical (body), bowl on top (head).
-    // Mesh = primitives, but stacked properly so he reads as a little dude.
-    // All visuals live under a child 'Visual' transform so SpoonAnimator can rock/squash it
-    // without fighting the Rigidbody's transform.
+    // Sir Spoonacci — upright character built from primitives.
+    // Bowl uses a flattened Capsule rotated horizontally (proper oval scoop silhouette)
+    // rather than a sphere or sphere+inset (which read as bolt/toilet seat).
     public class ProceduralSpoonBuilder : MonoBehaviour
     {
         public Color skinColor = new Color(0.85f, 0.85f, 0.9f);
-        public float metallic = 0.95f;
-        public float smoothness = 0.85f;
+        public float metallic = 0.85f;
+        public float smoothness = 0.7f;
 
         [Header("Proportions (set before Awake to override)")]
         public float bodyHeight = 0.9f;
         public float bodyRadius = 0.08f;
-        public Vector3 bowlSize = new Vector3(0.42f, 0.16f, 0.55f); // x,y,z
+        public Vector3 bowlSize = new Vector3(0.45f, 0.12f, 0.85f); // x,y,z — flat oval
         public bool addFace = true;
         public bool addMonocle = true;
 
@@ -41,134 +40,113 @@ namespace Spoonacci
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
             var col = GetComponent<CapsuleCollider>() ?? gameObject.AddComponent<CapsuleCollider>();
-            col.direction = 1; // Y-axis (vertical)
+            col.direction = 1;
             col.height = bodyHeight + 0.25f;
             col.radius = Mathf.Max(bodyRadius * 1.3f, 0.16f);
             col.center = new Vector3(0f, (bodyHeight + 0.25f) * 0.5f - 0.05f, 0f);
 
-            // visual root — animator wiggles THIS
             var visualGo = new GameObject("Visual");
             visualGo.transform.SetParent(transform, false);
             Visual = visualGo.transform;
 
-            // HANDLE = body, vertical cylinder rising from ground
+            // HANDLE — thin vertical cylinder
             var handle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            handle.name = "Body (Handle)";
+            handle.name = "Handle";
             handle.transform.SetParent(Visual, false);
             handle.transform.localPosition = new Vector3(0f, bodyHeight * 0.5f, 0f);
             handle.transform.localScale = new Vector3(bodyRadius * 2f, bodyHeight * 0.5f, bodyRadius * 2f);
             Destroy(handle.GetComponent<Collider>());
 
-            // HANDLE TIP — small sphere at top of handle for smooth transition to bowl
+            // HANDLE TOP TAPER — slightly wider sphere transitioning into the bowl
             var neck = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             neck.name = "Neck";
             neck.transform.SetParent(Visual, false);
-            neck.transform.localPosition = new Vector3(0f, bodyHeight, 0f);
-            neck.transform.localScale = new Vector3(bodyRadius * 2.4f, bodyRadius * 2.4f, bodyRadius * 2.4f);
+            neck.transform.localPosition = new Vector3(0f, bodyHeight + 0.02f, 0.02f);
+            neck.transform.localScale = new Vector3(bodyRadius * 2.6f, bodyRadius * 2.0f, bodyRadius * 2.6f);
             Destroy(neck.GetComponent<Collider>());
 
-            // BOWL — elongated egg/teardrop shape (1.6x deeper than wide), tilted back so scoop is visible
-            // Position offset forward so it reads as a spoon extending past the handle
-            var bowl = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            bowl.name = "Head (Bowl)";
+            // BOWL — Capsule rotated to lie HORIZONTALLY, scaled to flat oval pill
+            // = the silhouette of a real spoon scoop (longer than wide, very thin)
+            var bowl = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            bowl.name = "Bowl";
             bowl.transform.SetParent(Visual, false);
-            bowl.transform.localPosition = new Vector3(0f, bodyHeight + bowlSize.y * 0.55f, 0.18f);
-            bowl.transform.localRotation = Quaternion.Euler(20f, 0f, 0f);
-            bowl.transform.localScale = new Vector3(bowlSize.x, bowlSize.y, bowlSize.z * 1.6f);
+            // tilt forward 15° so we see the scoop curve from camera
+            bowl.transform.localRotation = Quaternion.Euler(105f, 0f, 0f); // 90° lay-flat + 15° forward tilt
+            bowl.transform.localPosition = new Vector3(0f, bodyHeight + bowlSize.y * 0.5f, bowlSize.z * 0.35f);
+            bowl.transform.localScale = new Vector3(bowlSize.x, bowlSize.z, bowlSize.y);
             Destroy(bowl.GetComponent<Collider>());
 
-            // BOWL RIM — thin flat ellipse around the rim (gold-ish darker = spoon edge)
-            var rim = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            // BOWL EDGE — a thin gold-ish ring around the rim to emphasize the spoon edge
+            var rim = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             rim.name = "Bowl Rim";
             rim.transform.SetParent(Visual, false);
-            rim.transform.localPosition = bowl.transform.localPosition + new Vector3(0f, 0.01f, 0f);
             rim.transform.localRotation = bowl.transform.localRotation;
-            rim.transform.localScale = new Vector3(bowlSize.x * 1.06f, bowlSize.y * 0.6f, bowlSize.z * 1.7f);
+            rim.transform.localPosition = bowl.transform.localPosition + new Vector3(0f, 0.005f, 0f);
+            rim.transform.localScale = new Vector3(bowlSize.x * 1.04f, bowlSize.z * 1.02f, bowlSize.y * 0.4f);
             Destroy(rim.GetComponent<Collider>());
 
-            // SCOOP INTERIOR — darker inset sphere creates the concave "scoop" illusion
-            var scoop = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            scoop.name = "Scoop Interior";
-            scoop.transform.SetParent(Visual, false);
-            scoop.transform.localPosition = bowl.transform.localPosition + Quaternion.Euler(20f, 0f, 0f) * new Vector3(0f, 0.025f, -0.02f);
-            scoop.transform.localRotation = bowl.transform.localRotation;
-            scoop.transform.localScale = new Vector3(bowlSize.x * 0.85f, bowlSize.y * 1.2f, bowlSize.z * 1.4f);
-            Destroy(scoop.GetComponent<Collider>());
-            scoop.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.32f, 0.32f, 0.36f), 0.4f, 0.7f); // darker matte metal
-
-            // TIP — small sphere at the very front of the bowl to round out the egg shape
-            var tip = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            tip.name = "Bowl Tip";
-            tip.transform.SetParent(Visual, false);
-            tip.transform.localPosition = bowl.transform.localPosition + Quaternion.Euler(20f, 0f, 0f) * new Vector3(0f, 0f, bowlSize.z * 0.85f);
-            tip.transform.localRotation = bowl.transform.localRotation;
-            tip.transform.localScale = new Vector3(bowlSize.x * 0.6f, bowlSize.y * 0.9f, bowlSize.z * 0.6f);
-            Destroy(tip.GetComponent<Collider>());
-
-            // FACE — eyes, eyebrows, mouth, optional monocle
+            // FACE — eyes/brows/mouth/monocle on the side of the bowl facing the camera
             if (addFace)
             {
                 var blackMat = MakeMat(new Color(0.02f, 0.02f, 0.02f), 0f, 0.1f);
                 var goldMat  = MakeMat(new Color(0.95f, 0.78f, 0.2f), 1f, 0.9f);
 
-                // face is on the BACK of the bowl now (handle-facing side) so the scoop tip is forward
-                Vector3 faceBase = bowl.transform.localPosition + Quaternion.Euler(20f, 0f, 0f) * new Vector3(0f, 0.02f, -bowlSize.z * 0.6f);
+                // face plane = on the underside of the tilted bowl, slightly back from center
+                Vector3 faceCenter = bowl.transform.localPosition + new Vector3(0f, -bowlSize.y * 0.45f, -bowlSize.z * 0.25f);
 
-                // EYES — pupils face BACKWARD (toward camera since face is on back side of bowl)
+                // EYES
                 for (int side = -1; side <= 1; side += 2)
                 {
-                    Vector3 ep = faceBase + new Vector3(side * bowlSize.x * 0.25f, 0.025f, 0f);
-
+                    Vector3 ep = faceCenter + new Vector3(side * bowlSize.x * 0.25f, 0f, 0f);
                     var sclera = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     sclera.name = "Eye White";
                     sclera.transform.SetParent(Visual, false);
                     sclera.transform.localPosition = ep;
-                    sclera.transform.localScale = Vector3.one * 0.085f;
+                    sclera.transform.localScale = Vector3.one * 0.095f;
                     Destroy(sclera.GetComponent<Collider>());
                     sclera.GetComponent<Renderer>().sharedMaterial = MakeMat(Color.white, 0f, 0.4f);
 
                     var pupil = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     pupil.transform.SetParent(sclera.transform, false);
-                    pupil.transform.localPosition = new Vector3(0f, 0f, -0.4f); // back-facing now
+                    pupil.transform.localPosition = new Vector3(0f, -0.45f, 0f);
                     pupil.transform.localScale = Vector3.one * 0.55f;
                     Destroy(pupil.GetComponent<Collider>());
                     pupil.GetComponent<Renderer>().sharedMaterial = blackMat;
                 }
 
-                // EYEBROWS — angled cubes give him an attitude
+                // EYEBROWS
                 for (int side = -1; side <= 1; side += 2)
                 {
                     var brow = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     brow.name = "Brow";
                     brow.transform.SetParent(Visual, false);
-                    brow.transform.localPosition = faceBase + new Vector3(side * bowlSize.x * 0.25f, 0.095f, 0f);
+                    brow.transform.localPosition = faceCenter + new Vector3(side * bowlSize.x * 0.25f, 0.07f, 0f);
                     brow.transform.localScale = new Vector3(0.14f, 0.03f, 0.03f);
-                    brow.transform.localRotation = Quaternion.Euler(0f, 0f, side * -18f); // angry-furrowed-inward
+                    brow.transform.localRotation = Quaternion.Euler(0f, 0f, side * -18f);
                     Destroy(brow.GetComponent<Collider>());
                     brow.GetComponent<Renderer>().sharedMaterial = blackMat;
                 }
 
-                // MOUTH — small dark slit
+                // MOUTH
                 var mouth = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 mouth.name = "Mouth";
                 mouth.transform.SetParent(Visual, false);
-                mouth.transform.localPosition = faceBase + new Vector3(0f, -0.08f, 0f);
-                mouth.transform.localScale = new Vector3(0.12f, 0.03f, 0.03f);
+                mouth.transform.localPosition = faceCenter + new Vector3(0f, -0.07f, 0f);
+                mouth.transform.localScale = new Vector3(0.12f, 0.025f, 0.025f);
                 Destroy(mouth.GetComponent<Collider>());
                 mouth.GetComponent<Renderer>().sharedMaterial = blackMat;
 
-                // MONOCLE — gold ring around right eye (Sir Spoonacci nobility flair)
+                // MONOCLE — gold ring + chain
                 if (addMonocle)
                 {
                     var ring = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     ring.name = "Monocle";
                     ring.transform.SetParent(Visual, false);
-                    ring.transform.localPosition = faceBase + new Vector3(bowlSize.x * 0.25f, 0.025f, 0f);
-                    ring.transform.localScale = new Vector3(0.14f, 0.14f, 0.03f);
+                    ring.transform.localPosition = faceCenter + new Vector3(bowlSize.x * 0.25f, 0f, 0f);
+                    ring.transform.localScale = new Vector3(0.15f, 0.15f, 0.03f);
                     Destroy(ring.GetComponent<Collider>());
                     ring.GetComponent<Renderer>().sharedMaterial = goldMat;
 
-                    // monocle chain (a tiny gold cube hanging down)
                     var chain = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     chain.transform.SetParent(ring.transform, false);
                     chain.transform.localPosition = new Vector3(0f, -0.5f, 0f);
@@ -179,10 +157,10 @@ namespace Spoonacci
                 }
             }
 
-            metalParts = new Renderer[] { handle.GetComponent<Renderer>(), neck.GetComponent<Renderer>(), bowl.GetComponent<Renderer>(), rim.GetComponent<Renderer>(), tip.GetComponent<Renderer>() };
+            metalParts = new Renderer[] { handle.GetComponent<Renderer>(), neck.GetComponent<Renderer>(), bowl.GetComponent<Renderer>(), rim.GetComponent<Renderer>() };
         }
 
-        public void ApplySkin(Color color, float met = 0.95f, float smooth = 0.85f)
+        public void ApplySkin(Color color, float met = 0.85f, float smooth = 0.7f)
         {
             skinColor = color;
             metallic = met;
