@@ -11,6 +11,7 @@ namespace Spoonacci
         {
             DampenAmbient();
             BuildRoom();
+            BuildCorridorBeyondBars();
             BuildSpoon();
             WireCamera();
             BuildHud();
@@ -19,7 +20,6 @@ namespace Spoonacci
 
         void DampenAmbient()
         {
-            // kill the bright outdoor directional light + flat ambient so the dungeon stays moody.
             foreach (var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
                 if (l.type == LightType.Directional) l.intensity = 0.05f;
@@ -40,9 +40,7 @@ namespace Spoonacci
 
             // back wall
             BuildWall(new Vector3(0f, 2f, 4f), new Vector3(10f, 4f, 0.3f));
-            // left wall
             BuildWall(new Vector3(-5f, 2f, 0f), new Vector3(0.3f, 4f, 8f));
-            // right wall
             BuildWall(new Vector3(5f, 2f, 0f), new Vector3(0.3f, 4f, 8f));
 
             // ceiling
@@ -52,31 +50,42 @@ namespace Spoonacci
             ceil.transform.localScale = new Vector3(10f, 0.2f, 8f);
             ceil.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.12f, 0.12f, 0.14f), 0f, 0.1f);
 
-            // prison bars (front, 6 vertical cylinders, gap in middle for player to face them)
+            // prison bars (front, vertical cylinders, NO gap — closed cell)
             for (int i = -4; i <= 4; i++)
             {
-                if (i == 0) continue;
                 var bar = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 bar.name = "Bar " + i;
                 bar.transform.position = new Vector3(i * 0.5f, 2f, -4f);
                 bar.transform.localScale = new Vector3(0.1f, 2f, 0.1f);
                 bar.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.35f, 0.35f, 0.4f), 0.85f, 0.4f);
             }
-            // horizontal bar
+            // crossbeam
             var hbar = GameObject.CreatePrimitive(PrimitiveType.Cube);
             hbar.name = "Bar Crossbeam";
             hbar.transform.position = new Vector3(0f, 3.5f, -4f);
             hbar.transform.localScale = new Vector3(10f, 0.15f, 0.15f);
             hbar.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.35f, 0.35f, 0.4f), 0.85f, 0.4f);
 
-            // a hay pile in the corner
+            // hay pile in the corner
             var hay = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             hay.name = "Hay Pile";
             hay.transform.position = new Vector3(-3.5f, 0.3f, 2.8f);
             hay.transform.localScale = new Vector3(1.6f, 0.4f, 1.6f);
             hay.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.75f, 0.65f, 0.3f), 0f, 0.2f);
 
-            // single dim torch (point light)
+            // discarded cutlery scatter for vibe
+            for (int i = 0; i < 6; i++)
+            {
+                var sp = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                sp.name = "Discarded Spoon";
+                sp.transform.position = new Vector3(Random.Range(-4f, 4f), 0.18f, Random.Range(-3f, 3.5f));
+                sp.transform.rotation = Quaternion.Euler(90f, Random.Range(0f, 360f), 0f);
+                sp.transform.localScale = new Vector3(0.15f, 0.4f, 0.15f);
+                Destroy(sp.GetComponent<Collider>());
+                sp.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.5f, 0.5f, 0.55f), 0.6f, 0.4f);
+            }
+
+            // torch
             var torch = new GameObject("Cell Torch");
             torch.transform.position = new Vector3(0f, 3f, 3.5f);
             var lt = torch.AddComponent<Light>();
@@ -84,6 +93,54 @@ namespace Spoonacci
             lt.color = new Color(1f, 0.55f, 0.25f);
             lt.intensity = 8f;
             lt.range = 12f;
+
+            // a small torch on the corridor side as well
+            var torch2 = new GameObject("Corridor Torch");
+            torch2.transform.position = new Vector3(0f, 3f, -7f);
+            var lt2 = torch2.AddComponent<Light>();
+            lt2.type = LightType.Point;
+            lt2.color = new Color(1f, 0.55f, 0.25f);
+            lt2.intensity = 6f;
+            lt2.range = 10f;
+        }
+
+        // Beyond the bars: a guard corridor with floor (no more abyss),
+        // walls forming a dead-end ('locked door' sets up next mission).
+        void BuildCorridorBeyondBars()
+        {
+            // corridor floor
+            var floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            floor.name = "Corridor Floor";
+            floor.transform.position = new Vector3(0f, 0f, -8f);
+            floor.transform.localScale = new Vector3(10f, 0.2f, 8f);
+            floor.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.16f, 0.16f, 0.18f), 0.1f, 0.2f);
+
+            // corridor side walls
+            BuildWall(new Vector3(-5f, 2f, -8f), new Vector3(0.3f, 4f, 8f));
+            BuildWall(new Vector3(5f, 2f, -8f), new Vector3(0.3f, 4f, 8f));
+
+            // corridor end wall (the "locked door")
+            BuildWall(new Vector3(0f, 2f, -12f), new Vector3(10f, 4f, 0.3f));
+            var door = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            door.name = "Locked Door";
+            door.transform.position = new Vector3(0f, 1.5f, -11.85f);
+            door.transform.localScale = new Vector3(1.6f, 3f, 0.1f);
+            door.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.3f, 0.18f, 0.1f), 0f, 0.3f);
+
+            // corridor ceiling so it doesn't feel open
+            var ceil = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            ceil.name = "Corridor Ceiling";
+            ceil.transform.position = new Vector3(0f, 4f, -8f);
+            ceil.transform.localScale = new Vector3(10f, 0.2f, 8f);
+            ceil.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.1f, 0.1f, 0.12f), 0f, 0.1f);
+
+            // door sign — invisible label that floats
+            var sign = new GameObject("DoorSign");
+            sign.transform.position = door.transform.position + Vector3.up * 1.6f;
+            var label = sign.AddComponent<WorldLabel>();
+            label.text = "🔒 LOCKED — escape via the dig (tunnel quest, coming soon)";
+            label.color = new Color(1f, 0.8f, 0.5f);
+            label.fontSize = 16;
         }
 
         void BuildWall(Vector3 pos, Vector3 scale)
@@ -98,11 +155,13 @@ namespace Spoonacci
         void BuildSpoon()
         {
             spoon = new GameObject("Sir Spoonacci");
-            spoon.transform.position = new Vector3(0f, 1f, -2.5f);
+            spoon.transform.position = new Vector3(0f, 0.5f, -2.5f);
             spoon.AddComponent<Rigidbody>();
             spoon.AddComponent<CapsuleCollider>();
             spoon.AddComponent<ProceduralSpoonBuilder>();
+            spoon.AddComponent<SpoonAnimator>();
             spoon.AddComponent<SpoonController>();
+            // No BonkAttack in cell — nobody to bonk
         }
 
         void WireCamera()

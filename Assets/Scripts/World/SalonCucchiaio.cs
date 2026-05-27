@@ -3,34 +3,36 @@ using UnityEngine.InputSystem;
 
 namespace Spoonacci
 {
-    // Trigger zone. Step inside, press E, spoon cycles to the next skin.
-    // The salon is themed as a posh Italian day spa for cutlery.
-    [RequireComponent(typeof(SphereCollider))]
+    // Trigger zone in front of the salon counter.
+    // - Spoon enters → tooltip auto-pops (no key needed)
+    // - Press E → cycle skin
+    // - Front-sign text rendered by parent WorldLabel
     public class SalonCucchiaio : MonoBehaviour
     {
-        public float interactRadius = 2.5f;
-        public KeyValueText prompt; // optional UI hook
+        public KeyValueText prompt;       // HUD ref
+        public string frontSignText = "SALON CUCCHIAIO";
+
         int currentSkin = 0;
         bool playerInside;
         ProceduralSpoonBuilder cachedBuilder;
-
-        void Awake()
-        {
-            var col = GetComponent<SphereCollider>();
-            col.isTrigger = true;
-            col.radius = interactRadius;
-        }
+        SpoonAnimator cachedAnim;
 
         void OnTriggerEnter(Collider other)
         {
             var b = other.GetComponent<ProceduralSpoonBuilder>();
-            if (b != null) { cachedBuilder = b; playerInside = true; ShowPrompt(true); }
+            if (b != null)
+            {
+                cachedBuilder = b;
+                cachedAnim = other.GetComponent<SpoonAnimator>();
+                playerInside = true;
+                ShowEntryTooltip();
+            }
         }
 
         void OnTriggerExit(Collider other)
         {
             var b = other.GetComponent<ProceduralSpoonBuilder>();
-            if (b != null) { playerInside = false; ShowPrompt(false); }
+            if (b != null) { playerInside = false; if (prompt != null) prompt.Set(""); }
         }
 
         void Update()
@@ -40,22 +42,23 @@ namespace Spoonacci
             if (kb != null && kb.eKey.wasPressedThisFrame) Cycle();
         }
 
+        void ShowEntryTooltip()
+        {
+            if (prompt == null) return;
+            string current = SpoonSkinLibrary.All[currentSkin].name;
+            prompt.Set("✨ SALON CUCCHIAIO ✨   Now wearing: " + current + "   ·   Press E for next skin");
+        }
+
         void Cycle()
         {
             currentSkin = (currentSkin + 1) % SpoonSkinLibrary.All.Count;
             var s = SpoonSkinLibrary.All[currentSkin];
             cachedBuilder.ApplySkin(s.color, s.metallic, s.smoothness);
+            if (cachedAnim != null) cachedAnim.TriggerLandSquash();
             Debug.Log("[Salon Cucchiaio] Madame, you look fabulous as: " + s.name);
-            if (prompt != null) prompt.Set("Skin: " + s.name + "  (press E for next)");
-        }
-
-        void ShowPrompt(bool show)
-        {
-            if (prompt == null) return;
-            prompt.Set(show ? "Salon Cucchiaio — press E to change skin" : "");
+            if (prompt != null) prompt.Set("✨ Now wearing: " + s.name + "   ·   Press E for next");
         }
     }
 
-    // Tiny abstraction so script doesn't depend on a specific UI lib.
     public interface KeyValueText { void Set(string s); }
 }
