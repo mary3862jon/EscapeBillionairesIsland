@@ -8,5 +8,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/CutleryChamber.unity
+    guid: 0360ca7fc08642f9b5a611e03e4b6927
+  - enabled: 1
+    path: Assets/Scenes/SharkFusion.unity
+    guid: ecceeb8de7e84798a94da0b09909236d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

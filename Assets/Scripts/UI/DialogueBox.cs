@@ -3,10 +3,9 @@ using UnityEngine;
 
 namespace Spoonacci
 {
-    // Bottom-of-screen dialogue panel with typewriter reveal. OnGUI = zero asset wiring.
     public class DialogueBox : MonoBehaviour
     {
-        public float charsPerSecond = 40f;
+        public float charsPerSecond = 50f;
         string speaker = "";
         string fullLine = "";
         string shown = "";
@@ -60,21 +59,21 @@ namespace Spoonacci
 
             if (nameStyle == null)
             {
-                nameStyle = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
-                bodyStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, wordWrap = true, normal = { textColor = Color.white } };
+                nameStyle = new GUIStyle(GUI.skin.label) { fontSize = 30, fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
+                bodyStyle = new GUIStyle(GUI.skin.label) { fontSize = 26, wordWrap = true, normal = { textColor = Color.white } };
             }
 
-            float w = Mathf.Min(Screen.width * 0.8f, 900f);
-            float h = 140f;
+            float w = Mathf.Min(Screen.width * 0.88f, 1300f);
+            float h = 220f;
             float x = (Screen.width - w) * 0.5f;
-            float y = Screen.height - h - 24f;
+            float y = Screen.height - h - 30f;
 
-            GUI.color = new Color(0f, 0f, 0f, 0.78f);
+            GUI.color = new Color(0f, 0f, 0f, 0.85f);
             GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
             GUI.color = Color.white;
 
-            GUI.Label(new Rect(x + 16f, y + 8f, w - 32f, 30f), speaker, nameStyle);
-            GUI.Label(new Rect(x + 16f, y + 40f, w - 32f, h - 50f), shown, bodyStyle);
+            GUI.Label(new Rect(x + 24f, y + 14f, w - 48f, 40f), speaker, nameStyle);
+            GUI.Label(new Rect(x + 24f, y + 60f, w - 48f, h - 70f), shown, bodyStyle);
         }
     }
 }

@@ -2,8 +2,7 @@ using UnityEngine;
 
 namespace Spoonacci
 {
-    // Bottom-center prompt text via legacy OnGUI (no TMP setup needed).
-    // Keeps things noob-proof — no asset wiring required.
+    // Bottom-center prompt text. Big fat readable.
     public class HudText : MonoBehaviour, KeyValueText
     {
         string currentText = "";
@@ -19,21 +18,28 @@ namespace Spoonacci
             {
                 style = new GUIStyle(GUI.skin.label)
                 {
-                    fontSize = 22,
+                    fontSize = 32,
+                    fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.MiddleCenter,
                     normal = { textColor = Color.white }
                 };
+                style.wordWrap = true;
             }
 
-            float w = Screen.width * 0.8f;
-            float h = 40f;
+            float w = Mathf.Min(Screen.width * 0.92f, 1400f);
+            float h = 90f;
             float x = (Screen.width - w) * 0.5f;
-            float y = Screen.height - 80f;
+            float y = Screen.height - 130f;
 
-            // shadow
+            // dark panel
+            var prev = GUI.color;
+            GUI.color = new Color(0f, 0f, 0f, 0.6f);
+            GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
+            GUI.color = prev;
+
             var shadow = new GUIStyle(style);
             shadow.normal.textColor = Color.black;
-            GUI.Label(new Rect(x + 2, y + 2, w, h), currentText, shadow);
+            GUI.Label(new Rect(x + 3, y + 3, w, h), currentText, shadow);
             GUI.Label(new Rect(x, y, w, h), currentText, style);
         }
     }

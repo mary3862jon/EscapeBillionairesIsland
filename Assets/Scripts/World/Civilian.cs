@@ -19,7 +19,7 @@ namespace Spoonacci
         public bool IsViolator { get; private set; }
         public bool HasSpoonMark { get; private set; }
         public float OutrageEndsAt { get; private set; }
-        public Transform HeadTransform { get; private set; }
+        public Transform HeadTransform { get; protected set; }
         public Vector3 KnockbackTarget; // populated by bonk
 
         Vector3 targetPoint;
@@ -28,14 +28,14 @@ namespace Spoonacci
         SpoonMarkDecal mark;
         float stunTimer;
 
-        void Awake()
+        protected virtual void Awake()
         {
             patrolCenter = transform.position;
             BuildBody();
             PickNewPoint();
         }
 
-        void BuildBody()
+        protected virtual void BuildBody()
         {
             // legs (cylinder)
             var legs = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -104,7 +104,7 @@ namespace Spoonacci
             }
         }
 
-        void Update()
+        protected virtual void Update()
         {
             if (IsViolator && Time.time > OutrageEndsAt)
             {

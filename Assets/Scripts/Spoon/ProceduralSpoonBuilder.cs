@@ -17,6 +17,7 @@ namespace Spoonacci
         public float bodyRadius = 0.08f;
         public Vector3 bowlSize = new Vector3(0.42f, 0.16f, 0.55f); // x,y,z
         public bool addFace = true;
+        public bool addMonocle = true;
 
         Renderer[] metalParts;
         Material runtimeMat;
@@ -84,22 +85,77 @@ namespace Spoonacci
             rim.transform.localScale = bowlSize * 1.05f;
             Destroy(rim.GetComponent<Collider>());
 
-            // FACE — two tiny eyes (matte black) on the front of the bowl
+            // FACE — eyes, eyebrows, mouth, optional monocle
             if (addFace)
             {
-                Vector3 eyeBasePos = bowl.transform.localPosition + Quaternion.Euler(15f, 0f, 0f) * new Vector3(0f, 0.025f, bowlSize.z * 0.42f);
-                var eyeL = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                eyeL.name = "Eye L";
-                eyeL.transform.SetParent(Visual, false);
-                eyeL.transform.localPosition = eyeBasePos + new Vector3(-bowlSize.x * 0.25f, 0f, 0f);
-                eyeL.transform.localScale = Vector3.one * 0.06f;
-                Destroy(eyeL.GetComponent<Collider>());
-                eyeL.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.02f, 0.02f, 0.02f), 0f, 0.1f);
+                var blackMat = MakeMat(new Color(0.02f, 0.02f, 0.02f), 0f, 0.1f);
+                var goldMat  = MakeMat(new Color(0.95f, 0.78f, 0.2f), 1f, 0.9f);
 
-                var eyeR = Instantiate(eyeL, Visual);
-                eyeR.name = "Eye R";
-                eyeR.transform.localPosition = eyeBasePos + new Vector3(bowlSize.x * 0.25f, 0f, 0f);
-                eyeR.transform.localScale = Vector3.one * 0.06f;
+                Vector3 faceBase = bowl.transform.localPosition + Quaternion.Euler(15f, 0f, 0f) * new Vector3(0f, 0f, bowlSize.z * 0.42f);
+
+                // EYES (white sphere + black pupil)
+                for (int side = -1; side <= 1; side += 2)
+                {
+                    Vector3 ep = faceBase + new Vector3(side * bowlSize.x * 0.25f, 0.025f, 0f);
+
+                    var sclera = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    sclera.name = "Eye White";
+                    sclera.transform.SetParent(Visual, false);
+                    sclera.transform.localPosition = ep;
+                    sclera.transform.localScale = Vector3.one * 0.085f;
+                    Destroy(sclera.GetComponent<Collider>());
+                    sclera.GetComponent<Renderer>().sharedMaterial = MakeMat(Color.white, 0f, 0.4f);
+
+                    var pupil = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    pupil.transform.SetParent(sclera.transform, false);
+                    pupil.transform.localPosition = new Vector3(0f, 0f, 0.4f);
+                    pupil.transform.localScale = Vector3.one * 0.55f;
+                    Destroy(pupil.GetComponent<Collider>());
+                    pupil.GetComponent<Renderer>().sharedMaterial = blackMat;
+                }
+
+                // EYEBROWS — angled cubes give him an attitude
+                for (int side = -1; side <= 1; side += 2)
+                {
+                    var brow = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    brow.name = "Brow";
+                    brow.transform.SetParent(Visual, false);
+                    brow.transform.localPosition = faceBase + new Vector3(side * bowlSize.x * 0.25f, 0.095f, 0f);
+                    brow.transform.localScale = new Vector3(0.14f, 0.03f, 0.03f);
+                    brow.transform.localRotation = Quaternion.Euler(0f, 0f, side * -18f); // angry-furrowed-inward
+                    Destroy(brow.GetComponent<Collider>());
+                    brow.GetComponent<Renderer>().sharedMaterial = blackMat;
+                }
+
+                // MOUTH — small dark slit
+                var mouth = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                mouth.name = "Mouth";
+                mouth.transform.SetParent(Visual, false);
+                mouth.transform.localPosition = faceBase + new Vector3(0f, -0.08f, 0f);
+                mouth.transform.localScale = new Vector3(0.12f, 0.03f, 0.03f);
+                Destroy(mouth.GetComponent<Collider>());
+                mouth.GetComponent<Renderer>().sharedMaterial = blackMat;
+
+                // MONOCLE — gold ring around right eye (Sir Spoonacci nobility flair)
+                if (addMonocle)
+                {
+                    var ring = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    ring.name = "Monocle";
+                    ring.transform.SetParent(Visual, false);
+                    ring.transform.localPosition = faceBase + new Vector3(bowlSize.x * 0.25f, 0.025f, 0f);
+                    ring.transform.localScale = new Vector3(0.14f, 0.14f, 0.03f);
+                    Destroy(ring.GetComponent<Collider>());
+                    ring.GetComponent<Renderer>().sharedMaterial = goldMat;
+
+                    // monocle chain (a tiny gold cube hanging down)
+                    var chain = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    chain.transform.SetParent(ring.transform, false);
+                    chain.transform.localPosition = new Vector3(0f, -0.5f, 0f);
+                    chain.transform.localScale = new Vector3(0.06f, 1.5f, 0.06f);
+                    chain.transform.localRotation = Quaternion.Euler(0f, 0f, 15f);
+                    Destroy(chain.GetComponent<Collider>());
+                    chain.GetComponent<Renderer>().sharedMaterial = goldMat;
+                }
             }
 
             metalParts = new Renderer[] { handle.GetComponent<Renderer>(), neck.GetComponent<Renderer>(), bowl.GetComponent<Renderer>(), rim.GetComponent<Renderer>() };

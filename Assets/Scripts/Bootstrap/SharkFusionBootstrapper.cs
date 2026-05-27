@@ -3,17 +3,19 @@ using UnityEngine;
 
 namespace Spoonacci
 {
-    // Act 3 scene. Beach → enter water → fusion cutscene → control shark.
+    // Act 3 — Beach → enter water → fusion cutscene → control shark.
     public class SharkFusionBootstrapper : MonoBehaviour
     {
         GameObject spoon;
         GameObject shark;
         ProceduralShark sharkComp;
         HudText hud;
+        ObjectiveTracker tracker;
         bool fused;
 
         void Awake()
         {
+            SoundFx.Instance.ToString();
             DimAmbient();
             BuildGround();
             BuildOcean();
@@ -22,6 +24,7 @@ namespace Spoonacci
             BuildShark();
             WireCamera();
             BuildHud();
+            BuildObjectives();
         }
 
         void DimAmbient()
@@ -34,11 +37,10 @@ namespace Spoonacci
 
         void BuildGround()
         {
-            // tropical beach narrows to shoreline at z=0
             var sand = GameObject.CreatePrimitive(PrimitiveType.Cube);
             sand.name = "Beach";
-            sand.transform.position = new Vector3(0f, -0.05f, 15f);
-            sand.transform.localScale = new Vector3(60f, 0.2f, 30f);
+            sand.transform.position = new Vector3(0f, -0.05f, 18f);
+            sand.transform.localScale = new Vector3(80f, 0.2f, 40f);
             sand.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.97f, 0.88f, 0.62f), 0f, 0.18f);
         }
 
@@ -46,38 +48,47 @@ namespace Spoonacci
         {
             var ocean = GameObject.CreatePrimitive(PrimitiveType.Cube);
             ocean.name = "Ocean";
-            ocean.transform.position = new Vector3(0f, -1.0f, -20f);
-            ocean.transform.localScale = new Vector3(120f, 2.1f, 60f);
+            ocean.transform.position = new Vector3(0f, -1.0f, -22f);
+            ocean.transform.localScale = new Vector3(160f, 2.1f, 80f);
             ocean.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.1f, 0.4f, 0.65f), 0.2f, 0.95f);
             Destroy(ocean.GetComponent<Collider>());
 
-            // surface trigger to detect spoon entering water
             var trig = new GameObject("Water Edge Trigger");
-            trig.transform.position = new Vector3(0f, 0.2f, -2f);
+            trig.transform.position = new Vector3(0f, 0.3f, -3f);
             var box = trig.AddComponent<BoxCollider>();
             box.isTrigger = true;
-            box.size = new Vector3(80f, 4f, 4f);
+            box.size = new Vector3(120f, 5f, 6f);
             trig.AddComponent<WaterEdgeTrigger>().bootstrap = this;
         }
 
         void BuildPalmsAndShack()
         {
-            // a few palms behind for scene depth
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
-                var pos = new Vector3(Random.Range(-22f, 22f), 0f, Random.Range(8f, 22f));
+                var pos = new Vector3(Random.Range(-30f, 30f), 0f, Random.Range(8f, 30f));
                 BuildPalm(pos);
             }
             // a tiki shack
             var shack = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            shack.name = "Beach Shack";
-            shack.transform.position = new Vector3(-12f, 1.4f, 12f);
-            shack.transform.localScale = new Vector3(3f, 2.8f, 3f);
+            shack.transform.position = new Vector3(-12f, 1.4f, 14f);
+            shack.transform.localScale = new Vector3(3.5f, 2.8f, 3.5f);
             shack.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.5f, 0.32f, 0.18f), 0f, 0.3f);
             var roof = GameObject.CreatePrimitive(PrimitiveType.Cube);
             roof.transform.position = shack.transform.position + Vector3.up * 1.6f;
-            roof.transform.localScale = new Vector3(3.6f, 0.2f, 3.6f);
+            roof.transform.localScale = new Vector3(4f, 0.2f, 4f);
             roof.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.55f, 0.4f, 0.2f), 0f, 0.3f);
+
+            // a couple of beach civilians for life
+            for (int i = 0; i < 4; i++)
+            {
+                var c = new GameObject("Beachgoer " + i);
+                c.transform.position = new Vector3(Random.Range(-8f, 8f), 0f, Random.Range(6f, 15f));
+                var civ = c.AddComponent<Civilian>();
+                civ.mode = Civilian.Mode.Wander;
+                civ.shirtColor = new Color(Random.value, Random.value, Random.value);
+                civ.pantsColor = new Color(Random.value, Random.value, Random.value);
+                civ.patrolRadius = 6f;
+            }
         }
 
         void BuildPalm(Vector3 pos)
@@ -101,7 +112,7 @@ namespace Spoonacci
         void BuildSpoon()
         {
             spoon = new GameObject("Sir Spoonacci");
-            spoon.transform.position = new Vector3(0f, 0.5f, 10f);
+            spoon.transform.position = new Vector3(0f, 0.5f, 12f);
             spoon.AddComponent<Rigidbody>();
             spoon.AddComponent<CapsuleCollider>();
             spoon.AddComponent<ProceduralSpoonBuilder>();
@@ -112,7 +123,8 @@ namespace Spoonacci
         void BuildShark()
         {
             shark = new GameObject("Confused Shark");
-            shark.transform.position = new Vector3(8f, -0.4f, -8f);
+            // Y=0 so dorsal fin sticks above water
+            shark.transform.position = new Vector3(15f, 0f, -10f);
             shark.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
             sharkComp = shark.AddComponent<ProceduralShark>();
         }
@@ -128,21 +140,32 @@ namespace Spoonacci
                 camGo.AddComponent<AudioListener>();
             }
             cam.backgroundColor = new Color(0.55f, 0.78f, 0.95f);
+            cam.fieldOfView = 70f;
             var follower = cam.GetComponent<ThirdPersonCamera>() ?? cam.gameObject.AddComponent<ThirdPersonCamera>();
             follower.target = spoon.transform;
+            follower.distance = 9f;
+            follower.height = 5.2f;
         }
 
         void BuildHud()
         {
             var hudGo = new GameObject("HUD");
             hud = hudGo.AddComponent<HudText>();
-            hud.Set("ACT 3 — Walk into the ocean to trigger Shark Fusion.");
+            hud.Set("ACT 3 — Walk into the ocean. A shark awaits.");
             Invoke(nameof(ClearHud), 8f);
         }
 
         void ClearHud() { if (hud != null) hud.Set(""); }
 
-        // Called by trigger
+        void BuildObjectives()
+        {
+            var trGo = new GameObject("[ObjectiveTracker]");
+            tracker = trGo.AddComponent<ObjectiveTracker>();
+            tracker.Add("Walk into the ocean (south)", () => fused);
+            tracker.Add("Fuse with the shark (auto cutscene)", () => fused);
+            tracker.Add("Steer the Spoon-Shark with WASD (Space = dash)", () => fused);
+        }
+
         public void TriggerFusion()
         {
             if (fused) return;
@@ -153,47 +176,47 @@ namespace Spoonacci
         IEnumerator FusionSequence()
         {
             hud.Set("...A shark approaches...");
+            SoundFx.Instance.Swoosh();
 
-            // disable player control during cinematic
             var sc = spoon.GetComponent<SpoonController>();
             if (sc != null) sc.enabled = false;
             var rb = spoon.GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = true;
 
-            // dramatic camera swap to shark
+            // pan camera dramatically
             var cam = Camera.main;
             var follow = cam != null ? cam.GetComponent<ThirdPersonCamera>() : null;
-            if (follow != null)
-            {
-                follow.target = shark.transform;
-                follow.distance = 8f;
-            }
-            yield return new WaitForSeconds(1.2f);
+            if (follow != null) { follow.distance = 14f; follow.height = 8f; }
 
-            // shark approaches the spoon
+            yield return new WaitForSeconds(0.8f);
+
+            // shark sprints to the spoon
             float t = 0f;
             Vector3 start = shark.transform.position;
-            Vector3 end = spoon.transform.position + Vector3.up * 0.2f;
+            Vector3 end = spoon.transform.position + Vector3.down * 0.3f - shark.transform.forward * 1.2f;
             while (t < 1f)
             {
-                t += Time.deltaTime * 0.9f;
-                shark.transform.position = Vector3.Lerp(start, end, t);
-                shark.transform.LookAt(spoon.transform.position);
+                t += Time.deltaTime * 1.4f;
+                shark.transform.position = Vector3.Lerp(start, end, Mathf.SmoothStep(0f, 1f, t));
+                Vector3 look = spoon.transform.position - shark.transform.position; look.y = 0f;
+                if (look.sqrMagnitude > 0.01f) shark.transform.rotation = Quaternion.LookRotation(look, Vector3.up);
                 yield return null;
             }
 
-            // CHOMP — parent the spoon to shark's snout
+            // CHOMP — attach spoon to snout
             hud.Set("CHOMP!");
+            SoundFx.Instance.Bonk();
             spoon.transform.SetParent(sharkComp.SnoutPivot, true);
             spoon.transform.localPosition = Vector3.zero;
-            spoon.transform.localRotation = Quaternion.Euler(-25f, 0f, 0f); // lodged in like a horn
+            spoon.transform.localRotation = Quaternion.Euler(-25f, 0f, 0f); // unicorn-horn angle
 
             yield return new WaitForSeconds(0.6f);
 
             // hand control to the shark
             shark.AddComponent<SharkController>();
-            if (follow != null) follow.target = shark.transform;
-            hud.Set("SPOON-SHARK MODE — WASD swim · Space dash · ride toward the island for chaos");
+            if (follow != null) { follow.target = shark.transform; follow.distance = 11f; follow.height = 5.5f; }
+            hud.Set("🦈 SPOON-SHARK MODE — WASD swim · SPACE dash · roam the ocean");
+            SoundFx.Instance.LevelUp();
             Invoke(nameof(ClearHud), 8f);
         }
 

@@ -1,60 +1,75 @@
 # How to Play (Dev Build)
 
-> Updated after Step A. Pull latest → open Unity → press **Play**. No clicking around the Inspector required.
+> v0.4 — major polish, bug fixes, mission tracker, Police Mode, Daze Birds, Pool, Shady Alley, Magnus Tusk.
 
-## What works right now (v0.3 — D/E/F/G + bug fixes)
+## How to play (every time)
 
-### Sir Spoonacci is now UPRIGHT
-Handle = body. Bowl = head. Two black eyes on the bowl front. Procedural waddle while walking, hop-squash on landing, idle sway.
-
-### Scene 1 — Island beach (`Assets/Scenes/SampleScene.unity`)
-- Beach + ocean + ring of palm trees + coconuts
-- **Salon Cucchiaio** — huge pink building with sign, front counter, gold trim, salon attendant NPC, 2 flag poles. Walk into the trigger zone → tooltip auto-pops → press **E** to cycle 12 skins
-- **Pool deck** with cyan water + pink flamingo float
-- **Tiki Bar** with bottles + bartender NPC
-- **Deck chairs** with 4 sunbathers under umbrellas
-- **6 walker NPCs** wandering + 2 security guards
-- **VIOLATOR SYSTEM** — every ~7s a random NPC is flagged as a violator (red pulsing arrow above head + crime label e.g. "PEEING IN POOL")
-  - When a violator is within 18m → bottom HUD shows ⚠ VIOLATOR DETECTED — Press F to BONK!
-  - Press **F** → Spoonacci LUNGES at them, slams head, slow-mo punch lands, victim flies back with a **persistent red Spoon Mark** on their forehead
-  - Chain bonks within 3s build a **COMBO** counter (top-left)
-
-### Scene 2 — Cutlery Chamber (`Assets/Scenes/CutleryChamber.unity`)
-- Dark cell + corridor extension beyond the bars (abyss bug fixed)
-- The bars are now sealed (no escape gap) — corridor ends at a **locked door** with floating sign
-- Cell Crew NPCs unchanged — walk close, press **E** for dialogue
-
-### Scene 3 — Shark Fusion (`Assets/Scenes/SharkFusion.unity`)
-- Big beach, deep ocean, 5 palms, beach shack
-- Walk into the water → triggers fusion cutscene
-- Confused Shark approaches, CHOMP, Spoonacci lodges in snout like a unicorn horn
-- Control transfers to the **SPOON-SHARK** — WASD swim · Space dash · cruise the ocean
+1. **GitHub Desktop → Fetch → Pull**.
+2. Switch to **Unity** — wait for the bottom-right re-import bar to finish.
+3. Open one of the 3 scenes from `Assets/Scenes/` (double-click in Project panel):
+   - `SampleScene.unity` — open island sandbox (the meat)
+   - `CutleryChamber.unity` — Act 2 prison-break
+   - `SharkFusion.unity` — Act 3 shark fusion
+4. Hit **Play** (▶ at top-center). Everything spawns automatically — no Inspector setup.
 
 ## Controls
 
-| Key | On foot | Salon | As Spoon-Shark |
-|---|---|---|---|
-| `W A S D` | Walk | — | Swim |
-| `Space` | Hop | — | Dash boost |
-| `Right-mouse drag` | Orbit camera | — | Orbit camera |
-| `E` | Interact | Cycle skin | — |
-| `F` | **BONK** lock-on violator | — | — |
-
-## Controls
-
-| Key | Action |
+| Key | What it does |
 |---|---|
 | `W A S D` / arrows | Walk (camera-relative) |
 | `Space` | Hop |
-| `Right-mouse drag` | Rotate camera |
-| `E` | Interact (Salon, NPCs later) |
+| `F` | **Auto-Bonk** — lock onto nearest red-arrow violator, lunge & bonk |
+| `Q` | **Manual Bonk** — swing at whoever's in front (no lock-on) |
+| `E` | Interact (NPCs / Salon / Loose Stone) |
+| `P` | Toggle **Police Mode** (cop badge + flashing lights, drug dealers become auto-targets) |
+| `Right-mouse drag` | Orbit camera |
+| `Mouse wheel` | Zoom in/out |
 
-## What to expect visually
+## Scene 1 — Island Sandbox (`SampleScene.unity`)
 
-Ugly. By design. Everything is procedurally built from cubes / spheres / cylinders — no art assets yet. Greybox phase. We replace primitives with real models once gameplay is fun.
+You spawn as **Sir Spoonacci** (upright, eyes + brows + monocle + mouth) on a 200×200 beach.
 
-## If nothing happens when you press Play
+**Highlights:**
+- **Salon Cucchiaio** with front counter, gold trim, attendant Coiffeur spoon (bow on head), human receptionist, big neon sign, flag posts. Walk into the trigger → instant tooltip → press **E** to cycle 12 skins.
+- **Skin Kiosk** (next to Salon) — 12 mini-spoons on shelves so you can see what's available.
+- **Infinity Pool** with deck + swimmers + poolside loungers.
+- **Tiki Bar** with counter, bottles, bartender, drunk guests.
+- **5 Deck Chairs** with sunbathers + tropical umbrellas.
+- **Billionaire Mansion** patio with **Magnus Tusk** (suit, sunglasses, gold tie, perma-violator "BEING A BILLIONAIRE").
+- **Shady Alley** with flickering lamp + 3 Shady Characters (drug dealers — invisible in normal mode, become auto-violators in Police Mode).
+- **18 random walkers + 4 security guards** scattered.
+- **Violation Spawner** — every 5s a random NPC gets a pulsing red arrow + crime label ("PEEING IN POOL", "INSIDER TRADING", "BAD TIPPING" etc).
+- **Top-right objective tracker** with **Troll Tokens** counter.
 
-1. Console shows red errors? Screenshot it and send.
-2. Spoon falls forever? Likely the ground didn't spawn — send Console output.
-3. Nothing on screen at all? Make sure the loaded scene is `Assets/Scenes/SampleScene.unity` (double-click it in the Project panel).
+**Objectives:**
+1. Bonk 5 violators (10 Troll Tokens each)
+2. Visit Salon Cucchiaio
+3. Bonk Magnus Tusk
+4. Enter Police Mode (P)
+5. Earn 100 Troll Tokens
+
+**When you bonk someone:** persistent **red Spoon Mark** on forehead + **3 cartoon birds** circle their head for 4s (Daze Birds VFX) + procedural bonk sound + slow-mo + combo counter.
+
+## Scene 2 — Cutlery Chamber (`CutleryChamber.unity`)
+
+Dark torch-lit cell. Talk to all 5 Cell Crew (Big Bjørn = hardhat, Plastic Pete = toothpick, Goldie = crown, Tasting Tina = bow, The Ladle = monocle) by walking close + pressing E.
+
+When all 5 talked, the **Loose Stone** in the corner starts glowing orange. Press **E** on it → 3-second dig animation → automatically loads **SharkFusion** scene.
+
+Objective tracker shows progress.
+
+## Scene 3 — Shark Fusion (`SharkFusion.unity`)
+
+Beach with palms + tiki shack + beachgoers. **Walk into the ocean** (south) → dramatic shark approach → **CHOMP** → Spoonacci lodges in shark snout like a unicorn horn → **control transfers to the Spoon-Shark**.
+
+Shark now has: huge dorsal fin (above water), teeth, white eyes with pupils, gill stripes, big tail wagging, white belly, BIG visibly shark.
+
+**WASD** = swim, **Space** = dash boost. Cruise the ocean.
+
+## If something errors
+
+Paste the **Console** errors. Common ones (and fixes I already applied):
+- Procedural shark looked like a featureless submarine → now has dorsal fin, teeth, eyes, fins, tail
+- Cell spoons lay flat → now upright like player
+- Font too small → all HUD/dialogue now 26-32pt with shadows
+- Default camera too low → now angled higher with wider FOV
