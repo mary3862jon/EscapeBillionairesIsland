@@ -1,10 +1,13 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Spoonacci
 {
-    // Background music system. Always playing. 4 procedurally-generated tracks.
-    // Controls: [J] previous · [K] next · [M] mute toggle · [-/=] volume down/up
+    // Background music player.
+    // Loads real .mp3/.ogg files from Resources/Music/ if present (the 6 Kevin MacLeod CC-BY tracks),
+    // otherwise falls back to 4 procedurally-generated loops.
+    // Controls: [K] next  [J] prev  [M] mute  [-/=] vol
     public class MusicPlayer : MonoBehaviour
     {
         static MusicPlayer _instance;
@@ -23,12 +26,12 @@ namespace Spoonacci
         }
 
         AudioSource src;
-        AudioClip[] tracks;
-        string[] trackNames = { "Tropical Lounge", "Heist Synth", "Spoonacci Theme", "Night Drive" };
+        readonly List<AudioClip> tracks = new List<AudioClip>();
+        readonly List<string> trackNames = new List<string>();
         int current;
         float toastUntil;
         bool muted;
-        float volume = 0.35f;
+        float volume = 0.55f;
 
         void Awake()
         {
@@ -36,14 +39,32 @@ namespace Spoonacci
             src.loop = true;
             src.spatialBlend = 0f;
             src.volume = volume;
+            src.bypassEffects = true;
 
-            tracks = new AudioClip[]
+            // 1) try Resources/Music/*.mp3 (real CC-BY tracks if present)
+            var loaded = Resources.LoadAll<AudioClip>("Music");
+            if (loaded != null && loaded.Length > 0)
             {
-                BuildTropicalLounge(),
-                BuildHeistSynth(),
-                BuildSpoonacciTheme(),
-                BuildNightDrive(),
-            };
+                System.Array.Sort(loaded, (a, b) => string.Compare(a.name, b.name));
+                foreach (var c in loaded)
+                {
+                    tracks.Add(c);
+                    // strip the "01_" prefix for display
+                    string n = c.name;
+                    int us = n.IndexOf('_');
+                    if (us > 0 && us < 4) n = n.Substring(us + 1);
+                    trackNames.Add(n);
+                }
+            }
+
+            // 2) fallback to procedural
+            if (tracks.Count == 0)
+            {
+                tracks.Add(BuildTropicalLounge());   trackNames.Add("Tropical Lounge (procedural)");
+                tracks.Add(BuildHeistSynth());       trackNames.Add("Heist Synth (procedural)");
+                tracks.Add(BuildSpoonacciTheme());   trackNames.Add("Spoonacci Theme (procedural)");
+                tracks.Add(BuildNightDrive());       trackNames.Add("Night Drive (procedural)");
+            }
 
             Play(0, announce: false);
         }
@@ -52,8 +73,8 @@ namespace Spoonacci
         {
             var kb = Keyboard.current;
             if (kb == null) return;
-            if (kb.jKey.wasPressedThisFrame) Play((current - 1 + tracks.Length) % tracks.Length);
-            if (kb.kKey.wasPressedThisFrame) Play((current + 1) % tracks.Length);
+            if (kb.jKey.wasPressedThisFrame) Play((current - 1 + tracks.Count) % tracks.Count);
+            if (kb.kKey.wasPressedThisFrame) Play((current + 1) % tracks.Count);
             if (kb.mKey.wasPressedThisFrame) { muted = !muted; src.mute = muted; Toast(muted ? "♪ MUTED" : "♪ unmuted"); }
             if (kb.minusKey.wasPressedThisFrame || kb.numpadMinusKey.wasPressedThisFrame) { volume = Mathf.Clamp01(volume - 0.1f); src.volume = volume; Toast("♪ vol " + Mathf.RoundToInt(volume * 100) + "%"); }
             if (kb.equalsKey.wasPressedThisFrame || kb.numpadPlusKey.wasPressedThisFrame) { volume = Mathf.Clamp01(volume + 0.1f); src.volume = volume; Toast("♪ vol " + Mathf.RoundToInt(volume * 100) + "%"); }
@@ -61,13 +82,16 @@ namespace Spoonacci
 
         void Play(int idx, bool announce = true)
         {
+            if (tracks.Count == 0) return;
             current = idx;
             src.clip = tracks[idx];
             src.Play();
             if (announce) Toast("♪ " + trackNames[idx]);
         }
 
-        void Toast(string s) { _toast = s; toastUntil = Time.unscaledTime + 2f; }
+        public string CurrentTrack => trackNames.Count > 0 ? trackNames[current] : "";
+
+        void Toast(string s) { _toast = s; toastUntil = Time.unscaledTime + 2.5f; }
         string _toast = "";
 
         GUIStyle style;
@@ -77,52 +101,23 @@ namespace Spoonacci
             if (style == null)
                 style = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(20), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = new Color(0.7f, 1f, 0.8f) } };
             var sh = new GUIStyle(style); sh.normal.textColor = Color.black;
-            GUI.Label(new Rect(22f, Screen.height - 102f, 500f, 28f), _toast, sh);
-            GUI.Label(new Rect(20f, Screen.height - 104f, 500f, 28f), _toast, style);
+            GUI.Label(new Rect(22f, Screen.height - 142f, 600f, 28f), _toast, sh);
+            GUI.Label(new Rect(20f, Screen.height - 144f, 600f, 28f), _toast, style);
         }
 
-        // ---------- Procedural generators ----------
-        // Each track = a chord progression with bass + melody + soft beat. ~16s loops.
-
-        AudioClip BuildTropicalLounge()
-        {
-            // I-vi-IV-V in C major, gentle pad
-            float[] chord1 = { 261f, 329f, 392f }; // C major
-            float[] chord2 = { 220f, 261f, 329f }; // A minor
-            float[] chord3 = { 174f, 220f, 261f }; // F major
-            float[] chord4 = { 196f, 246f, 293f }; // G major
-            return BakeChordLoop(new[] { chord1, chord2, chord3, chord4 }, bpm: 60, sustain: true, brightness: 0.4f);
-        }
-
-        AudioClip BuildHeistSynth()
-        {
-            // i-VII-VI-V in A minor — moody bouncy
-            float[] chord1 = { 220f, 261f, 329f }; // Am
-            float[] chord2 = { 196f, 246f, 293f }; // G
-            float[] chord3 = { 174f, 220f, 261f }; // F
-            float[] chord4 = { 165f, 207f, 246f }; // E
-            return BakeChordLoop(new[] { chord1, chord2, chord3, chord4 }, bpm: 110, sustain: false, brightness: 0.65f);
-        }
-
-        AudioClip BuildSpoonacciTheme()
-        {
-            // I-IV-V-I in D — uplifting
-            float[] chord1 = { 293f, 369f, 440f };
-            float[] chord2 = { 392f, 493f, 587f };
-            float[] chord3 = { 440f, 554f, 659f };
-            float[] chord4 = { 293f, 369f, 440f };
-            return BakeChordLoop(new[] { chord1, chord2, chord3, chord4 }, bpm: 90, sustain: true, brightness: 0.85f);
-        }
-
-        AudioClip BuildNightDrive()
-        {
-            // i-v-VI-VII in F minor — synthwave moody
-            float[] chord1 = { 174f, 220f, 261f };
-            float[] chord2 = { 130f, 174f, 220f };
-            float[] chord3 = { 220f, 277f, 329f };
-            float[] chord4 = { 246f, 311f, 369f };
-            return BakeChordLoop(new[] { chord1, chord2, chord3, chord4 }, bpm: 80, sustain: true, brightness: 0.3f);
-        }
+        // ---------- Procedural fallback ----------
+        AudioClip BuildTropicalLounge() => BakeChordLoop(new[] {
+            new[] { 261f, 329f, 392f }, new[] { 220f, 261f, 329f },
+            new[] { 174f, 220f, 261f }, new[] { 196f, 246f, 293f } }, 60, true, 0.4f);
+        AudioClip BuildHeistSynth() => BakeChordLoop(new[] {
+            new[] { 220f, 261f, 329f }, new[] { 196f, 246f, 293f },
+            new[] { 174f, 220f, 261f }, new[] { 165f, 207f, 246f } }, 110, false, 0.65f);
+        AudioClip BuildSpoonacciTheme() => BakeChordLoop(new[] {
+            new[] { 293f, 369f, 440f }, new[] { 392f, 493f, 587f },
+            new[] { 440f, 554f, 659f }, new[] { 293f, 369f, 440f } }, 90, true, 0.85f);
+        AudioClip BuildNightDrive() => BakeChordLoop(new[] {
+            new[] { 174f, 220f, 261f }, new[] { 130f, 174f, 220f },
+            new[] { 220f, 277f, 329f }, new[] { 246f, 311f, 369f } }, 80, true, 0.3f);
 
         AudioClip BakeChordLoop(float[][] chords, int bpm, bool sustain, float brightness)
         {
@@ -139,35 +134,28 @@ namespace Spoonacci
                 int beatIdx = Mathf.Min(totalBeats - 1, Mathf.FloorToInt(t / beatSec));
                 int chordIdx = beatIdx / beatsPerChord;
                 float[] chord = chords[chordIdx];
-                float chordT = t - chordIdx * beatsPerChord * beatSec;
 
-                // chord pad — sine + slight detune for warmth
                 float pad = 0f;
                 foreach (var f in chord)
                 {
                     pad += Mathf.Sin(2f * Mathf.PI * f * t) * 0.18f;
-                    pad += Mathf.Sin(2f * Mathf.PI * f * 0.5f * t) * 0.08f; // bass octave
+                    pad += Mathf.Sin(2f * Mathf.PI * f * 0.5f * t) * 0.08f;
                 }
-
-                // melody — top note of chord with rhythmic attack
                 float melT = (t / beatSec) % 1f;
                 float melEnv = sustain ? (Mathf.Sin(melT * Mathf.PI * 2f) * 0.5f + 0.5f) : Mathf.Exp(-melT * 4f);
                 float melFreq = chord[chord.Length - 1] * 2f * (brightness > 0.5f ? 1f : 0.75f);
                 float melody = Mathf.Sin(2f * Mathf.PI * melFreq * t) * melEnv * brightness * 0.18f;
 
-                // soft beat (every beat, brief click)
                 float beatPhase = (t / beatSec) % 1f;
                 float beat = (beatPhase < 0.05f) ? Mathf.Sin(2f * Mathf.PI * 80f * t) * (1f - beatPhase / 0.05f) * 0.25f : 0f;
 
-                // long fade at start + end of loop for click-free loop point
                 float loopFade = 1f;
                 float fadeSec = 0.05f;
                 if (t < fadeSec) loopFade = t / fadeSec;
                 float endT = sampleCount / (float)sr - t;
                 if (endT < fadeSec) loopFade = Mathf.Min(loopFade, endT / fadeSec);
 
-                data[i] = (pad + melody + beat) * 0.55f * loopFade;
-                data[i] = Mathf.Clamp(data[i], -0.85f, 0.85f);
+                data[i] = Mathf.Clamp((pad + melody + beat) * 0.55f * loopFade, -0.85f, 0.85f);
             }
 
             var c = AudioClip.Create("track", sampleCount, 1, sr, false);

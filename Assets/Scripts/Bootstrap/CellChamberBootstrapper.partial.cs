@@ -13,8 +13,11 @@ namespace Spoonacci
 
         partial void BuildIfNeeded()
         {
+            _ = MusicPlayer.Instance;
             PrisonState.Reset();
             gameObject.AddComponent<PostFxBoost>();
+            gameObject.AddComponent<PauseMenu>();
+            gameObject.AddComponent<QuestBanner>();
             DampenAmbient();
             BuildOuterStructure();
             BuildCells();

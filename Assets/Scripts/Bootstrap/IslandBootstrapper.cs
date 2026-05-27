@@ -19,9 +19,12 @@ namespace Spoonacci
             // singletons
             _ = SoundFx.Instance;
             _ = SaveSystem.Instance;
+            _ = MusicPlayer.Instance;
             MissionManager.BootstrapDefaults();
 
             gameObject.AddComponent<PostFxBoost>();
+            gameObject.AddComponent<PauseMenu>();
+            gameObject.AddComponent<QuestBanner>();
             BuildGround();
             BuildOcean();
             BuildSky();
