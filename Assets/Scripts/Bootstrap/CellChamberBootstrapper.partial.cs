@@ -278,5 +278,14 @@ namespace Spoonacci
             var trGo = new GameObject("[ObjectiveTracker]");
             tracker = trGo.AddComponent<ObjectiveTracker>();
         }
+
+        static Material MakeMat(Color c, float metallic, float smoothness)
+        {
+            var sh = Shader.Find("Universal Render Pipeline/Lit");
+            var m = new Material(sh) { color = c };
+            m.SetFloat("_Metallic", metallic);
+            m.SetFloat("_Smoothness", smoothness);
+            return m;
+        }
     }
 }
