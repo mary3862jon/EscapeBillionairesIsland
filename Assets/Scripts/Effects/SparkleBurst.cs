@@ -15,6 +15,7 @@ namespace Spoonacci
         void Build(Color tint)
         {
             var p = gameObject.AddComponent<ParticleSystem>();
+            p.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             var main = p.main;
             main.startLifetime = 1.2f;
             main.startSpeed = 1.5f;
@@ -39,6 +40,7 @@ namespace Spoonacci
                 new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) }
             );
             fade.color = grad;
+            p.Play();
 
             Destroy(gameObject, 1.8f);
         }

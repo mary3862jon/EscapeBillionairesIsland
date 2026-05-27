@@ -18,6 +18,7 @@ namespace Spoonacci
             var dust = new GameObject("Dust");
             dust.transform.SetParent(transform, false);
             var pDust = dust.AddComponent<ParticleSystem>();
+            pDust.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             var mainD = pDust.main;
             mainD.startLifetime = 0.7f;
             mainD.startSpeed = 2.5f;
@@ -43,9 +44,12 @@ namespace Spoonacci
             coCol.color = grad;
 
             // stars/sparks
+            pDust.Play();
+
             var stars = new GameObject("Stars");
             stars.transform.SetParent(transform, false);
             var pStars = stars.AddComponent<ParticleSystem>();
+            pStars.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             var mainS = pStars.main;
             mainS.startLifetime = 0.6f;
             mainS.startSpeed = 5f;
@@ -62,6 +66,7 @@ namespace Spoonacci
             shapeS.radius = 0.15f;
             var rendS = pStars.GetComponent<ParticleSystemRenderer>();
             rendS.material = new Material(Shader.Find("Sprites/Default")) { color = new Color(1f, 0.9f, 0.3f, 1f) };
+            pStars.Play();
 
             Destroy(gameObject, 1.6f);
         }
