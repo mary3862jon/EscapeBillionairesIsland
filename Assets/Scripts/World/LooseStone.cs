@@ -47,7 +47,8 @@ namespace Spoonacci
             glowLight.intensity = 0f;
         }
 
-        bool Active() => GameState.CellCrewAllTalked && PickaxeState.Found && !GameState.TunnelDug;
+        bool Active() => (PrisonState.Persuaded >= 15 || GameState.CellCrewAllTalked)
+                         && PickaxeState.Found && !GameState.TunnelDug;
 
         void Update()
         {
@@ -146,9 +147,12 @@ namespace Spoonacci
             {
                 var s = new GUIStyle(promptStyle); s.normal.textColor = new Color(0.8f, 0.8f, 0.8f);
                 string txt;
-                if (!GameState.CellCrewAllTalked) txt = "...the stone won't budge. (Talk to all 5 Cell Crew first.)";
-                else if (!PickaxeState.Found)     txt = "...you need a pickaxe. (Check the hay pile.)";
-                else                               txt = "...something is missing.";
+                if (!PickaxeState.Found)
+                    txt = "...you need a pickaxe. (Check the hay pile in your cell.)";
+                else if (PrisonState.Persuaded < 15)
+                    txt = "...the stone won't budge alone. Persuade all 15 inmates first (" + PrisonState.Persuaded + "/15)";
+                else
+                    txt = "...something is missing.";
                 GUI.Label(new Rect((Screen.width - w) * 0.5f, y, w, 40f), txt, s);
             }
         }

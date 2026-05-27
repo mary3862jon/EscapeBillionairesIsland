@@ -100,6 +100,10 @@ namespace Spoonacci
             if (anim != null) anim.TriggerBonkSwing();
             SoundFx.Instance.Bonk();
 
+            // particle burst at head height
+            Vector3 burstPos = c.HeadTransform != null ? c.HeadTransform.position : c.transform.position + Vector3.up * 1.4f;
+            BonkBurst.Spawn(burstPos);
+
             // attach daze birds to head
             if (c.HeadTransform != null)
             {

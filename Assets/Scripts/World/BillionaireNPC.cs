@@ -101,9 +101,12 @@ namespace Spoonacci
             if (!IsViolator && !HasSpoonMark)
                 SetViolator(true, "BEING A BILLIONAIRE");
 
-            // mission hook — flag Magnus Tusk specifically as bonked
-            if (HasSpoonMark && billionaireName == "Magnus Tusk")
-                MagnusTuskState.Bonked = true;
+            // mission hook — register named billionaire as bonked
+            if (HasSpoonMark)
+            {
+                if (billionaireName == "Magnus Tusk") MagnusTuskState.Bonked = true;
+                BillionaireRegistry.MarkBonked(billionaireName);
+            }
         }
 
         static Material MakeMat(Color c, float metallic, float smoothness)

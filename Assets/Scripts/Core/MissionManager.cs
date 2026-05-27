@@ -66,10 +66,11 @@ namespace Spoonacci
 
         public static void BootstrapDefaults()
         {
-            // Cell scene
-            Register(new Mission("cell.talk",       "Talk to all 5 Cell Crew",                () => GameState.CellCrewAllTalked, "Cutlery"));
-            Register(new Mission("cell.pickaxe",    "Find a pickaxe (try the hay pile)",      () => PickaxeState.Found, "Cutlery"));
-            Register(new Mission("cell.dig",        "Dig the loose stone (E)",                () => GameState.TunnelDug, "Cutlery", "cell.talk", "cell.pickaxe"));
+            // Cell scene — BIG prison flow
+            Register(new Mission("cell.pickaxe",    "Find the pickaxe (hay pile in your cell)", () => PickaxeState.Found, "Cutlery"));
+            Register(new Mission("cell.unlock",     "Unlock the other 4 cells (E on each door)", () => PrisonState.Unlocked >= 4, "Cutlery"));
+            Register(new Mission("cell.persuade",   "Persuade all 15 inmates (E to ask, Q to bonk refusers)", () => PrisonState.Persuaded >= 15, "Cutlery", "cell.unlock"));
+            Register(new Mission("cell.dig",        "Dig the loose stone (E, 3 stages)",         () => GameState.TunnelDug, "Cutlery", "cell.pickaxe", "cell.persuade"));
 
             // Island arrival (post-escape)
             Register(new Mission("island.salon",    "Ditch the police uniform at Salon Cucchiaio (E)", () => GameState.WearingCivilianClothes, "Sample", "cell.dig"));
@@ -78,7 +79,11 @@ namespace Spoonacci
             Register(new Mission("isle.bonk5",      "Bonk 5 violators",                       () => GameState.PerfectBonks >= 5, "Sample"));
             Register(new Mission("isle.tokens100",  "Earn 100 Troll Tokens",                  () => GameState.TrollTokens >= 100, "Sample"));
             Register(new Mission("isle.bust",       "Enter Police Mode (P) and bust dealers", () => GameState.PoliceMode && GameState.PerfectBonks >= 10, "Sample"));
-            Register(new Mission("isle.tusk",       "Bonk Magnus Tusk (the Billionaire)",     () => MagnusTuskState.Bonked, "Sample"));
+            Register(new Mission("isle.tusk",       "Bonk Magnus Tusk (mansion)",             () => BillionaireRegistry.IsBonked("Magnus Tusk"), "Sample"));
+            Register(new Mission("isle.beff",       "Bonk Beff Jezos (yacht NW)",             () => BillionaireRegistry.IsBonked("Beff Jezos"), "Sample"));
+            Register(new Mission("isle.chad",       "Bonk Crypto Chad (vault NE)",            () => BillionaireRegistry.IsBonked("Crypto Chad"), "Sample"));
+            Register(new Mission("isle.zuck",       "Bonk Mark Zuckersnort (lab SW)",         () => BillionaireRegistry.IsBonked("Mark Zuckersnort"), "Sample"));
+            Register(new Mission("isle.all4",       "Bonk all 4 billionaires",                () => BillionaireRegistry.BonkedCount >= 4, "Sample", "isle.tusk", "isle.beff", "isle.chad", "isle.zuck"));
 
             // Ocean / shark
             Register(new Mission("shark.fuse",      "Walk into the ocean → fuse with the Shark", () => SharkFusionState.Fused, "Shark"));
@@ -89,4 +94,12 @@ namespace Spoonacci
     public static class PickaxeState { public static bool Found; }
     public static class MagnusTuskState { public static bool Bonked; }
     public static class SharkFusionState { public static bool Fused; }
+
+    public static class BillionaireRegistry
+    {
+        static readonly System.Collections.Generic.HashSet<string> _bonked = new System.Collections.Generic.HashSet<string>();
+        public static void MarkBonked(string name) => _bonked.Add(name);
+        public static bool IsBonked(string name) => _bonked.Contains(name);
+        public static int BonkedCount => _bonked.Count;
+    }
 }

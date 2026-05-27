@@ -16,6 +16,7 @@ namespace Spoonacci
         public static bool JustEscaped;            // set on cell dig, consumed on first island spawn
         public static bool WearingCivilianClothes; // set after Salon Cucchiaio negotiation
         public static int  CurrentSkinIndex;
+        public static bool IsNight;
 
         static readonly HashSet<string> _talked = new HashSet<string>();
         public static IReadOnlyCollection<string> TalkedSet => _talked;

@@ -34,7 +34,9 @@ namespace Spoonacci
             var go = new GameObject("[Auto Bootstrap]");
             // intentionally NOT DontDestroyOnLoad — we want each scene load to spawn the right bootstrapper fresh
             string name = s.name ?? "";
-            if (name.Contains("Cutlery") || name.Contains("Cell"))
+            if (name.Contains("Title"))
+                go.AddComponent<TitleScreenBootstrapper>();
+            else if (name.Contains("Cutlery") || name.Contains("Cell"))
                 go.AddComponent<CellChamberBootstrapper>();
             else if (name.Contains("Shark") || name.Contains("Fusion"))
                 go.AddComponent<SharkFusionBootstrapper>();

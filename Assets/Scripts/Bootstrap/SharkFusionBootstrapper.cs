@@ -16,6 +16,7 @@ namespace Spoonacci
         void Awake()
         {
             SoundFx.Instance.ToString();
+            gameObject.AddComponent<PostFxBoost>();
             DimAmbient();
             BuildGround();
             BuildOcean();

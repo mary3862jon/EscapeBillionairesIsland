@@ -1,0 +1,169 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace Spoonacci
+{
+    // Title screen with NEW GAME / CONTINUE / QUIT. Shows giant rotating spoon.
+    public class TitleScreenBootstrapper : MonoBehaviour
+    {
+        GameObject bigSpoon;
+        Camera cam;
+        GUIStyle titleStyle, btnStyle, footerStyle;
+
+        void Awake()
+        {
+            _ = SoundFx.Instance;
+            _ = SaveSystem.Instance;
+            MissionManager.BootstrapDefaults();
+            gameObject.AddComponent<PostFxBoost>();
+            BuildScene();
+        }
+
+        void BuildScene()
+        {
+            // sky
+            RenderSettings.ambientLight = new Color(0.6f, 0.65f, 0.75f);
+            RenderSettings.ambientIntensity = 1.2f;
+
+            // sun
+            var sunGo = new GameObject("Sun");
+            sunGo.transform.rotation = Quaternion.Euler(45f, 30f, 0f);
+            var sun = sunGo.AddComponent<Light>();
+            sun.type = LightType.Directional;
+            sun.intensity = 1.4f;
+            sun.color = new Color(1f, 0.95f, 0.85f);
+            sun.shadows = LightShadows.Soft;
+
+            // floor (pink/gold gradient via two squares)
+            var floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            floor.transform.position = Vector3.zero;
+            floor.transform.localScale = new Vector3(6f, 1f, 6f);
+            floor.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.95f, 0.5f, 0.7f), 0.05f, 0.5f);
+
+            // big rotating spoon
+            bigSpoon = new GameObject("Title Spoon");
+            bigSpoon.transform.position = new Vector3(0f, 1.5f, 0f);
+            bigSpoon.transform.localScale = Vector3.one * 4f;
+            bigSpoon.AddComponent<ProceduralSpoonBuilder>();
+
+            // camera
+            var camGo = new GameObject("Main Camera");
+            cam = camGo.AddComponent<Camera>();
+            camGo.tag = "MainCamera";
+            camGo.AddComponent<AudioListener>();
+            cam.fieldOfView = 50f;
+            cam.transform.position = new Vector3(0f, 4f, -8f);
+            cam.transform.LookAt(bigSpoon.transform.position + Vector3.up * 1.5f);
+            cam.backgroundColor = new Color(0.55f, 0.4f, 0.7f);
+
+            // some floating coins for flair
+            for (int i = 0; i < 14; i++)
+            {
+                var c = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                c.transform.position = new Vector3(Random.Range(-6f, 6f), Random.Range(1f, 5f), Random.Range(-3f, 3f));
+                c.transform.localScale = new Vector3(0.3f, 0.04f, 0.3f);
+                Destroy(c.GetComponent<Collider>());
+                c.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.95f, 0.78f, 0.25f), 1f, 0.9f);
+                c.AddComponent<TitleCoinFloat>();
+            }
+        }
+
+        void Update()
+        {
+            if (bigSpoon != null)
+                bigSpoon.transform.Rotate(Vector3.up, 28f * Time.deltaTime);
+        }
+
+        void OnGUI()
+        {
+            EnsureStyles();
+
+            // title
+            string title = "SIR  SPOONACCI";
+            float tw = 900f; float th = 100f;
+            float tx = (Screen.width - tw) * 0.5f; float ty = 40f;
+            var sh = new GUIStyle(titleStyle); sh.normal.textColor = Color.black;
+            GUI.Label(new Rect(tx + 4, ty + 4, tw, th), title, sh);
+            GUI.Label(new Rect(tx, ty, tw, th), title, titleStyle);
+
+            var sub = new GUIStyle(GUI.skin.label) { fontSize = 26, fontStyle = FontStyle.Italic, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
+            GUI.Label(new Rect(tx, ty + 90f, tw, 40f), "Escape the Billionaire's Island", sub);
+
+            // buttons
+            float bw = 380f, bh = 70f;
+            float bx = (Screen.width - bw) * 0.5f;
+            float by = Screen.height * 0.45f;
+            if (GUI.Button(new Rect(bx, by, bw, bh), "NEW GAME", btnStyle))
+                StartNew();
+            if (GUI.Button(new Rect(bx, by + bh + 18f, bw, bh), "CONTINUE", btnStyle))
+                Continue();
+            if (GUI.Button(new Rect(bx, by + (bh + 18f) * 2f, bw, bh), "QUIT", btnStyle))
+                Quit();
+
+            // footer with save info
+            string footer = "Save: " + (System.IO.File.Exists(SaveSystem.Path) ? "found ✔  ·  Tokens: " + GameState.TrollTokens + "  ·  Missions done: " + MissionManager.CompletedIds.Count : "no save yet");
+            GUI.Label(new Rect(20f, Screen.height - 40f, Screen.width - 40f, 24f), footer, footerStyle);
+
+            // build/version
+            var v = new GUIStyle(footerStyle); v.alignment = TextAnchor.MiddleRight;
+            GUI.Label(new Rect(20f, Screen.height - 40f, Screen.width - 40f, 24f), "v0.6 dev build", v);
+        }
+
+        void EnsureStyles()
+        {
+            if (titleStyle == null)
+                titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 80, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.95f, 0.7f) } };
+            if (btnStyle == null)
+                btnStyle = new GUIStyle(GUI.skin.button) { fontSize = 30, fontStyle = FontStyle.Bold };
+            if (footerStyle == null)
+                footerStyle = new GUIStyle(GUI.skin.label) { fontSize = 16, normal = { textColor = new Color(0.95f, 0.95f, 0.95f, 0.7f) } };
+        }
+
+        void StartNew()
+        {
+            GameState.Reset();
+            MissionManager.RehydrateCompleted(null);
+            SoundFx.Instance.LevelUp();
+            SceneManager.LoadScene("CutleryChamber");
+        }
+
+        void Continue()
+        {
+            SoundFx.Instance.Chime();
+            // save was loaded on SaveSystem.Awake; jump to wherever the player should resume
+            // Heuristic: if TunnelDug, go to SampleScene; else CutleryChamber
+            string next = GameState.TunnelDug ? "SampleScene" : "CutleryChamber";
+            SceneManager.LoadScene(next);
+        }
+
+        void Quit()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+
+        static Material MakeMat(Color c, float metallic, float smoothness)
+        {
+            var sh = Shader.Find("Universal Render Pipeline/Lit");
+            var m = new Material(sh) { color = c };
+            m.SetFloat("_Metallic", metallic);
+            m.SetFloat("_Smoothness", smoothness);
+            return m;
+        }
+    }
+
+    public class TitleCoinFloat : MonoBehaviour
+    {
+        float phase;
+        Vector3 origin;
+        void Awake() { origin = transform.position; phase = Random.value * 10f; transform.localRotation = Quaternion.Euler(Random.value * 90f, Random.value * 360f, Random.value * 90f); }
+        void Update()
+        {
+            transform.position = origin + Vector3.up * Mathf.Sin(Time.time + phase) * 0.3f;
+            transform.Rotate(Vector3.up, 60f * Time.deltaTime, Space.Self);
+        }
+    }
+}
