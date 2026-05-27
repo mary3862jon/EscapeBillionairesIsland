@@ -161,9 +161,6 @@ namespace Spoonacci
         {
             var trGo = new GameObject("[ObjectiveTracker]");
             tracker = trGo.AddComponent<ObjectiveTracker>();
-            tracker.Add("Walk into the ocean (south)", () => fused);
-            tracker.Add("Fuse with the shark (auto cutscene)", () => fused);
-            tracker.Add("Steer the Spoon-Shark with WASD (Space = dash)", () => fused);
         }
 
         public void TriggerFusion()
@@ -214,9 +211,11 @@ namespace Spoonacci
 
             // hand control to the shark
             shark.AddComponent<SharkController>();
-            if (follow != null) { follow.target = shark.transform; follow.distance = 11f; follow.height = 5.5f; }
+            if (follow != null) { follow.target = shark.transform; follow.distance = 11f; follow.height = 3.5f; }
             hud.Set("🦈 SPOON-SHARK MODE — WASD swim · SPACE dash · roam the ocean");
             SoundFx.Instance.LevelUp();
+            SharkFusionState.Fused = true;
+            SaveSystem.Instance.Save("Spoon-Shark formed!");
             Invoke(nameof(ClearHud), 8f);
         }
 

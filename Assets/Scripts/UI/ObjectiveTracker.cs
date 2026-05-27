@@ -1,65 +1,73 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Spoonacci
 {
-    // Top-right panel with active objectives + currency. Updates from GameState.
+    // Top-right active mission panel (driven by MissionManager) + Troll Tokens counter.
     public class ObjectiveTracker : MonoBehaviour
     {
-        public List<Objective> objectives = new List<Objective>();
-        GUIStyle titleStyle;
-        GUIStyle objStyle;
-        GUIStyle tokenStyle;
+        GUIStyle titleStyle, objStyle, tokenStyle, doneStyle;
+        string sceneKey;
 
-        public class Objective
+        void Awake()
         {
-            public string text;
-            public System.Func<bool> done;
-            public Objective(string t, System.Func<bool> d) { text = t; done = d; }
+            sceneKey = SceneManager.GetActiveScene().name;
         }
 
-        public void Add(string text, System.Func<bool> done) => objectives.Add(new Objective(text, done));
+        void Update()
+        {
+            MissionManager.Tick();
+        }
 
         void OnGUI()
         {
-            if (titleStyle == null)
-            {
-                titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 24, fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.95f, 0.6f) } };
-                objStyle = new GUIStyle(GUI.skin.label) { fontSize = 20, normal = { textColor = Color.white } };
-                tokenStyle = new GUIStyle(GUI.skin.label) { fontSize = 28, fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.55f, 0.1f) } };
-            }
+            EnsureStyles();
 
-            float w = 420f;
-            float h = 80f + objectives.Count * 32f;
+            var active = new List<Mission>(MissionManager.ActiveFor(sceneKey));
+            int n = Mathf.Min(active.Count, 6);
+
+            float w = 460f;
+            float h = 60f + n * 36f;
             float x = Screen.width - w - 20f;
-            float y = 20f;
+            float y = 70f;
 
-            // panel bg
+            // panel
             var prev = GUI.color;
             GUI.color = new Color(0f, 0f, 0f, 0.65f);
             GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
             GUI.color = prev;
 
-            GUI.Label(new Rect(x + 14f, y + 8f, w - 28f, 32f), "OBJECTIVES", titleStyle);
-            float oy = y + 44f;
-            foreach (var o in objectives)
+            GUI.Label(new Rect(x + 14f, y + 8f, w - 28f, 32f), "ACTIVE MISSIONS", titleStyle);
+            float oy = y + 46f;
+            for (int i = 0; i < n; i++)
             {
-                bool done = o.done != null && o.done();
+                var m = active[i];
+                bool done = m.isComplete != null && m.isComplete();
                 string mark = done ? "✔" : "▢";
-                var s = new GUIStyle(objStyle);
-                if (done) s.normal.textColor = new Color(0.6f, 1f, 0.6f);
-                GUI.Label(new Rect(x + 14f, oy, w - 28f, 28f), mark + "  " + o.text, s);
-                oy += 30f;
+                var s = done ? doneStyle : objStyle;
+                GUI.Label(new Rect(x + 14f, oy, w - 28f, 32f), mark + "  " + m.title, s);
+                oy += 34f;
             }
 
-            // Troll Tokens counter — separate small panel above objectives
-            float ty = y - 56f;
-            if (ty < 4f) ty = 4f;
+            // Troll Tokens — separate strip above
+            float ty = 16f;
             GUI.color = new Color(0f, 0f, 0f, 0.6f);
-            GUI.DrawTexture(new Rect(x, ty, w, 50f), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(x, ty, w, 48f), Texture2D.whiteTexture);
             GUI.color = prev;
-            string tokens = "💰 " + GameState.TrollTokens + " TROLL TOKENS";
-            GUI.Label(new Rect(x + 14f, ty + 8f, w - 28f, 32f), tokens, tokenStyle);
+            GUI.Label(new Rect(x + 14f, ty + 8f, w - 28f, 36f), "💰 " + GameState.TrollTokens + " TROLL TOKENS", tokenStyle);
+        }
+
+        void EnsureStyles()
+        {
+            if (titleStyle == null)
+                titleStyle = new GUIStyle(GUI.skin.label) { fontSize = 22, fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.95f, 0.6f) } };
+            if (objStyle == null)
+                objStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, normal = { textColor = Color.white } };
+            if (doneStyle == null)
+                doneStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, normal = { textColor = new Color(0.6f, 1f, 0.6f) } };
+            if (tokenStyle == null)
+                tokenStyle = new GUIStyle(GUI.skin.label) { fontSize = 26, fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.55f, 0.1f) } };
         }
     }
 }

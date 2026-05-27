@@ -157,17 +157,21 @@ namespace Spoonacci
         public void ReceiveBonk(Vector3 fromPos)
         {
             HasSpoonMark = true;
-            stunTimer = 2.2f;
-            // knockback
+            stunTimer = 2.6f;
+            SoundFx.Instance.Ouch();
+            // knockback + tumble
             var rb = GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic)
             {
                 Vector3 push = (transform.position - fromPos);
                 push.y = 0f;
-                push = push.normalized * 4.5f + Vector3.up * 3f;
+                push = push.normalized * 5f + Vector3.up * 3.8f;
+                // briefly remove rotation constraints so they can tumble
+                rb.constraints = RigidbodyConstraints.None;
                 rb.AddForce(push, ForceMode.VelocityChange);
+                rb.AddTorque(new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), Random.Range(-3f, 3f)), ForceMode.VelocityChange);
+                StartCoroutine(RestoreConstraints(rb));
             }
-            // mark visual
             if (mark == null && HeadTransform != null)
             {
                 var go = new GameObject("SpoonMark");
@@ -175,6 +179,19 @@ namespace Spoonacci
                 mark.Attach(HeadTransform);
             }
             SetViolator(false, "");
+        }
+
+        System.Collections.IEnumerator RestoreConstraints(Rigidbody rb)
+        {
+            yield return new WaitForSeconds(2.2f);
+            if (rb != null)
+            {
+                // upright them
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+            }
         }
 
         static Material MakeMat(Color c, float metallic, float smoothness)

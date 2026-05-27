@@ -4,22 +4,27 @@ using UnityEngine.SceneManagement;
 
 namespace Spoonacci
 {
-    // After the player has talked to all 5 Cell Crew, the loose stone glows red-orange.
-    // Walk close + press E → "digging…" progress bar → fades out → loads SharkFusion scene.
+    // Multi-stage dig. Requires GameState.CellCrewAllTalked AND PickaxeState.Found to activate.
+    // Each E press advances digProgress by 0.34 (3 stages). Audio + visual feedback per stage.
+    // On reaching 1.0 → sets GameState.TunnelDug + JustEscaped → loads SampleScene.
     public class LooseStone : MonoBehaviour
     {
         Material mat;
+        Light glowLight;
         bool playerInside;
-        float digProgress; // 0..1
+        float digProgress;
         bool digging;
-        GUIStyle promptStyle, progressStyle;
+        int stages = 3;
+        int stagesDone;
+        float currentStageEndsAt;
+        GUIStyle promptStyle;
 
         void Awake()
         {
             var stone = GameObject.CreatePrimitive(PrimitiveType.Cube);
             stone.transform.SetParent(transform, false);
             stone.transform.localPosition = Vector3.zero;
-            stone.transform.localScale = new Vector3(1f, 0.6f, 1f);
+            stone.transform.localScale = new Vector3(1.2f, 0.7f, 1.2f);
             var sh = Shader.Find("Universal Render Pipeline/Lit");
             mat = new Material(sh) { color = new Color(0.3f, 0.3f, 0.32f) };
             mat.SetFloat("_Metallic", 0.0f);
@@ -30,61 +35,72 @@ namespace Spoonacci
 
             var trig = gameObject.AddComponent<SphereCollider>();
             trig.isTrigger = true;
-            trig.radius = 1.6f;
+            trig.radius = 1.8f;
 
-            // a faint warm light when activated
             var glow = new GameObject("StoneGlow");
             glow.transform.SetParent(transform, false);
-            glow.transform.localPosition = Vector3.up * 0.6f;
-            var lt = glow.AddComponent<Light>();
-            lt.type = LightType.Point;
-            lt.color = new Color(1f, 0.5f, 0.2f);
-            lt.range = 4f;
-            lt.intensity = 0f;
-            _glowLight = lt;
+            glow.transform.localPosition = Vector3.up * 0.7f;
+            glowLight = glow.AddComponent<Light>();
+            glowLight.type = LightType.Point;
+            glowLight.color = new Color(1f, 0.5f, 0.2f);
+            glowLight.range = 5f;
+            glowLight.intensity = 0f;
         }
 
-        Light _glowLight;
+        bool Active() => GameState.CellCrewAllTalked && PickaxeState.Found && !GameState.TunnelDug;
 
         void Update()
         {
-            // pulse glow once tutorial unlocked
-            bool active = GameState.CellCrewAllTalked && !GameState.TunnelDug;
+            bool active = Active();
             if (mat != null)
             {
                 Color emit = active
-                    ? new Color(0.9f, 0.35f, 0.1f) * (0.5f + Mathf.Sin(Time.time * 4f) * 0.5f)
+                    ? new Color(0.95f, 0.4f, 0.12f) * (0.5f + Mathf.Sin(Time.time * 4f) * 0.5f)
                     : Color.black;
                 mat.SetColor("_EmissionColor", emit);
             }
-            if (_glowLight != null) _glowLight.intensity = active ? 1.5f + Mathf.Sin(Time.time * 4f) * 0.5f : 0f;
+            if (glowLight != null) glowLight.intensity = active ? 2f + Mathf.Sin(Time.time * 4f) * 0.7f : 0f;
 
             if (digging)
             {
-                digProgress += Time.deltaTime / 3f;
-                if (digProgress >= 1f)
+                if (Time.time > currentStageEndsAt)
                 {
-                    digging = false;
-                    GameState.TunnelDug = true;
-                    SoundFx.Instance.LevelUp();
-                    LoadShark();
+                    stagesDone++;
+                    SoundFx.Instance.Bonk();
+                    if (stagesDone >= stages)
+                    {
+                        digging = false;
+                        Finish();
+                    }
+                    else
+                    {
+                        // wait for next E press
+                        digging = false;
+                    }
                 }
                 return;
             }
 
             if (!playerInside || !active) return;
             var kb = Keyboard.current;
-            if (kb != null && kb.eKey.wasPressedThisFrame)
-            {
-                digging = true;
-                SoundFx.Instance.Swoosh();
-            }
+            if (kb != null && kb.eKey.wasPressedThisFrame) StartStage();
         }
 
-        void LoadShark()
+        void StartStage()
         {
-            // switch scene — assumes SharkFusion is in Build Settings as a fallback path; try by name
-            SceneManager.LoadScene("SharkFusion");
+            digging = true;
+            currentStageEndsAt = Time.time + 1.2f;
+            SoundFx.Instance.Swoosh();
+        }
+
+        void Finish()
+        {
+            GameState.TunnelDug = true;
+            GameState.JustEscaped = true;
+            GameState.PoliceMode = true; // arrive on island in police uniform
+            SaveSystem.Instance.Save("Tunnel dug!");
+            SoundFx.Instance.LevelUp();
+            SceneManager.LoadScene("SampleScene");
         }
 
         void OnTriggerEnter(Collider other)
@@ -99,32 +115,41 @@ namespace Spoonacci
         void OnGUI()
         {
             EnsureStyles();
-            bool active = GameState.CellCrewAllTalked && !GameState.TunnelDug;
-            if (digging)
+            float w = 700f;
+            float x = (Screen.width - w) * 0.5f;
+            float y = Screen.height * 0.55f;
+
+            if (digging || stagesDone > 0)
             {
-                float w = 600f, h = 40f;
-                float x = (Screen.width - w) * 0.5f;
-                float y = Screen.height * 0.5f - 60f;
+                // progress bar
+                float total = (stagesDone + (digging ? Mathf.Clamp01(1f - (currentStageEndsAt - Time.time) / 1.2f) : 0f)) / stages;
+                float barW = 600f, barH = 36f;
+                float bx = (Screen.width - barW) * 0.5f;
+                float by = Screen.height * 0.45f;
                 GUI.color = new Color(0f, 0f, 0f, 0.7f);
-                GUI.DrawTexture(new Rect(x - 10, y - 10, w + 20, h + 80), Texture2D.whiteTexture);
-                GUI.color = new Color(0.9f, 0.5f, 0.15f);
-                GUI.DrawTexture(new Rect(x, y, w * digProgress, h), Texture2D.whiteTexture);
+                GUI.DrawTexture(new Rect(bx - 10, by - 10, barW + 20, barH + 30), Texture2D.whiteTexture);
+                GUI.color = new Color(0.95f, 0.5f, 0.15f);
+                GUI.DrawTexture(new Rect(bx, by, barW * total, barH), Texture2D.whiteTexture);
                 GUI.color = Color.white;
-                GUI.Label(new Rect(x, y + h + 8f, w, 30f), "...DIGGING THE LOOSE STONE...", promptStyle);
+                GUI.Label(new Rect(bx, by + barH + 4f, barW, 24f), "DIG STAGE " + (stagesDone + (digging ? 1 : 0)) + "/" + stages, promptStyle);
             }
-            else if (playerInside && active)
+
+            if (playerInside && Active() && !digging)
             {
-                float w = 700f;
                 var s = new GUIStyle(promptStyle); s.normal.textColor = new Color(1f, 0.85f, 0.3f);
-                GUI.Label(new Rect((Screen.width - w) * 0.5f, Screen.height * 0.55f, w, 40f),
-                    "✨ PRESS E TO DIG THROUGH THE LOOSE STONE ✨", s);
+                var sh = new GUIStyle(s); sh.normal.textColor = Color.black;
+                string txt = stagesDone == 0 ? "⛏ PRESS E TO START DIGGING" : "⛏ PRESS E AGAIN (" + stagesDone + "/" + stages + ")";
+                GUI.Label(new Rect(x + 2, y + 2, w, 40f), txt, sh);
+                GUI.Label(new Rect(x, y, w, 40f), txt, s);
             }
-            else if (playerInside && !active)
+            else if (playerInside && !Active())
             {
-                float w = 700f;
                 var s = new GUIStyle(promptStyle); s.normal.textColor = new Color(0.8f, 0.8f, 0.8f);
-                GUI.Label(new Rect((Screen.width - w) * 0.5f, Screen.height * 0.55f, w, 40f),
-                    "...nothing happens. Talk to all 5 Cell Crew first.", s);
+                string txt;
+                if (!GameState.CellCrewAllTalked) txt = "...the stone won't budge. (Talk to all 5 Cell Crew first.)";
+                else if (!PickaxeState.Found)     txt = "...you need a pickaxe. (Check the hay pile.)";
+                else                               txt = "...something is missing.";
+                GUI.Label(new Rect((Screen.width - w) * 0.5f, y, w, 40f), txt, s);
             }
         }
 
@@ -132,8 +157,6 @@ namespace Spoonacci
         {
             if (promptStyle == null)
                 promptStyle = new GUIStyle(GUI.skin.label) { fontSize = 26, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.white } };
-            if (progressStyle == null)
-                progressStyle = new GUIStyle(GUI.skin.label) { fontSize = 18 };
         }
     }
 }

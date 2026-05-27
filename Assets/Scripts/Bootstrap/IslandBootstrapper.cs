@@ -105,11 +105,7 @@ namespace Spoonacci
         {
             var trGo = new GameObject("[ObjectiveTracker]");
             tracker = trGo.AddComponent<ObjectiveTracker>();
-            tracker.Add("Bonk 5 violators (auto-flagged red arrows)", () => GameState.PerfectBonks >= 5);
-            tracker.Add("Visit Salon Cucchiaio — try a new skin",     () => GameState.TrollTokens > 0 || GameState.Bonks > 0); // approximated
-            tracker.Add("Find & bonk Magnus Tusk (the Billionaire)",  () => GameState.PerfectBonks >= 10);
-            tracker.Add("Enter Police Mode (press P) and bust dealers", () => GameState.PoliceMode);
-            tracker.Add("Earn 100 Troll Tokens",                       () => GameState.TrollTokens >= 100);
+            // tracker reads active missions from MissionManager based on scene name (matches "Sample")
         }
 
         void BuildSalon()
@@ -166,6 +162,7 @@ namespace Spoonacci
             attendant.color = new Color(1f, 0.65f, 0.8f);
             attendant.metallic = 0.6f;
             attendant.smoothness = 0.85f;
+            salonAttendantTransform = att.transform;
 
             // RECEPTIONIST (human civilian) standing behind counter
             var recep = new GameObject("Receptionist");
@@ -201,7 +198,10 @@ namespace Spoonacci
             var interact = interactGo.AddComponent<SalonCucchiaio>();
             interact.prompt = hud;
             interact.frontSignText = "SALON  CUCCHIAIO";
+            interact.attendantTransform = salonAttendantTransform;
         }
+
+        Transform salonAttendantTransform;
 
         void BuildSkinKiosk()
         {

@@ -100,6 +100,10 @@ namespace Spoonacci
             // re-arm violator if expired & not yet bonked
             if (!IsViolator && !HasSpoonMark)
                 SetViolator(true, "BEING A BILLIONAIRE");
+
+            // mission hook — flag Magnus Tusk specifically as bonked
+            if (HasSpoonMark && billionaireName == "Magnus Tusk")
+                MagnusTuskState.Bonked = true;
         }
 
         static Material MakeMat(Color c, float metallic, float smoothness)

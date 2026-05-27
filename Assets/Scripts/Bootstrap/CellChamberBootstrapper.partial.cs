@@ -13,6 +13,7 @@ namespace Spoonacci
             DampenAmbient();
             BuildRoom();
             BuildLooseStone();
+            BuildPickaxe();
             BuildSpoon();
             WireCamera();
             BuildHud();
@@ -111,6 +112,14 @@ namespace Spoonacci
             go.AddComponent<LooseStone>();
         }
 
+        void BuildPickaxe()
+        {
+            // sits on the hay pile
+            var go = new GameObject("Pickaxe");
+            go.transform.position = new Vector3(-4.3f, 0.55f, 3.4f);
+            go.AddComponent<Pickaxe>();
+        }
+
         void BuildWall(Vector3 pos, Vector3 scale)
         {
             var w = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -163,12 +172,7 @@ namespace Spoonacci
         {
             var trGo = new GameObject("[ObjectiveTracker]");
             tracker = trGo.AddComponent<ObjectiveTracker>();
-            tracker.Add("Talk to Big Bjørn",      () => GameState.HasTalkedTo("Big Bjørn"));
-            tracker.Add("Talk to Plastic Pete",   () => GameState.HasTalkedTo("Plastic Pete"));
-            tracker.Add("Talk to Goldie",         () => GameState.HasTalkedTo("Goldie"));
-            tracker.Add("Talk to Tasting Tina",   () => GameState.HasTalkedTo("Tasting Tina"));
-            tracker.Add("Talk to The Ladle",      () => GameState.HasTalkedTo("The Ladle"));
-            tracker.Add("Dig the glowing loose stone (E)", () => GameState.TunnelDug);
+            // missions are driven by MissionManager now; tracker reads from there
         }
 
         void BuildCellCrew()

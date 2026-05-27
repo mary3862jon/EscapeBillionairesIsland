@@ -1,75 +1,100 @@
 # How to Play (Dev Build)
 
-> v0.4 — major polish, bug fixes, mission tracker, Police Mode, Daze Birds, Pool, Shady Alley, Magnus Tusk.
+> v0.5 — eye-level camera, save system, police siren loop, NPC tumble-on-bonk, multi-stage cell dig with pickaxe, Salon "pay or threaten" negotiation, MissionManager-driven objectives chaining cell → island → salon → shark.
 
-## How to play (every time)
+## Pull → re-import → Play
 
-1. **GitHub Desktop → Fetch → Pull**.
-2. Switch to **Unity** — wait for the bottom-right re-import bar to finish.
-3. Open one of the 3 scenes from `Assets/Scenes/` (double-click in Project panel):
-   - `SampleScene.unity` — open island sandbox (the meat)
-   - `CutleryChamber.unity` — Act 2 prison-break
-   - `SharkFusion.unity` — Act 3 shark fusion
-4. Hit **Play** (▶ at top-center). Everything spawns automatically — no Inspector setup.
+1. GitHub Desktop → **Fetch** → **Pull origin**
+2. Switch to Unity → wait for re-import bar
+3. Open a scene from `Assets/Scenes/` and hit **Play**:
+   - `CutleryChamber.unity` — **start here** for the proper story (cell → escape → island)
+   - `SampleScene.unity` — direct island sandbox (skip the cell)
+   - `SharkFusion.unity` — direct shark mode (skip everything)
 
 ## Controls
 
-| Key | What it does |
+| Key | Action |
 |---|---|
-| `W A S D` / arrows | Walk (camera-relative) |
+| `W A S D` / arrows | Walk |
 | `Space` | Hop |
-| `F` | **Auto-Bonk** — lock onto nearest red-arrow violator, lunge & bonk |
-| `Q` | **Manual Bonk** — swing at whoever's in front (no lock-on) |
-| `E` | Interact (NPCs / Salon / Loose Stone) |
-| `P` | Toggle **Police Mode** (cop badge + flashing lights, drug dealers become auto-targets) |
+| `F` | **Auto-Bonk** — lock onto nearest violator, lunge, slow-mo bonk |
+| `Q` | **Manual Bonk** — swing in front, no lock-on |
+| `E` | Interact (NPCs, Pickaxe, Loose Stone, Salon) |
+| `P` | Toggle **Police Mode** — uniform + badge + flashing siren lights + **looped police siren audio** |
+| `F5` | Manual save (auto-saves every 30s anyway) |
 | `Right-mouse drag` | Orbit camera |
 | `Mouse wheel` | Zoom in/out |
 
-## Scene 1 — Island Sandbox (`SampleScene.unity`)
+## Camera (FIXED — no more drone view)
 
-You spawn as **Sir Spoonacci** (upright, eyes + brows + monocle + mouth) on a 200×200 beach.
+Eye-level walking-sim feel — ~1.8m above ground, ~5.5m behind, slight downward pitch. You can still mouse-orbit. Wheel zooms 3-14m.
 
-**Highlights:**
-- **Salon Cucchiaio** with front counter, gold trim, attendant Coiffeur spoon (bow on head), human receptionist, big neon sign, flag posts. Walk into the trigger → instant tooltip → press **E** to cycle 12 skins.
-- **Skin Kiosk** (next to Salon) — 12 mini-spoons on shelves so you can see what's available.
-- **Infinity Pool** with deck + swimmers + poolside loungers.
-- **Tiki Bar** with counter, bottles, bartender, drunk guests.
-- **5 Deck Chairs** with sunbathers + tropical umbrellas.
-- **Billionaire Mansion** patio with **Magnus Tusk** (suit, sunglasses, gold tie, perma-violator "BEING A BILLIONAIRE").
-- **Shady Alley** with flickering lamp + 3 Shady Characters (drug dealers — invisible in normal mode, become auto-violators in Police Mode).
-- **18 random walkers + 4 security guards** scattered.
-- **Violation Spawner** — every 5s a random NPC gets a pulsing red arrow + crime label ("PEEING IN POOL", "INSIDER TRADING", "BAD TIPPING" etc).
-- **Top-right objective tracker** with **Troll Tokens** counter.
+## Save System
 
-**Objectives:**
-1. Bonk 5 violators (10 Troll Tokens each)
-2. Visit Salon Cucchiaio
-3. Bonk Magnus Tusk
-4. Enter Police Mode (P)
-5. Earn 100 Troll Tokens
+- Auto-saves every **30 seconds** + on **scene transitions**
+- Press **F5** anytime for manual save
+- "Saved ✔" toast pops top-center for 2s
+- Save file: `<persistentDataPath>/save.json` (Windows: `%appdata%\..\LocalLow\...\save.json`)
+- All progress preserved: Troll Tokens, bonks, talked NPCs, mission completions, mode flags
 
-**When you bonk someone:** persistent **red Spoon Mark** on forehead + **3 cartoon birds** circle their head for 4s (Daze Birds VFX) + procedural bonk sound + slow-mo + combo counter.
+## Story chain
 
-## Scene 2 — Cutlery Chamber (`CutleryChamber.unity`)
+### Act 2 — Cutlery Chamber
 
-Dark torch-lit cell. Talk to all 5 Cell Crew (Big Bjørn = hardhat, Plastic Pete = toothpick, Goldie = crown, Tasting Tina = bow, The Ladle = monocle) by walking close + pressing E.
+1. Dark cell with 5 spoons + hay pile + glowing **Loose Stone** (dim until ready)
+2. **Talk to all 5 Cell Crew** (walk close + E for each)
+3. **Find the Pickaxe** — sitting on the hay pile (E to grab; attaches to your side)
+4. Once both done, the **Loose Stone glows orange and pulses**
+5. Walk close + press **E** to dig (3 stages, ~1.2s each — bonk sound per stage)
+6. Tunnel breaks → **auto-save** → loads `SampleScene` with you wearing **POLICE UNIFORM** (looped siren)
 
-When all 5 talked, the **Loose Stone** in the corner starts glowing orange. Press **E** on it → 3-second dig animation → automatically loads **SharkFusion** scene.
+### Act 4 (slight reorder) — Island arrival in uniform
 
-Objective tracker shows progress.
+1. You spawn at the Salon door in the blue uniform with flashing siren
+2. **NEW MISSION:** "Ditch the police uniform at Salon Cucchiaio"
+3. Walk in → menu pops:
+   - **[E] PAY 30 Troll Tokens** for a civilian skin (Coiffeur smiles)
+   - **[Q] THREATEN** the Coiffeur (free skin, but Daze Birds + ouch sound — she fled)
+4. Uniform shed → random fresh skin → siren stops → free roam unlocked
+5. Remaining missions chain in: **Bonk 5 violators → 100 tokens → Bonk Magnus Tusk → Bust dealers in Police Mode → Find the Ocean**
 
-## Scene 3 — Shark Fusion (`SharkFusion.unity`)
+### Act 3 — Ocean (final)
 
-Beach with palms + tiki shack + beachgoers. **Walk into the ocean** (south) → dramatic shark approach → **CHOMP** → Spoonacci lodges in shark snout like a unicorn horn → **control transfers to the Spoon-Shark**.
+1. Walk into the ocean (south of beach) — triggers Shark Fusion cutscene
+2. Spoon-Shark formed → roam ocean (WASD swim · Space dash)
 
-Shark now has: huge dorsal fin (above water), teeth, white eyes with pupils, gill stripes, big tail wagging, white belly, BIG visibly shark.
+## NPC reactions (new)
 
-**WASD** = swim, **Space** = dash boost. Cruise the ocean.
+When you bonk anyone:
+- 🔊 **Ouch sound** (procedural yelp)
+- 🦅 **3 Daze Birds** circle their head for 4s (cartoon flap)
+- 💥 **Knockback + tumble** — they fall over, rotate, then stand up after ~2s
+- 🥄 **Permanent red Spoon Mark** on forehead
 
-## If something errors
+## Active missions (MissionManager — chained)
 
-Paste the **Console** errors. Common ones (and fixes I already applied):
-- Procedural shark looked like a featureless submarine → now has dorsal fin, teeth, eyes, fins, tail
-- Cell spoons lay flat → now upright like player
-- Font too small → all HUD/dialogue now 26-32pt with shadows
-- Default camera too low → now angled higher with wider FOV
+| ID | Title | Prereqs |
+|---|---|---|
+| cell.talk | Talk to all 5 Cell Crew | — |
+| cell.pickaxe | Find a pickaxe (try the hay pile) | — |
+| cell.dig | Dig the loose stone (E) | cell.talk + cell.pickaxe |
+| island.salon | Ditch the police uniform at Salon | cell.dig |
+| isle.bonk5 | Bonk 5 violators | — |
+| isle.tokens100 | Earn 100 Troll Tokens | — |
+| isle.bust | Police Mode + 10 bonks | — |
+| isle.tusk | Bonk Magnus Tusk | — |
+| shark.fuse | Fuse with the Shark | — |
+
+Top-right panel shows only missions whose prerequisites are met.
+
+## Known FX
+
+- Slow-mo on every bonk landing (0.32s × 0.35 timescale)
+- Combo counter top-left
+- Salon skin change: sparkle SFX + tiny squash anim on spoon
+- Police badge: gold disc on head + red/blue point lights flashing 14Hz
+- Looped 2-tone siren (~2s loop) plays while Police Mode on
+
+## If errors
+
+Console screenshot → I patch in minutes.

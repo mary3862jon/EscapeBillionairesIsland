@@ -4,8 +4,7 @@ using UnityEngine;
 
 namespace Spoonacci
 {
-    // Global progression state — currency, bonk count, mission flags, talked-to spoons.
-    // Static so anyone can read/write without wiring references.
+    // Global progression state — currency, bonk count, mission flags, etc.
     public static class GameState
     {
         public static int TrollTokens;
@@ -14,14 +13,19 @@ namespace Spoonacci
         public static bool PoliceMode;
         public static bool CellCrewAllTalked;
         public static bool TunnelDug;
+        public static bool JustEscaped;            // set on cell dig, consumed on first island spawn
+        public static bool WearingCivilianClothes; // set after Salon Cucchiaio negotiation
+        public static int  CurrentSkinIndex;
 
         static readonly HashSet<string> _talked = new HashSet<string>();
+        public static IReadOnlyCollection<string> TalkedSet => _talked;
         public static event Action OnChanged;
 
         public static void Reset()
         {
             TrollTokens = 0; Bonks = 0; PerfectBonks = 0;
             PoliceMode = false; CellCrewAllTalked = false; TunnelDug = false;
+            JustEscaped = false; WearingCivilianClothes = false; CurrentSkinIndex = 0;
             _talked.Clear();
             OnChanged?.Invoke();
         }
@@ -41,15 +45,14 @@ namespace Spoonacci
         public static void RegisterBonk(bool wasViolator)
         {
             Bonks++;
-            if (wasViolator)
-            {
-                PerfectBonks++;
-                TrollTokens += 10;
-            }
-            else
-            {
-                TrollTokens += 1;
-            }
+            if (wasViolator) { PerfectBonks++; TrollTokens += 10; }
+            else             { TrollTokens += 1; }
+            OnChanged?.Invoke();
+        }
+
+        public static void SpendTokens(int n)
+        {
+            TrollTokens = Mathf.Max(0, TrollTokens - n);
             OnChanged?.Invoke();
         }
     }

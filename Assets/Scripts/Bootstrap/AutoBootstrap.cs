@@ -21,6 +21,11 @@ namespace Spoonacci
 
         static void Spawn(Scene s)
         {
+            // ensure singletons exist + missions registered
+            var _ = SoundFx.Instance;
+            var __ = SaveSystem.Instance;
+            MissionManager.BootstrapDefaults();
+
             // already spawned? skip.
             if (Object.FindFirstObjectByType<IslandBootstrapper>() != null) return;
             if (Object.FindFirstObjectByType<CellChamberBootstrapper>() != null) return;

@@ -3,20 +3,21 @@ using UnityEngine.InputSystem;
 
 namespace Spoonacci
 {
-    // Over-shoulder follow with orbit. Defaults tuned for SEE-MORE: high angle, wider FOV.
+    // Walking-eye-level third-person camera. Closer + lower than v0.4 (no more drone view).
+    // ~1.8m above ground, ~5.5m behind, slight downward pitch — sim-walker feel.
     public class ThirdPersonCamera : MonoBehaviour
     {
         public Transform target;
-        public float distance = 8f;
-        public float height = 4.5f;
-        public float fov = 70f;
+        public float distance = 5.5f;
+        public float height = 1.8f;
+        public float fov = 65f;
         public float orbitSpeed = 220f;
-        public float pitchMin = 5f;
-        public float pitchMax = 70f;
+        public float pitchMin = -12f;
+        public float pitchMax = 50f;
         public float followLerp = 9f;
 
         float yaw;
-        float pitch = 32f;
+        float pitch = 12f;
 
         void Start()
         {
@@ -36,12 +37,10 @@ namespace Spoonacci
                 pitch -= delta.y * orbitSpeed * Time.deltaTime * 0.05f;
                 pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
             }
-
-            // mouse wheel zoom
             if (mouse != null)
             {
                 float scroll = mouse.scroll.ReadValue().y * 0.01f;
-                distance = Mathf.Clamp(distance - scroll, 4f, 16f);
+                distance = Mathf.Clamp(distance - scroll, 3f, 14f);
             }
 
             Quaternion rot = Quaternion.Euler(pitch, yaw, 0f);
@@ -49,7 +48,7 @@ namespace Spoonacci
             Vector3 desired = target.position + offset;
 
             transform.position = Vector3.Lerp(transform.position, desired, followLerp * Time.deltaTime);
-            transform.LookAt(target.position + Vector3.up * 0.6f);
+            transform.LookAt(target.position + Vector3.up * 0.7f);
         }
     }
 }
