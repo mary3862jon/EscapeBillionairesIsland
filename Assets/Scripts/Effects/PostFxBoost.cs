@@ -19,6 +19,29 @@ namespace Spoonacci
 
         void Awake()
         {
+            // Per-scene tuning so the prison isn't smothered by vignette/film grain.
+            string scn = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (scn.Contains("Cutlery") || scn.Contains("Cell"))
+            {
+                bloomIntensity = 0.6f;
+                vignetteIntensity = 0.12f;
+                saturation = -5f;
+                contrast = 8f;
+                postExposure = 0.15f;
+                vignetteColor = new Color(0.02f, 0.01f, 0.04f);
+                addGrain = false;
+            }
+            else if (scn.Contains("Title"))
+            {
+                bloomIntensity = 1.7f;
+                vignetteIntensity = 0.2f;
+                saturation = 25f;
+                contrast = 18f;
+                postExposure = 0.5f;
+                vignetteColor = new Color(0.3f, 0.1f, 0.4f);
+                addGrain = true;
+            }
+
             var go = new GameObject("[PostFx Volume]");
             go.transform.SetParent(transform, false);
             var v = go.AddComponent<Volume>();

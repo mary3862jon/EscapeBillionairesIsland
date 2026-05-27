@@ -28,10 +28,20 @@ namespace Spoonacci
 
         void DampenAmbient()
         {
+            // moody but readable — was pitch-black before
             foreach (var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
-                if (l.type == LightType.Directional) l.intensity = 0.05f;
-            RenderSettings.ambientLight = new Color(0.05f, 0.04f, 0.06f);
-            RenderSettings.ambientIntensity = 0.5f;
+                if (l.type == LightType.Directional) l.intensity = 0.5f;
+
+            // a soft warm directional "skylight" through the ceiling for fill
+            var fillGo = new GameObject("Skylight Fill");
+            fillGo.transform.rotation = Quaternion.Euler(70f, 30f, 0f);
+            var fill = fillGo.AddComponent<Light>();
+            fill.type = LightType.Directional;
+            fill.intensity = 0.55f;
+            fill.color = new Color(0.9f, 0.8f, 0.65f);
+
+            RenderSettings.ambientLight = new Color(0.4f, 0.38f, 0.45f);
+            RenderSettings.ambientIntensity = 1.0f;
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
         }
 
@@ -52,13 +62,13 @@ namespace Spoonacci
             floor.name = "Prison Floor";
             floor.transform.position = new Vector3(0f, 0f, 0f);
             floor.transform.localScale = new Vector3(PRISON_W, 0.2f, PRISON_D);
-            floor.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.18f, 0.18f, 0.2f), 0.1f, 0.2f);
+            floor.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.45f, 0.42f, 0.40f), 0.1f, 0.35f);
 
             // Ceiling
             var ceil = GameObject.CreatePrimitive(PrimitiveType.Cube);
             ceil.transform.position = new Vector3(0f, PRISON_H, 0f);
             ceil.transform.localScale = new Vector3(PRISON_W, 0.2f, PRISON_D);
-            ceil.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.1f, 0.1f, 0.12f), 0f, 0.1f);
+            ceil.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.35f, 0.33f, 0.35f), 0f, 0.2f);
 
             // Outer walls
             BuildWall(new Vector3(0f, PRISON_H * 0.5f, PRISON_D * 0.5f),  new Vector3(PRISON_W, PRISON_H, 0.3f));  // north
@@ -77,10 +87,22 @@ namespace Spoonacci
                 if (i == 0 || i == CELL_COUNT) continue; // outer walls handled above
             }
 
-            // Torches along walls + ceiling spotlights
+            // Wall torches (5) along south wall
             for (int i = -2; i <= 2; i++)
             {
-                BuildTorch(new Vector3(i * 10f, PRISON_H - 0.5f, -PRISON_D * 0.5f + 0.4f), 10f);
+                BuildTorch(new Vector3(i * 10f, PRISON_H - 0.5f, -PRISON_D * 0.5f + 0.4f), 12f);
+            }
+            // Corridor ceiling strip lights (overhead fluorescents)
+            for (int i = -2; i <= 2; i++)
+            {
+                BuildCeilingStrip(new Vector3(i * 10f, PRISON_H - 0.2f, -PRISON_D * 0.25f), 18f);
+            }
+            // Per-cell ceiling lamps
+            float spacing = PRISON_W / (float)CELL_COUNT;
+            for (int c = 0; c < CELL_COUNT; c++)
+            {
+                float cx = -PRISON_W * 0.5f + spacing * (c + 0.5f);
+                BuildCeilingStrip(new Vector3(cx, PRISON_H - 0.5f, PRISON_D * 0.25f), 14f);
             }
 
             // Sign on south wall
@@ -119,7 +141,7 @@ namespace Spoonacci
             var f = GameObject.CreatePrimitive(PrimitiveType.Cube);
             f.transform.position = center + Vector3.up * 0.11f;
             f.transform.localScale = new Vector3(w - 0.4f, 0.04f, d - 0.4f);
-            f.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.22f, 0.2f, 0.22f), 0f, 0.2f);
+            f.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.55f, 0.50f, 0.45f), 0f, 0.3f);
 
             // hay pile in corner
             var hay = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -184,7 +206,29 @@ namespace Spoonacci
             var w = GameObject.CreatePrimitive(PrimitiveType.Cube);
             w.transform.position = pos;
             w.transform.localScale = scale;
-            w.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.22f, 0.22f, 0.24f), 0f, 0.15f);
+            w.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.55f, 0.50f, 0.45f), 0f, 0.3f);
+        }
+
+        void BuildCeilingStrip(Vector3 pos, float intensity)
+        {
+            var go = new GameObject("Ceiling Lamp");
+            go.transform.position = pos;
+            var lt = go.AddComponent<Light>();
+            lt.type = LightType.Point;
+            lt.color = new Color(1f, 0.92f, 0.78f);
+            lt.intensity = intensity;
+            lt.range = 16f;
+
+            // visible bar
+            var bar = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            bar.transform.SetParent(go.transform, false);
+            bar.transform.localScale = new Vector3(2.6f, 0.12f, 0.3f);
+            Destroy(bar.GetComponent<Collider>());
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = new Color(1f, 0.97f, 0.85f) };
+            mat.SetFloat("_Metallic", 0.2f); mat.SetFloat("_Smoothness", 0.3f);
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", new Color(2.5f, 2.2f, 1.5f));
+            bar.GetComponent<Renderer>().sharedMaterial = mat;
         }
 
         void BuildTorch(Vector3 pos, float intensity)

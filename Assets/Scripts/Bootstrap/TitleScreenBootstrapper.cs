@@ -22,17 +22,42 @@ namespace Spoonacci
         void BuildScene()
         {
             // sky
-            RenderSettings.ambientLight = new Color(0.6f, 0.65f, 0.75f);
-            RenderSettings.ambientIntensity = 1.2f;
+            RenderSettings.ambientLight = new Color(0.75f, 0.7f, 0.85f);
+            RenderSettings.ambientIntensity = 1.5f;
 
-            // sun
+            // sun (key)
             var sunGo = new GameObject("Sun");
             sunGo.transform.rotation = Quaternion.Euler(45f, 30f, 0f);
             var sun = sunGo.AddComponent<Light>();
             sun.type = LightType.Directional;
-            sun.intensity = 1.4f;
+            sun.intensity = 1.8f;
             sun.color = new Color(1f, 0.95f, 0.85f);
             sun.shadows = LightShadows.Soft;
+
+            // fill (warm pink from below for the spoon)
+            var fillGo = new GameObject("Fill");
+            fillGo.transform.rotation = Quaternion.Euler(-25f, 200f, 0f);
+            var fill = fillGo.AddComponent<Light>();
+            fill.type = LightType.Directional;
+            fill.intensity = 0.8f;
+            fill.color = new Color(1f, 0.7f, 0.85f);
+
+            // a rim/back light
+            var rimGo = new GameObject("Rim");
+            rimGo.transform.rotation = Quaternion.Euler(35f, 180f, 0f);
+            var rim = rimGo.AddComponent<Light>();
+            rim.type = LightType.Directional;
+            rim.intensity = 1.0f;
+            rim.color = new Color(0.6f, 0.85f, 1f);
+
+            // point light right at the spoon for sparkle
+            var pGo = new GameObject("Spoon Spot");
+            pGo.transform.position = new Vector3(0f, 3.5f, -2f);
+            var p = pGo.AddComponent<Light>();
+            p.type = LightType.Point;
+            p.color = new Color(1f, 0.95f, 0.7f);
+            p.intensity = 4f;
+            p.range = 10f;
 
             // floor (pink/gold gradient via two squares)
             var floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
