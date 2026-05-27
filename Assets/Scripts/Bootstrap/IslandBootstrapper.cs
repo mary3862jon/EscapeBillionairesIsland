@@ -25,6 +25,7 @@ namespace Spoonacci
             gameObject.AddComponent<PostFxBoost>();
             gameObject.AddComponent<PauseMenu>();
             gameObject.AddComponent<QuestBanner>();
+            gameObject.AddComponent<LanguageToggle>();
             BuildGround();
             BuildOcean();
             BuildSky();
@@ -51,7 +52,8 @@ namespace Spoonacci
             ground.name = "Beach";
             ground.transform.position = Vector3.zero;
             ground.transform.localScale = new Vector3(ISLE / 10f, 1f, ISLE / 10f);
-            ground.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.95f, 0.86f, 0.62f), 0f, 0.18f);
+            ground.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(
+                ProceduralTextures.Sand, new Color(0.98f, 0.94f, 0.78f), 0f, 0.18f, new Vector2(40f, 40f));
         }
 
         void BuildOcean()
@@ -59,8 +61,9 @@ namespace Spoonacci
             var ocean = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ocean.name = "Ocean";
             ocean.transform.position = new Vector3(0f, -0.18f, 0f);
-            ocean.transform.localScale = new Vector3(80f, 1f, 80f); // 800x800 unit
-            ocean.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.12f, 0.42f, 0.7f), 0.15f, 0.92f);
+            ocean.transform.localScale = new Vector3(80f, 1f, 80f);
+            ocean.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(
+                ProceduralTextures.Water, new Color(0.85f, 0.95f, 1f), 0.2f, 0.95f, new Vector2(30f, 30f));
             Destroy(ocean.GetComponent<Collider>());
         }
 
@@ -443,7 +446,8 @@ namespace Spoonacci
             var trunk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             trunk.transform.position = pos + Vector3.up * 2.2f;
             trunk.transform.localScale = new Vector3(0.32f, 2.2f, 0.32f);
-            trunk.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.4f, 0.26f, 0.16f), 0f, 0.3f);
+            trunk.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(
+                ProceduralTextures.Wood, new Color(0.7f, 0.5f, 0.32f), 0f, 0.3f, new Vector2(1f, 3f));
             for (int i = 0; i < 4; i++)
             {
                 float a = i * 90f * Mathf.Deg2Rad;
@@ -452,7 +456,8 @@ namespace Spoonacci
                 leaf.transform.localScale = new Vector3(1.6f, 0.35f, 0.7f);
                 leaf.transform.rotation = Quaternion.Euler(0f, i * 90f, -18f);
                 Destroy(leaf.GetComponent<Collider>());
-                leaf.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.18f, 0.55f, 0.22f), 0f, 0.3f);
+                leaf.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(
+                    ProceduralTextures.Leaves, new Color(0.5f, 0.95f, 0.5f), 0f, 0.3f, new Vector2(2f, 1f));
             }
         }
 

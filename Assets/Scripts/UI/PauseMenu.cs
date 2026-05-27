@@ -50,17 +50,17 @@ namespace Spoonacci
             float x = (Screen.width - w) * 0.5f;
             float y = Screen.height * 0.22f;
 
-            GUI.Label(new Rect(x, y, w, 80f), "PAUSED", titleStyle);
+            GUI.Label(new Rect(x, y, w, 80f), Loc.T("pause.title"), titleStyle);
             y += 100f;
 
-            if (GUI.Button(new Rect(x, y, w, bh), "RESUME", btnStyle)) Toggle();
+            if (GUI.Button(new Rect(x, y, w, bh), Loc.T("pause.resume"), btnStyle)) Toggle();
             y += bh + 14f;
-            if (GUI.Button(new Rect(x, y, w, bh), "SAVE GAME (F5)", btnStyle))
+            if (GUI.Button(new Rect(x, y, w, bh), Loc.T("pause.save"), btnStyle))
             {
                 SaveSystem.Instance.Save("Saved from menu");
             }
             y += bh + 14f;
-            if (GUI.Button(new Rect(x, y, w, bh), "QUIT TO TITLE", btnStyle))
+            if (GUI.Button(new Rect(x, y, w, bh), Loc.T("pause.to_title"), btnStyle))
             {
                 Time.timeScale = 1f;
                 SoundFx.Instance.Chime();
@@ -68,7 +68,7 @@ namespace Spoonacci
                 catch { SceneManager.LoadScene(0); }
             }
             y += bh + 14f;
-            if (GUI.Button(new Rect(x, y, w, bh), "QUIT TO DESKTOP", btnStyle))
+            if (GUI.Button(new Rect(x, y, w, bh), Loc.T("pause.to_quit"), btnStyle))
             {
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
@@ -79,8 +79,8 @@ namespace Spoonacci
 
             // help text + track info bottom
             float hy = Screen.height - 120f;
-            GUI.Label(new Rect(0, hy, Screen.width, 28f), "[ESC] resume  ·  [F5] save  ·  [K/J] next/prev music  ·  [M] mute  ·  [+/-] volume", helpStyle);
-            GUI.Label(new Rect(0, hy + 36f, Screen.width, 28f), "♪ Now playing:  " + MusicPlayer.Instance.CurrentTrack, trackStyle);
+            GUI.Label(new Rect(0, hy, Screen.width, 28f), Loc.T("pause.help"), helpStyle);
+            GUI.Label(new Rect(0, hy + 36f, Screen.width, 28f), Loc.T("pause.now_playing") + "  " + MusicPlayer.Instance.CurrentTrack, trackStyle);
         }
 
         void EnsureStyles()

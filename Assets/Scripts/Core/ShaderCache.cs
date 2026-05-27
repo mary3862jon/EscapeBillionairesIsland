@@ -57,5 +57,20 @@ namespace Spoonacci
             m.SetColor("_BaseColor", color);
             return m;
         }
+
+        public static Material MakeTextured(Texture2D tex, Color tint, float metallic, float smoothness, Vector2? tile = null)
+        {
+            var m = new Material(Lit) { color = tint };
+            m.SetFloat("_Metallic", metallic);
+            m.SetFloat("_Smoothness", smoothness);
+            m.SetColor("_BaseColor", tint);
+            if (tex != null)
+            {
+                m.mainTexture = tex;
+                m.SetTexture("_BaseMap", tex);
+                if (tile.HasValue) m.mainTextureScale = tile.Value;
+            }
+            return m;
+        }
     }
 }

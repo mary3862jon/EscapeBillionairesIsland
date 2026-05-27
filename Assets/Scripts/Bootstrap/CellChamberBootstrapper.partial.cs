@@ -18,6 +18,7 @@ namespace Spoonacci
             gameObject.AddComponent<PostFxBoost>();
             gameObject.AddComponent<PauseMenu>();
             gameObject.AddComponent<QuestBanner>();
+            gameObject.AddComponent<LanguageToggle>();
             DampenAmbient();
             BuildOuterStructure();
             BuildCells();
@@ -65,7 +66,8 @@ namespace Spoonacci
             floor.name = "Prison Floor";
             floor.transform.position = new Vector3(0f, 0f, 0f);
             floor.transform.localScale = new Vector3(PRISON_W, 0.2f, PRISON_D);
-            floor.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.45f, 0.42f, 0.40f), 0.1f, 0.35f);
+            floor.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(
+                ProceduralTextures.Stone, new Color(0.65f, 0.62f, 0.58f), 0.1f, 0.35f, new Vector2(12f, 8f));
 
             // Ceiling
             var ceil = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -209,7 +211,8 @@ namespace Spoonacci
             var w = GameObject.CreatePrimitive(PrimitiveType.Cube);
             w.transform.position = pos;
             w.transform.localScale = scale;
-            w.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.55f, 0.50f, 0.45f), 0f, 0.3f);
+            w.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(
+                ProceduralTextures.Stone, new Color(0.7f, 0.65f, 0.6f), 0f, 0.3f, new Vector2(scale.x * 0.5f, scale.y * 0.5f));
         }
 
         void BuildCeilingStrip(Vector3 pos, float intensity)

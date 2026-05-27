@@ -19,8 +19,9 @@ namespace Spoonacci
             _ = SoundFx.Instance;
             _ = SaveSystem.Instance;
             MissionManager.BootstrapDefaults();
-            _ = MusicPlayer.Instance; // start background music
+            _ = MusicPlayer.Instance;
             gameObject.AddComponent<PostFxBoost>();
+            gameObject.AddComponent<LanguageToggle>();
             BuildScene();
         }
 
@@ -117,21 +118,23 @@ namespace Spoonacci
             GUI.Label(new Rect(tx, ty, tw, th), title, titleStyle);
 
             var sub = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(26), fontStyle = FontStyle.Italic, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
-            GUI.Label(new Rect(tx, ty + 90f, tw, 40f), "Escape the Billionaire's Island", sub);
+            GUI.Label(new Rect(tx, ty + 90f, tw, 40f), Loc.T("title.subtitle"), sub);
 
             // buttons
             float bw = 380f, bh = 70f;
             float bx = (Screen.width - bw) * 0.5f;
             float by = Screen.height * 0.45f;
-            if (GUI.Button(new Rect(bx, by, bw, bh), "NEW GAME", btnStyle))
+            if (GUI.Button(new Rect(bx, by, bw, bh), Loc.T("title.new_game"), btnStyle))
                 StartNew();
-            if (GUI.Button(new Rect(bx, by + bh + 18f, bw, bh), "CONTINUE", btnStyle))
+            if (GUI.Button(new Rect(bx, by + bh + 18f, bw, bh), Loc.T("title.continue"), btnStyle))
                 Continue();
-            if (GUI.Button(new Rect(bx, by + (bh + 18f) * 2f, bw, bh), "QUIT", btnStyle))
+            if (GUI.Button(new Rect(bx, by + (bh + 18f) * 2f, bw, bh), Loc.T("title.quit"), btnStyle))
                 Quit();
 
             // footer with save info
-            string footer = "Save: " + (System.IO.File.Exists(SaveSystem.Path) ? "found ✔  ·  Tokens: " + GameState.TrollTokens + "  ·  Missions done: " + MissionManager.CompletedIds.Count : "no save yet");
+            string footer = System.IO.File.Exists(SaveSystem.Path)
+                ? Loc.T("title.save_found") + "  ·  " + Loc.T("title.tokens") + ": " + GameState.TrollTokens + "  ·  " + Loc.T("title.missions") + ": " + MissionManager.CompletedIds.Count
+                : Loc.T("title.no_save");
             GUI.Label(new Rect(20f, Screen.height - 40f, Screen.width - 40f, 24f), footer, footerStyle);
 
             // build/version

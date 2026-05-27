@@ -20,6 +20,7 @@ namespace Spoonacci
             gameObject.AddComponent<PostFxBoost>();
             gameObject.AddComponent<PauseMenu>();
             gameObject.AddComponent<QuestBanner>();
+            gameObject.AddComponent<LanguageToggle>();
             DimAmbient();
             BuildGround();
             BuildOcean();

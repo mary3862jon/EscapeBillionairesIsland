@@ -25,7 +25,7 @@ namespace Spoonacci
                 task = m.title;
                 break;
             }
-            if (task == null) task = "Free roam — explore, bonk, save (F5), press ESC to pause";
+            if (task == null) task = Loc.T("quest.freeroam");
 
             float w = Mathf.Min(Screen.width * 0.7f, 1100f);
             float h = 80f;
@@ -37,7 +37,7 @@ namespace Spoonacci
             GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
             GUI.color = prev;
 
-            GUI.Label(new Rect(x, y + 6f, w, 28f), "⭐ CURRENT QUEST", titleStyle);
+            GUI.Label(new Rect(x, y + 6f, w, 28f), Loc.T("quest.current"), titleStyle);
             GUI.Label(new Rect(x + 16f, y + 38f, w - 32f, 40f), task, taskStyle);
         }
 
