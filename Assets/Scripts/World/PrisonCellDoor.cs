@@ -25,86 +25,128 @@ namespace Spoonacci
 
         void BuildBars()
         {
-            // realistic cell door — 6 thick vertical bars + 3 horizontal crossbeams + frame + hinges + barrel lock
+            // BIG realistic prison cell door — full 3.6m wide × 4.5m tall frame
+            // 8 thick steel bars + 4 horizontal crossbeams + massive lock box + dangling padlock + 3 hinges
             var doorGO = new GameObject("Door");
             doorGO.transform.SetParent(transform, false);
             doorVisual = doorGO.transform;
 
-            var barMat   = MakeMat(barColor, 0.85f, 0.35f);
-            var frameMat = MakeMat(new Color(0.22f, 0.22f, 0.25f), 0.6f, 0.3f);
-            var ironMat  = MakeMat(new Color(0.15f, 0.15f, 0.18f), 0.85f, 0.25f);
+            var barMat   = MakeMat(barColor, 0.95f, 0.25f);
+            var frameMat = MakeMat(new Color(0.16f, 0.16f, 0.18f), 0.7f, 0.25f);
+            var ironMat  = MakeMat(new Color(0.10f, 0.10f, 0.13f), 0.9f, 0.2f);
+            var rustMat  = MakeMat(new Color(0.45f, 0.20f, 0.10f), 0.4f, 0.4f);
 
-            // outer frame (4 sides)
-            var frameTop    = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            const float W = 3.6f, H = 4.5f;
+
+            // HEAVY outer frame
+            var frameTop = GameObject.CreatePrimitive(PrimitiveType.Cube);
             frameTop.transform.SetParent(doorGO.transform, false);
-            frameTop.transform.localPosition = new Vector3(0f, 2.85f, 0f);
-            frameTop.transform.localScale = new Vector3(2.8f, 0.22f, 0.28f);
+            frameTop.transform.localPosition = new Vector3(0f, H - 0.2f, 0f);
+            frameTop.transform.localScale = new Vector3(W, 0.4f, 0.45f);
             frameTop.GetComponent<Renderer>().sharedMaterial = frameMat;
 
-            var frameBot    = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var frameBot = GameObject.CreatePrimitive(PrimitiveType.Cube);
             frameBot.transform.SetParent(doorGO.transform, false);
-            frameBot.transform.localPosition = new Vector3(0f, 0.05f, 0f);
-            frameBot.transform.localScale = new Vector3(2.8f, 0.22f, 0.28f);
+            frameBot.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+            frameBot.transform.localScale = new Vector3(W, 0.2f, 0.45f);
             frameBot.GetComponent<Renderer>().sharedMaterial = frameMat;
 
             for (int side = -1; side <= 1; side += 2)
             {
                 var sideF = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 sideF.transform.SetParent(doorGO.transform, false);
-                sideF.transform.localPosition = new Vector3(side * 1.35f, 1.45f, 0f);
-                sideF.transform.localScale = new Vector3(0.22f, 2.8f, 0.28f);
+                sideF.transform.localPosition = new Vector3(side * (W * 0.5f - 0.2f), H * 0.5f, 0f);
+                sideF.transform.localScale = new Vector3(0.4f, H, 0.45f);
                 sideF.GetComponent<Renderer>().sharedMaterial = frameMat;
             }
 
-            // 6 thick vertical bars
-            for (int i = 0; i < 6; i++)
+            // 8 thick steel bars (~5cm diameter each)
+            for (int i = 0; i < 8; i++)
             {
-                float x = -1.05f + i * 0.42f;
+                float x = -(W * 0.5f - 0.6f) + i * ((W - 1.2f) / 7f);
                 var bar = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 bar.transform.SetParent(doorGO.transform, false);
-                bar.transform.localPosition = new Vector3(x, 1.45f, 0f);
-                bar.transform.localScale = new Vector3(0.13f, 1.32f, 0.13f);
+                bar.transform.localPosition = new Vector3(x, H * 0.5f, 0f);
+                bar.transform.localScale = new Vector3(0.16f, (H - 0.4f) * 0.5f, 0.16f);
                 bar.GetComponent<Renderer>().sharedMaterial = barMat;
             }
-            // 3 horizontal crossbeams
-            for (int y = 0; y < 3; y++)
+            // 4 horizontal crossbeams
+            for (int y = 0; y < 4; y++)
             {
                 var cross = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 cross.transform.SetParent(doorGO.transform, false);
-                cross.transform.localPosition = new Vector3(0f, 0.4f + y * 1f, 0f);
-                cross.transform.localScale = new Vector3(2.5f, 0.1f, 0.12f);
+                cross.transform.localPosition = new Vector3(0f, 0.6f + y * ((H - 1.2f) / 3f), 0f);
+                cross.transform.localScale = new Vector3(W - 0.6f, 0.14f, 0.18f);
                 cross.GetComponent<Renderer>().sharedMaterial = barMat;
             }
 
-            // big iron lock box on the right
+            // BIG iron lock box on the right
+            float lockX = W * 0.5f - 0.5f;
             var lockBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            lockBox.name = "Lock Box";
             lockBox.transform.SetParent(doorGO.transform, false);
-            lockBox.transform.localPosition = new Vector3(1.0f, 1.45f, 0.2f);
-            lockBox.transform.localScale = new Vector3(0.38f, 0.5f, 0.22f);
+            lockBox.transform.localPosition = new Vector3(lockX, H * 0.5f, 0.3f);
+            lockBox.transform.localScale = new Vector3(0.6f, 0.85f, 0.35f);
             lockBox.GetComponent<Renderer>().sharedMaterial = ironMat;
+
+            // keyhole (small dark cube on lock box face)
+            var keyhole = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            keyhole.transform.SetParent(doorGO.transform, false);
+            keyhole.transform.localPosition = new Vector3(lockX, H * 0.5f, 0.48f);
+            keyhole.transform.localScale = new Vector3(0.12f, 0.18f, 0.04f);
+            Destroy(keyhole.GetComponent<Collider>());
+            keyhole.GetComponent<Renderer>().sharedMaterial = MakeMat(Color.black, 0f, 0.1f);
+
+            // DANGLING PADLOCK from a small chain on the lock box
+            var padlock = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            padlock.transform.SetParent(doorGO.transform, false);
+            padlock.transform.localPosition = new Vector3(lockX + 0.4f, H * 0.5f - 0.2f, 0.3f);
+            padlock.transform.localScale = new Vector3(0.35f, 0.45f, 0.18f);
+            padlock.GetComponent<Renderer>().sharedMaterial = rustMat;
+            // padlock shackle (the U-shaped bit on top)
+            var shackle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            shackle.transform.SetParent(doorGO.transform, false);
+            shackle.transform.localPosition = new Vector3(lockX + 0.4f, H * 0.5f + 0.12f, 0.3f);
+            shackle.transform.localScale = new Vector3(0.25f, 0.05f, 0.25f);
+            shackle.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            shackle.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.4f, 0.4f, 0.45f), 0.9f, 0.4f);
 
             // glowing red lock indicator
             var lockGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            lockGO.name = "Lock";
+            lockGO.name = "Lock LED";
             lockGO.transform.SetParent(doorGO.transform, false);
-            lockGO.transform.localPosition = new Vector3(1.0f, 1.45f, 0.34f);
-            lockGO.transform.localScale = Vector3.one * 0.18f;
+            lockGO.transform.localPosition = new Vector3(lockX, H * 0.5f + 0.55f, 0.5f);
+            lockGO.transform.localScale = Vector3.one * 0.22f;
             Destroy(lockGO.GetComponent<Collider>());
-            var lockMat = new Material(ShaderCache.Lit) { color = new Color(1f, 0.2f, 0.2f) };
-            lockMat.SetFloat("_Metallic", 0.3f); lockMat.SetFloat("_Smoothness", 0.6f);
+            var lockMat = new Material(ShaderCache.Lit) { color = new Color(1f, 0.15f, 0.15f) };
+            lockMat.SetFloat("_Metallic", 0.3f); lockMat.SetFloat("_Smoothness", 0.7f);
             lockMat.EnableKeyword("_EMISSION");
-            lockMat.SetColor("_EmissionColor", new Color(1.5f, 0f, 0f));
+            lockMat.SetColor("_EmissionColor", new Color(2f, 0f, 0f));
             lockGO.GetComponent<Renderer>().sharedMaterial = lockMat;
 
-            // hinges (left side)
-            for (int h = 0; h < 2; h++)
+            // 3 hinges on the left side
+            for (int h = 0; h < 3; h++)
             {
                 var hinge = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 hinge.transform.SetParent(doorGO.transform, false);
-                hinge.transform.localPosition = new Vector3(-1.35f, 0.4f + h * 2f, 0.15f);
-                hinge.transform.localScale = new Vector3(0.18f, 0.25f, 0.2f);
+                hinge.transform.localPosition = new Vector3(-(W * 0.5f - 0.05f), 0.5f + h * (H - 1f) * 0.5f, 0.22f);
+                hinge.transform.localScale = new Vector3(0.25f, 0.35f, 0.28f);
                 hinge.GetComponent<Renderer>().sharedMaterial = ironMat;
+
+                var bolt = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                bolt.transform.SetParent(doorGO.transform, false);
+                bolt.transform.localPosition = new Vector3(-(W * 0.5f - 0.05f), 0.5f + h * (H - 1f) * 0.5f, 0.36f);
+                bolt.transform.localScale = Vector3.one * 0.12f;
+                Destroy(bolt.GetComponent<Collider>());
+                bolt.GetComponent<Renderer>().sharedMaterial = barMat;
             }
+
+            // "CELL X" plaque above the door
+            var plaque = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            plaque.transform.SetParent(doorGO.transform, false);
+            plaque.transform.localPosition = new Vector3(0f, H + 0.25f, 0.05f);
+            plaque.transform.localScale = new Vector3(1.2f, 0.4f, 0.05f);
+            plaque.GetComponent<Renderer>().sharedMaterial = rustMat;
         }
 
         void Update()
