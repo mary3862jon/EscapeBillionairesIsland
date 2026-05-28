@@ -33,6 +33,7 @@ namespace Spoonacci
         }
 
         Transform looseStoneTransform;
+        WaypointMarker waypoint;
 
         void BuildWarden()
         {
@@ -60,6 +61,30 @@ namespace Spoonacci
             var ag = new GameObject("[PrisonAlarm]");
             ag.transform.position = new Vector3(0f, 0f, 0f);
             ag.AddComponent<PrisonAlarm>();
+
+            // waypoint marker — points the player to the current objective
+            var wpGo = new GameObject("[Waypoint]");
+            waypoint = wpGo.AddComponent<WaypointMarker>();
+        }
+
+        void Update()
+        {
+            // retarget the waypoint each frame: pickaxe → first locked door → loose stone
+            if (waypoint == null) return;
+            if (!PickaxeState.Found)
+            {
+                var pk = Object.FindFirstObjectByType<Pickaxe>();
+                waypoint.target = pk != null ? pk.transform : null;
+            }
+            else if (PrisonState.Unlocked < PrisonState.TotalCells - 1)
+            {
+                foreach (var d in Object.FindObjectsByType<PrisonCellDoor>(FindObjectsSortMode.None))
+                    if (d != null && !d.unlocked) { waypoint.target = d.transform; break; }
+            }
+            else
+            {
+                waypoint.target = looseStoneTransform;
+            }
         }
 
         void DampenAmbient()

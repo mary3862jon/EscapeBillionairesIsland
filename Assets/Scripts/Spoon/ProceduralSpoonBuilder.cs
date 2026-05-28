@@ -14,7 +14,7 @@ namespace Spoonacci
         [Header("Proportions (set before Awake to override)")]
         public float bodyHeight = 0.9f;
         public float bodyRadius = 0.08f;
-        public Vector3 bowlSize = new Vector3(0.45f, 0.12f, 0.85f); // x,y,z — flat oval
+        public Vector3 bowlSize = new Vector3(0.85f, 0.20f, 1.25f); // x,y,z — much bigger flat oval bowl
         public bool addFace = true;
         public bool addMonocle = true;
 

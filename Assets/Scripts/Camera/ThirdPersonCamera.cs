@@ -32,8 +32,7 @@ namespace Spoonacci
 
         void SnapToTarget()
         {
-            float yaw = target.eulerAngles.y;
-            Quaternion rot = Quaternion.Euler(pitch, yaw, 0f);
+            Quaternion rot = Quaternion.Euler(pitch, 0f, 0f);
             Vector3 offset = rot * new Vector3(0f, 0f, -distance) + Vector3.up * height;
             transform.position = target.position + offset;
             transform.LookAt(target.position + Vector3.up * 0.7f);
@@ -55,9 +54,9 @@ namespace Spoonacci
                 }
             }
 
-            // camera yaw follows player yaw — A/D steers, mouse is free
-            float playerYaw = target.eulerAngles.y;
-            Quaternion rot = Quaternion.Euler(pitch, playerYaw, 0f);
+            // Camera FIXED in world space — does NOT rotate with the player.
+            // Player moves world-space N/S/E/W with WASD. Camera only follows position.
+            Quaternion rot = Quaternion.Euler(pitch, 0f, 0f);
             Vector3 offset = rot * new Vector3(0f, 0f, -distance) + Vector3.up * height;
             Vector3 desired = target.position + offset;
 
