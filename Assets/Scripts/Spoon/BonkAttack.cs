@@ -43,10 +43,8 @@ namespace Spoonacci
             if (kb == null) return;
 
             var mouse = Mouse.current;
-            // F or RMB = auto-lock lunge bonk
-            bool autoLock = kb.fKey.wasPressedThisFrame
-                            || (mouse != null && mouse.rightButton.wasPressedThisFrame);
-            if (autoLock && CurrentLockOn != null && !ctrl.LungeActive)
+            // F only for auto-lock (RMB is reserved for camera-look now)
+            if (kb.fKey.wasPressedThisFrame && CurrentLockOn != null && !ctrl.LungeActive)
                 LaunchAt(CurrentLockOn);
 
             // Q or LMB = manual swing bonk

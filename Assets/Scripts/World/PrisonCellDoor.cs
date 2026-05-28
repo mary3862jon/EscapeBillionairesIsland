@@ -36,7 +36,8 @@ namespace Spoonacci
             var ironMat  = MakeMat(new Color(0.10f, 0.10f, 0.13f), 0.9f, 0.2f);
             var rustMat  = MakeMat(new Color(0.45f, 0.20f, 0.10f), 0.4f, 0.4f);
 
-            const float W = 3.6f, H = 4.5f;
+            // wall-to-wall (cell front is 8m wide in CellChamberBootstrapper)
+            const float W = 7.6f, H = 4.5f;
 
             // HEAVY outer frame
             var frameTop = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -60,10 +61,10 @@ namespace Spoonacci
                 sideF.GetComponent<Renderer>().sharedMaterial = frameMat;
             }
 
-            // 8 thick steel bars (~5cm diameter each)
-            for (int i = 0; i < 8; i++)
+            // 14 thick steel bars (spread across full width since gate is now wall-to-wall)
+            for (int i = 0; i < 14; i++)
             {
-                float x = -(W * 0.5f - 0.6f) + i * ((W - 1.2f) / 7f);
+                float x = -(W * 0.5f - 0.55f) + i * ((W - 1.1f) / 13f);
                 var bar = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 bar.transform.SetParent(doorGO.transform, false);
                 bar.transform.localPosition = new Vector3(x, H * 0.5f, 0f);
@@ -118,10 +119,11 @@ namespace Spoonacci
             lockGO.transform.localPosition = new Vector3(lockX, H * 0.5f + 0.55f, 0.5f);
             lockGO.transform.localScale = Vector3.one * 0.22f;
             Destroy(lockGO.GetComponent<Collider>());
-            var lockMat = new Material(ShaderCache.Lit) { color = new Color(1f, 0.15f, 0.15f) };
-            lockMat.SetFloat("_Metallic", 0.3f); lockMat.SetFloat("_Smoothness", 0.7f);
+            var lockMat = new Material(ShaderCache.Lit) { color = new Color(0.8f, 0.15f, 0.15f) };
+            lockMat.SetFloat("_Metallic", 0.3f); lockMat.SetFloat("_Smoothness", 0.5f);
+            // toned-down emission (was 2.0 = sun-bright through the bars)
             lockMat.EnableKeyword("_EMISSION");
-            lockMat.SetColor("_EmissionColor", new Color(2f, 0f, 0f));
+            lockMat.SetColor("_EmissionColor", new Color(0.3f, 0f, 0f));
             lockGO.GetComponent<Renderer>().sharedMaterial = lockMat;
 
             // 3 hinges on the left side

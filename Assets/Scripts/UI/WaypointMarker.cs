@@ -14,7 +14,7 @@ namespace Spoonacci
         GameObject arrow;
         Material mat;
 
-        void Awake() { BuildArrow(); }
+        void Awake() { /* visual disabled by user request — keeping component as a stub for future re-enable */ }
 
         void BuildArrow()
         {
@@ -37,22 +37,6 @@ namespace Spoonacci
             body.GetComponent<Renderer>().sharedMaterial = mat;
         }
 
-        void Update()
-        {
-            if (target == null) { if (arrow != null) arrow.SetActive(false); return; }
-            if (arrow != null && !arrow.activeSelf) arrow.SetActive(true);
-
-            // hide if very far (don't dominate distant view)
-            var cam = Camera.main;
-            if (cam != null && Vector3.Distance(cam.transform.position, target.position) > maxRange)
-            {
-                if (arrow != null) arrow.SetActive(false);
-                return;
-            }
-
-            Vector3 hover = target.position + Vector3.up * (hoverHeight + Mathf.Sin(Time.time * 2f) * 0.18f);
-            transform.position = hover;
-            arrow.transform.Rotate(Vector3.up, 60f * Time.deltaTime);
-        }
+        void Update() { /* no-op while visual is disabled */ }
     }
 }
