@@ -12,9 +12,9 @@ namespace Spoonacci
         public float smoothness = 0.7f;
 
         [Header("Proportions (set before Awake to override)")]
-        public float bodyHeight = 0.9f;
-        public float bodyRadius = 0.08f;
-        public Vector3 bowlSize = new Vector3(0.85f, 0.20f, 1.25f); // x,y,z — much bigger flat oval bowl
+        public float bodyHeight = 1.4f;     // taller handle = dominant visual
+        public float bodyRadius = 0.12f;    // thicker handle
+        public Vector3 bowlSize = new Vector3(0.45f, 0.12f, 0.55f); // proportional bowl, not giant
         public bool addFace = true;
         public bool addMonocle = true;
 
@@ -67,24 +67,25 @@ namespace Spoonacci
             neck.transform.localScale = new Vector3(bodyRadius * 2.6f, bodyRadius * 2.0f, bodyRadius * 2.6f);
             Destroy(neck.GetComponent<Collider>());
 
-            // BOWL — Capsule rotated to lie HORIZONTALLY, scaled to flat oval pill
-            // = the silhouette of a real spoon scoop (longer than wide, very thin)
-            var bowl = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            // BOWL — flat oval sitting ON TOP of the handle, tipped back so the scoop faces upward
+            // Built from a sphere scaled to a thin disc (more reliable than capsule rotation)
+            var bowl = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             bowl.name = "Bowl";
             bowl.transform.SetParent(Visual, false);
-            // tilt forward 15° so we see the scoop curve from camera
-            bowl.transform.localRotation = Quaternion.Euler(105f, 0f, 0f); // 90° lay-flat + 15° forward tilt
-            bowl.transform.localPosition = new Vector3(0f, bodyHeight + bowlSize.y * 0.5f, bowlSize.z * 0.35f);
-            bowl.transform.localScale = new Vector3(bowlSize.x, bowlSize.z, bowlSize.y);
+            // sit ON TOP of the handle (handle top is at y = bodyHeight)
+            bowl.transform.localPosition = new Vector3(0f, bodyHeight + bowlSize.y * 0.4f, 0.08f);
+            bowl.transform.localRotation = Quaternion.Euler(20f, 0f, 0f); // tilt back so scoop faces camera+up
+            // scale: x = width, y = thickness (small), z = depth/length forward
+            bowl.transform.localScale = new Vector3(bowlSize.x, bowlSize.y, bowlSize.z);
             Destroy(bowl.GetComponent<Collider>());
 
-            // BOWL EDGE — a thin gold-ish ring around the rim to emphasize the spoon edge
-            var rim = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            // BOWL RIM — slightly larger flat disc behind/under bowl
+            var rim = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             rim.name = "Bowl Rim";
             rim.transform.SetParent(Visual, false);
+            rim.transform.localPosition = bowl.transform.localPosition + new Vector3(0f, -0.01f, 0f);
             rim.transform.localRotation = bowl.transform.localRotation;
-            rim.transform.localPosition = bowl.transform.localPosition + new Vector3(0f, 0.005f, 0f);
-            rim.transform.localScale = new Vector3(bowlSize.x * 1.04f, bowlSize.z * 1.02f, bowlSize.y * 0.4f);
+            rim.transform.localScale = new Vector3(bowlSize.x * 1.08f, bowlSize.y * 0.5f, bowlSize.z * 1.08f);
             Destroy(rim.GetComponent<Collider>());
 
             // FACE — eyes/brows/mouth/monocle on the side of the bowl facing the camera
