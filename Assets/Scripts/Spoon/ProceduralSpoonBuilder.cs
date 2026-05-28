@@ -12,9 +12,9 @@ namespace Spoonacci
         public float smoothness = 0.7f;
 
         [Header("Proportions (set before Awake to override)")]
-        public float bodyHeight = 1.0f;     // handle length
-        public float bodyRadius = 0.06f;    // SLIM handle — like a real spoon
-        public Vector3 bowlSize = new Vector3(0.5f, 0.06f, 0.8f); // width x thickness x length — clear flat scoop
+        public float bodyHeight = 0.8f;     // handle length
+        public float bodyRadius = 0.05f;    // very thin handle
+        public Vector3 bowlSize = new Vector3(0.7f, 0.10f, 1.0f); // BIG oval bowl — width x thickness x length
         public bool addFace = true;
         public bool addMonocle = true;
 
@@ -67,26 +67,15 @@ namespace Spoonacci
             neck.transform.localScale = new Vector3(bodyRadius * 2.6f, bodyRadius * 2.0f, bodyRadius * 2.6f);
             Destroy(neck.GetComponent<Collider>());
 
-            // BOWL — a flat horizontal capsule (oval pill from above), tipped back so the scoop opens forward
-            // Capsule rotated 115° around X: original Y axis becomes world -Z (forward), original Z axis becomes vertical (thin)
-            var bowl = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            // BOWL — a big flat ellipsoid (sphere scaled) sitting on top of the handle, extending forward.
+            // No rotation: just a flat oval, like a real spoon's scoop seen from above.
+            var bowl = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             bowl.name = "Bowl";
             bowl.transform.SetParent(Visual, false);
-            // Place the bowl extending forward from the top of the handle (Z+ direction)
-            bowl.transform.localPosition = new Vector3(0f, bodyHeight + 0.04f, bowlSize.z * 0.5f);
-            bowl.transform.localRotation = Quaternion.Euler(115f, 0f, 0f); // 90° lay-flat + 25° back-tilt so we see the scoop curve
-            // After rotation: localScale.x = width, localScale.y = length-along-world-Z, localScale.z = vertical-thickness
-            bowl.transform.localScale = new Vector3(bowlSize.x, bowlSize.z, bowlSize.y);
+            bowl.transform.localPosition = new Vector3(0f, bodyHeight + bowlSize.y * 0.5f, bowlSize.z * 0.45f);
+            bowl.transform.localRotation = Quaternion.identity;
+            bowl.transform.localScale = bowlSize; // (width, thickness, length)
             Destroy(bowl.GetComponent<Collider>());
-
-            // BOWL RIM — slim ring around the lip
-            var rim = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            rim.name = "Bowl Rim";
-            rim.transform.SetParent(Visual, false);
-            rim.transform.localPosition = bowl.transform.localPosition + new Vector3(0f, 0.008f, 0f);
-            rim.transform.localRotation = bowl.transform.localRotation;
-            rim.transform.localScale = new Vector3(bowlSize.x * 1.05f, bowlSize.z * 1.02f, bowlSize.y * 0.4f);
-            Destroy(rim.GetComponent<Collider>());
 
             // FACE — eyes/brows/mouth/monocle on the side of the bowl facing the camera
             if (addFace)
@@ -160,7 +149,7 @@ namespace Spoonacci
                 }
             }
 
-            metalParts = new Renderer[] { handle.GetComponent<Renderer>(), neck.GetComponent<Renderer>(), bowl.GetComponent<Renderer>(), rim.GetComponent<Renderer>() };
+            metalParts = new Renderer[] { handle.GetComponent<Renderer>(), neck.GetComponent<Renderer>(), bowl.GetComponent<Renderer>() };
         }
 
         public void ApplySkin(Color color, float met = 0.85f, float smooth = 0.7f)
