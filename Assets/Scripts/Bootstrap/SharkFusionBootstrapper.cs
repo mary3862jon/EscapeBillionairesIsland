@@ -30,6 +30,17 @@ namespace Spoonacci
             WireCamera();
             BuildHud();
             BuildObjectives();
+            BuildWaypoint();
+        }
+
+        WaypointMarker waypoint;
+        void BuildWaypoint()
+        {
+            var wpGo = new GameObject("[Waypoint]");
+            waypoint = wpGo.AddComponent<WaypointMarker>();
+            // Always points at the water-edge trigger so the player walks south into the ocean
+            var trig = GameObject.Find("Water Edge Trigger");
+            if (trig != null) waypoint.target = trig.transform;
         }
 
         void DimAmbient()

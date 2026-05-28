@@ -23,7 +23,7 @@ namespace Spoonacci
             _ = MusicPlayer.Instance;
             gameObject.AddComponent<PostFxBoost>();
             gameObject.AddComponent<LanguageToggle>();
-            gameObject.AddComponent<PauseMenu>(); // ESC works on title too (opens settings)
+            // No PauseMenu on the title screen — title already has its own buttons
             BuildScene();
         }
 

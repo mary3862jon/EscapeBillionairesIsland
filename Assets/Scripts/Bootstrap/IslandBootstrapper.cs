@@ -43,6 +43,38 @@ namespace Spoonacci
             BuildPalmEdges();
             BuildCrowd();
             BuildViolationSpawner();
+            BuildWaypoint();
+        }
+
+        WaypointMarker waypoint;
+        void BuildWaypoint()
+        {
+            var wpGo = new GameObject("[Waypoint]");
+            waypoint = wpGo.AddComponent<WaypointMarker>();
+        }
+
+        void Update()
+        {
+            if (waypoint == null) return;
+            if (GameState.JustEscaped && !GameState.WearingCivilianClothes && salonAttendantTransform != null)
+                waypoint.target = salonAttendantTransform;
+            else if (!BillionaireRegistry.IsBonked("Magnus Tusk"))
+                waypoint.target = FindBillionaire("Magnus Tusk");
+            else if (!BillionaireRegistry.IsBonked("Beff Jezos"))
+                waypoint.target = FindBillionaire("Beff Jezos");
+            else if (!BillionaireRegistry.IsBonked("Crypto Chad"))
+                waypoint.target = FindBillionaire("Crypto Chad");
+            else if (!BillionaireRegistry.IsBonked("Mark Zuckersnort"))
+                waypoint.target = FindBillionaire("Mark Zuckersnort");
+            else
+                waypoint.target = null;
+        }
+
+        Transform FindBillionaire(string n)
+        {
+            foreach (var b in Object.FindObjectsByType<BillionaireNPC>(FindObjectsSortMode.None))
+                if (b != null && b.billionaireName == n) return b.transform;
+            return null;
         }
 
         // ---------- WORLD ----------

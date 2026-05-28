@@ -11,9 +11,9 @@ namespace Spoonacci
         public Transform target;
         public float[] zoomLevels = { 3.5f, 6f, 9f, 13f };
         public int zoomIndex = 1;
-        public float height = 1.8f;
+        public float height = 3.5f;        // raised — see more of the world
         public float fov = 65f;
-        public float pitch = 18f;          // fixed downward pitch
+        public float pitch = 28f;          // a bit more top-down so geometry around the spoon is visible
         public float followLerp = 9f;
         public float collisionPadding = 0.35f;
 

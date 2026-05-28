@@ -27,18 +27,19 @@ namespace Spoonacci
             }
             if (task == null) task = Loc.T("quest.freeroam");
 
-            float w = Mathf.Min(Screen.width * 0.7f, 1100f);
-            float h = 80f;
-            float x = (Screen.width - w) * 0.5f;
-            float y = 16f;
+            // Shifted LEFT and shrunk so it never overlaps the top-right mission panel (which is 460 wide)
+            float w = Mathf.Min(Screen.width * 0.55f, 900f);
+            float h = 76f;
+            float x = 20f;
+            float y = 70f;
 
             var prev = GUI.color;
-            GUI.color = new Color(0f, 0f, 0f, 0.65f);
+            GUI.color = new Color(0f, 0f, 0f, 0.82f);
             GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
             GUI.color = prev;
 
-            GUI.Label(new Rect(x, y + 6f, w, 28f), Loc.T("quest.current"), titleStyle);
-            GUI.Label(new Rect(x + 16f, y + 38f, w - 32f, 40f), task, taskStyle);
+            GUI.Label(new Rect(x, y + 6f, w, 26f), Loc.T("quest.current"), titleStyle);
+            GUI.Label(new Rect(x + 14f, y + 36f, w - 28f, 36f), task, taskStyle);
         }
 
         void EnsureStyles()
