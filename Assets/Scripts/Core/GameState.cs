@@ -17,6 +17,7 @@ namespace Spoonacci
         public static bool WearingCivilianClothes; // set after Salon Cucchiaio negotiation
         public static int  CurrentSkinIndex;
         public static bool IsNight;
+        public static int  CurrentSpoonType = 1; // 0–8, mapped to keys 1–9 (default = Tablespoon)
 
         static readonly HashSet<string> _talked = new HashSet<string>();
         public static IReadOnlyCollection<string> TalkedSet => _talked;

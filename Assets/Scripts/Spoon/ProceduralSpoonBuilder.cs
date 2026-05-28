@@ -24,6 +24,30 @@ namespace Spoonacci
 
         void Awake()
         {
+            ApplyType(GameState.CurrentSpoonType);
+            BuildBody();
+            ApplySkin(skinColor, metallic, smoothness);
+        }
+
+        public void ApplyType(int idx)
+        {
+            if (SpoonTypeLibrary.All == null || SpoonTypeLibrary.All.Count == 0) return;
+            idx = Mathf.Clamp(idx, 0, SpoonTypeLibrary.All.Count - 1);
+            var t = SpoonTypeLibrary.All[idx];
+            bodyHeight = t.handleHeight;
+            bodyRadius = t.handleRadius;
+            bowlSize = new Vector3(t.bowlWidth, t.bowlThickness, t.bowlLength);
+            skinColor = t.color;
+            metallic = t.metallic;
+            smoothness = t.smoothness;
+        }
+
+        // Destroy current visuals and rebuild — used by SpoonTypeSwitcher when keys 1-9 are pressed
+        public void RebuildFromCurrentType()
+        {
+            if (Visual != null) Destroy(Visual.gameObject);
+            ApplyType(GameState.CurrentSpoonType);
+            runtimeMat = null;
             BuildBody();
             ApplySkin(skinColor, metallic, smoothness);
         }

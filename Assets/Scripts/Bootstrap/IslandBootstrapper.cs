@@ -127,6 +127,7 @@ namespace Spoonacci
             spoon.AddComponent<Rigidbody>();
             spoon.AddComponent<CapsuleCollider>();
             spoon.AddComponent<ProceduralSpoonBuilder>();
+            spoon.AddComponent<SpoonTypeSwitcher>();
             spoon.AddComponent<SpoonAnimator>();
             spoon.AddComponent<SpoonController>();
             spoon.AddComponent<BonkAttack>();
