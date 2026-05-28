@@ -26,26 +26,28 @@ namespace Spoonacci
 
     public static class SpoonTypeLibrary
     {
+        // Proportions are now: handleHeight, handleRadius, bowlWidth (X side-to-side),
+        // bowlDepth (Z thickness front-to-back), bowlVerticalLen (Y — bowl is IN LINE with the handle, taller than wide).
         public static readonly List<SpoonType> All = new List<SpoonType>
         {
-            // 1 — Teaspoon (small, basic stainless)
-            new SpoonType("Teaspoon",     0.85f, 0.030f, 0.28f, 0.08f, 0.45f, new Color(0.78f, 0.78f, 0.82f), 0.55f, 0.55f),
-            // 2 — Tablespoon (medium, classic)
-            new SpoonType("Tablespoon",   1.00f, 0.035f, 0.38f, 0.10f, 0.65f, new Color(0.78f, 0.78f, 0.82f), 0.55f, 0.55f),
-            // 3 — Soup spoon (deeper rounder bowl)
-            new SpoonType("Soup Spoon",   0.95f, 0.035f, 0.50f, 0.14f, 0.55f, new Color(0.80f, 0.80f, 0.85f), 0.50f, 0.50f),
-            // 4 — Dessert spoon (longer pointier bowl)
-            new SpoonType("Dessert Spoon",0.95f, 0.030f, 0.34f, 0.09f, 0.58f, new Color(0.80f, 0.80f, 0.85f), 0.55f, 0.60f),
+            // 1 — Teaspoon
+            new SpoonType("Teaspoon",      0.90f, 0.030f, 0.32f, 0.14f, 0.40f, new Color(0.80f, 0.80f, 0.85f), 0.55f, 0.55f),
+            // 2 — Tablespoon
+            new SpoonType("Tablespoon",    1.05f, 0.035f, 0.42f, 0.18f, 0.55f, new Color(0.80f, 0.80f, 0.85f), 0.55f, 0.55f),
+            // 3 — Soup spoon (deeper rounder)
+            new SpoonType("Soup Spoon",    1.00f, 0.035f, 0.48f, 0.24f, 0.50f, new Color(0.80f, 0.80f, 0.85f), 0.50f, 0.50f),
+            // 4 — Dessert spoon (pointier oval)
+            new SpoonType("Dessert Spoon", 1.00f, 0.032f, 0.38f, 0.16f, 0.55f, new Color(0.80f, 0.80f, 0.85f), 0.55f, 0.60f),
             // 5 — Coffee spoon (tiny)
-            new SpoonType("Coffee Spoon", 0.70f, 0.025f, 0.22f, 0.06f, 0.35f, new Color(0.75f, 0.75f, 0.80f), 0.55f, 0.55f),
-            // 6 — Ladle (long handle, very deep round bowl)
-            new SpoonType("Ladle",        1.30f, 0.045f, 0.60f, 0.24f, 0.65f, new Color(0.70f, 0.70f, 0.75f), 0.65f, 0.45f),
-            // 7 — Wooden spoon (warm wood color, matte)
-            new SpoonType("Wooden Spoon", 1.10f, 0.045f, 0.40f, 0.14f, 0.55f, new Color(0.55f, 0.35f, 0.18f), 0.00f, 0.20f),
-            // 8 — Gold spoon (luxury)
-            new SpoonType("Gold Spoon",   1.00f, 0.035f, 0.40f, 0.11f, 0.62f, new Color(0.95f, 0.78f, 0.22f), 1.00f, 0.85f),
-            // 9 — Plastic spoon (cheap takeout)
-            new SpoonType("Plastic Spoon",0.85f, 0.030f, 0.30f, 0.08f, 0.48f, new Color(0.96f, 0.96f, 0.98f), 0.05f, 0.30f),
+            new SpoonType("Coffee Spoon",  0.75f, 0.024f, 0.24f, 0.10f, 0.30f, new Color(0.75f, 0.75f, 0.80f), 0.55f, 0.55f),
+            // 6 — Ladle (long handle, deep round bowl)
+            new SpoonType("Ladle",         1.40f, 0.045f, 0.55f, 0.40f, 0.55f, new Color(0.70f, 0.70f, 0.75f), 0.65f, 0.45f),
+            // 7 — Wooden spoon
+            new SpoonType("Wooden Spoon",  1.15f, 0.045f, 0.42f, 0.22f, 0.50f, new Color(0.55f, 0.35f, 0.18f), 0.00f, 0.20f),
+            // 8 — Gold spoon
+            new SpoonType("Gold Spoon",    1.05f, 0.035f, 0.42f, 0.18f, 0.55f, new Color(0.95f, 0.78f, 0.22f), 1.00f, 0.85f),
+            // 9 — Plastic spoon
+            new SpoonType("Plastic Spoon", 0.90f, 0.030f, 0.34f, 0.14f, 0.42f, new Color(0.96f, 0.96f, 0.98f), 0.05f, 0.30f),
         };
     }
 }

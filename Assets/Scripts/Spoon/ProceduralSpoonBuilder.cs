@@ -15,8 +15,8 @@ namespace Spoonacci
         public float bodyHeight = 0.95f;
         public float bodyRadius = 0.035f;            // very thin handle
         public Vector3 bowlSize = new Vector3(0.35f, 0.10f, 0.65f); // width × thickness × length
-        public bool addFace = true;
-        public bool addMonocle = true;
+        public bool addFace = false;     // disabled while we settle on the silhouette
+        public bool addMonocle = false;
 
         Renderer[] metalParts;
         Material runtimeMat;
@@ -65,9 +65,10 @@ namespace Spoonacci
 
             var col = GetComponent<CapsuleCollider>() ?? gameObject.AddComponent<CapsuleCollider>();
             col.direction = 1;
-            col.height = bodyHeight + 0.25f;
-            col.radius = Mathf.Max(bodyRadius * 1.3f, 0.16f);
-            col.center = new Vector3(0f, (bodyHeight + 0.25f) * 0.5f - 0.05f, 0f);
+            float totalH = bodyHeight + bowlSize.z + 0.1f; // handle + vertical bowl
+            col.height = totalH;
+            col.radius = Mathf.Max(bodyRadius * 1.3f, bowlSize.x * 0.55f);
+            col.center = new Vector3(0f, totalH * 0.5f - 0.05f, 0f);
 
             var visualGo = new GameObject("Visual");
             visualGo.transform.SetParent(transform, false);
@@ -91,17 +92,17 @@ namespace Spoonacci
             neck.transform.localScale = Vector3.one * (bodyRadius * 2.5f);
             Destroy(neck.GetComponent<Collider>());
 
-            // BOWL — Capsule oriented horizontally along +Z, tilted 25° back so the scoop opens upward.
-            // Capsule's rounded ends = the rounded scoop tip + the rounded neck-connection.
-            // Position so the BACK end of the capsule meets the neck and the FRONT end extends forward.
+            // BOWL — IN LINE with the handle (continuation upward). NO 90° angle.
+            // Capsule kept vertical (default long axis = Y), scaled into a wider-than-handle oval head.
+            // The bowl is bigger in width (X) and depth (Z) than the handle, but stretches along the SAME vertical axis.
+            // Slight forward tilt so the scoop curve faces the camera.
             var bowl = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             bowl.name = "Bowl";
             bowl.transform.SetParent(Visual, false);
-            // Capsule default long axis = Y. 90° around X = lays along world +Z. +25° more = back-tilt so scoop visible
-            bowl.transform.localRotation = Quaternion.Euler(115f, 0f, 0f);
-            // Position: shift forward so the front of the capsule extends out from the handle tip
-            bowl.transform.localPosition = new Vector3(0f, bodyHeight + 0.02f, bowlSize.z * 0.4f);
-            // After 90°X rotation: localScale.x = width, localScale.y = length (was Y), localScale.z = vertical thickness
+            // Centered above the handle top. NO rotation around X — bowl long axis is VERTICAL like the handle.
+            bowl.transform.localRotation = Quaternion.Euler(8f, 0f, 0f); // tiny 8° forward tilt = natural-looking spoon
+            bowl.transform.localPosition = new Vector3(0f, bodyHeight + bowlSize.z * 0.5f, 0f);
+            // scale: width × depth × verticalLength (bowl extends UPWARD continuing from the handle)
             bowl.transform.localScale = new Vector3(bowlSize.x, bowlSize.z, bowlSize.y);
             Destroy(bowl.GetComponent<Collider>());
 
