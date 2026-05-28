@@ -148,7 +148,7 @@ namespace Spoonacci
             cam.fieldOfView = 70f;
             var follower = cam.GetComponent<ThirdPersonCamera>() ?? cam.gameObject.AddComponent<ThirdPersonCamera>();
             follower.target = spoon.transform;
-            follower.distance = 9f;
+            // follower.distance now controlled by scroll-zoom presets
             follower.height = 5.2f;
         }
 
@@ -188,7 +188,7 @@ namespace Spoonacci
             // pan camera dramatically
             var cam = Camera.main;
             var follow = cam != null ? cam.GetComponent<ThirdPersonCamera>() : null;
-            if (follow != null) { follow.distance = 14f; follow.height = 8f; }
+            if (follow != null) { follow.height = 8f; }
 
             yield return new WaitForSeconds(0.8f);
 
@@ -216,7 +216,7 @@ namespace Spoonacci
 
             // hand control to the shark
             shark.AddComponent<SharkController>();
-            if (follow != null) { follow.target = shark.transform; follow.distance = 11f; follow.height = 3.5f; }
+            if (follow != null) { follow.target = shark.transform; follow.height = 3.5f; follow.zoomIndex = 2; }
             hud.Set(Loc.T("intro.shark2"));
             SoundFx.Instance.LevelUp();
             SharkFusionState.Fused = true;

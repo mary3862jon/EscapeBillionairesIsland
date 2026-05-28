@@ -116,7 +116,7 @@ namespace Spoonacci
             cam.farClipPlane = 600f;
             var follower = cam.GetComponent<ThirdPersonCamera>() ?? cam.gameObject.AddComponent<ThirdPersonCamera>();
             follower.target = spoon.transform;
-            follower.distance = 5.5f;
+            // follower.distance now controlled by scroll-zoom presets
             follower.height = 1.8f;
         }
 
