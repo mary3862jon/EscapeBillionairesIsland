@@ -7,9 +7,10 @@ namespace Spoonacci
     [RequireComponent(typeof(Rigidbody))]
     public class SpoonController : MonoBehaviour
     {
-        public float moveSpeed = 4.8f;
-        public float turnSpeed = 900f;
-        public float hopForce = 5.2f;
+        public float moveSpeed = 7.5f;   // bumped 4.8 → 7.5 (was too slow)
+        public float turnSpeed = 1100f;
+        public float hopForce = 6.2f;
+        public float sprintMultiplier = 1.6f; // hold Shift to sprint
         public Transform cameraTransform;
 
         Rigidbody rb;
@@ -79,7 +80,12 @@ namespace Spoonacci
             Vector3 desired = fwd * moveInput.y + right * moveInput.x;
             if (desired.sqrMagnitude > 1f) desired.Normalize();
 
-            Vector3 horiz = desired * moveSpeed;
+            // sprint with Shift
+            var kbS = Keyboard.current;
+            float speed = moveSpeed;
+            if (kbS != null && (kbS.leftShiftKey.isPressed || kbS.rightShiftKey.isPressed)) speed *= sprintMultiplier;
+
+            Vector3 horiz = desired * speed;
             var v = rb.linearVelocity;
             v.x = horiz.x; v.z = horiz.z;
             rb.linearVelocity = v;

@@ -29,6 +29,14 @@ namespace Spoonacci
             var cam = GetComponent<Camera>();
             if (cam != null) cam.fieldOfView = fov;
             ApplyCursor();
+            // snap to position immediately so we don't start INSIDE the spoon
+            if (target != null)
+            {
+                Quaternion rot = Quaternion.Euler(pitch, yaw, 0f);
+                Vector3 offset = rot * new Vector3(0f, 0f, -distance) + Vector3.up * height;
+                transform.position = target.position + offset;
+                transform.LookAt(target.position + Vector3.up * 0.7f);
+            }
         }
 
         void Update()

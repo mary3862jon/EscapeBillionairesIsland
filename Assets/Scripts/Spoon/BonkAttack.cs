@@ -99,10 +99,17 @@ namespace Spoonacci
             c.ReceiveBonk(transform.position);
             if (anim != null) anim.TriggerBonkSwing();
             SoundFx.Instance.Bonk();
+            // Two staggered bonk sounds = THWACK + thud
+            Invoke(nameof(SecondaryBonk), 0.06f);
+
+            // SCREEN SHAKE — heavier for violators
+            CameraShake.Shake(wasViolator ? 0.85f : 0.5f);
 
             // particle burst at head height
             Vector3 burstPos = c.HeadTransform != null ? c.HeadTransform.position : c.transform.position + Vector3.up * 1.4f;
             BonkBurst.Spawn(burstPos);
+            // double burst at slight offset = bigger impact
+            BonkBurst.Spawn(burstPos + Vector3.up * 0.15f);
 
             // attach daze birds to head
             if (c.HeadTransform != null)
@@ -118,10 +125,12 @@ namespace Spoonacci
             // level-up jingle on combo milestones
             if (Combo == 3 || Combo == 5 || Combo == 10) SoundFx.Instance.LevelUp();
 
-            // slow-mo punch
-            Time.timeScale = slowMoScale;
-            slowMoUntil = Time.unscaledTime + slowMoDuration;
+            // slow-mo punch — stronger and longer
+            Time.timeScale = slowMoScale * 0.7f; // even slower
+            slowMoUntil = Time.unscaledTime + slowMoDuration * 1.4f;
         }
+
+        void SecondaryBonk() { SoundFx.Instance.Bonk(); }
 
         void OnGUI()
         {

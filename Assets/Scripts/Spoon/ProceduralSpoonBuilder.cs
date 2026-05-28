@@ -50,19 +50,26 @@ namespace Spoonacci
             Visual = visualGo.transform;
 
             // 1) Try real CC0 spoon model from Resources (drummyfish/opengameart, public domain)
+            //    OBJ vertex bounds: X=±0.53 (width), Y=-3.03..+0.97 (length 4 units, bowl in +Y, handle in -Y),
+            //    Z=±0.16 (thickness). The model is already vertical — bowl up, handle down.
             var realPrefab = Resources.Load<GameObject>("Models/spoon");
             if (realPrefab != null)
             {
-                var instance = Instantiate(realPrefab, Visual);
+                var pivot = new GameObject("SpoonPivot");
+                pivot.transform.SetParent(Visual, false);
+
+                var instance = Instantiate(realPrefab, pivot.transform);
                 instance.name = "Real Spoon Model";
-                // The OBJ is laid flat — stand it up, scale to character size, center vertically
-                instance.transform.localPosition = new Vector3(0f, bodyHeight * 0.5f + 0.05f, 0f);
-                instance.transform.localRotation = Quaternion.Euler(-90f, 90f, 0f); // bowl up, handle vertical
-                instance.transform.localScale = Vector3.one * 0.75f;
-                // collect every Renderer for skin re-tint
+                instance.transform.localPosition = Vector3.zero;
+                instance.transform.localRotation = Quaternion.identity;
+                // scale so total spoon height = ~1.2m (OBJ is ~4 units tall → scale 0.3)
+                instance.transform.localScale = Vector3.one * 0.3f;
+                // lift pivot so handle bottom (local Y = -0.9 after scale) sits at world ground (Y=0)
+                pivot.transform.localPosition = new Vector3(0f, 0.9f, 0f);
+
                 metalParts = instance.GetComponentsInChildren<Renderer>();
-                // tiny eyes on the bowl so it still has Spoonacci-ness
-                if (addFace) AddSimpleEyes(Visual, new Vector3(0f, bodyHeight + 0.05f, 0.15f));
+                // tiny eyes near the bowl (which sits at ~Y=1.2 in spoon local space after scale+lift)
+                if (addFace) AddSimpleEyes(Visual, new Vector3(0f, 1.1f, 0.12f));
                 return;
             }
             // 2) Procedural fallback (capsule-based bowl)
