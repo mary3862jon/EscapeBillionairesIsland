@@ -24,10 +24,42 @@ namespace Spoonacci
             BuildCells();
             BuildLooseStone();
             BuildPickaxe();
+            BuildWarden();
+            BuildAlarm();
             BuildSpoon();
             WireCamera();
             BuildHud();
             BuildObjectives();
+        }
+
+        Transform looseStoneTransform;
+
+        void BuildWarden()
+        {
+            // patrol path through the corridor: 4 waypoints (east → west → east, looping)
+            var wpRoot = new GameObject("WardenWaypoints");
+            var wps = new Transform[4];
+            float[] xs = { -20f, -8f, 8f, 20f };
+            for (int i = 0; i < 4; i++)
+            {
+                var wp = new GameObject("WP" + i);
+                wp.transform.SetParent(wpRoot.transform, false);
+                wp.transform.position = new Vector3(xs[i], 0f, -PRISON_D * 0.3f);
+                wps[i] = wp.transform;
+            }
+            // spawn warden at the first waypoint
+            var w = new GameObject("Prison Warden");
+            w.transform.position = wps[0].position;
+            var warden = w.AddComponent<PrisonWarden>();
+            warden.waypoints = wps;
+            warden.watchTarget = looseStoneTransform;
+        }
+
+        void BuildAlarm()
+        {
+            var ag = new GameObject("[PrisonAlarm]");
+            ag.transform.position = new Vector3(0f, 0f, 0f);
+            ag.AddComponent<PrisonAlarm>();
         }
 
         void DampenAmbient()
@@ -265,9 +297,9 @@ namespace Spoonacci
         void BuildLooseStone()
         {
             var go = new GameObject("Loose Stone");
-            // place in the corridor at the south-west, far from hero start
             go.transform.position = new Vector3(-PRISON_W * 0.4f, 0.4f, -PRISON_D * 0.35f);
             go.AddComponent<LooseStone>();
+            looseStoneTransform = go.transform; // used by warden's view cone
         }
 
         void BuildPickaxe()

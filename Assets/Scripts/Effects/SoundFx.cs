@@ -30,6 +30,7 @@ namespace Spoonacci
         AudioSource audio;
         AudioSource sirenSrc;
         AudioClip bonkClip, swooshClip, chimeClip, levelUpClip, ouchClip, sparkleClip, savedClip, sirenLoop;
+        AudioClip cellClankClip, digClip, jumpClip, footstepClip;
 
         void Bake()
         {
@@ -41,8 +42,17 @@ namespace Spoonacci
             sparkleClip = MakeSparkle();
             savedClip   = MakeSavedDing();
             sirenLoop   = MakeSiren();
+            cellClankClip = MakeCellClank();
+            digClip       = MakeDigScrape();
+            jumpClip      = MakeJumpWhoosh();
+            footstepClip  = MakeFootstep();
             sirenSrc.clip = sirenLoop;
         }
+
+        public void CellClank() { if (audio != null && cellClankClip != null) audio.PlayOneShot(cellClankClip, Sfx); }
+        public void Dig()       { if (audio != null && digClip       != null) audio.PlayOneShot(digClip,       Sfx * 0.8f); }
+        public void Jump()      { if (audio != null && jumpClip      != null) audio.PlayOneShot(jumpClip,      Sfx * 0.5f); }
+        public void Footstep()  { if (audio != null && footstepClip  != null) audio.PlayOneShot(footstepClip,  Sfx * 0.25f); }
 
         float Sfx => SettingsManager.EffectiveSfx;
         float Dlg => SettingsManager.EffectiveDialogue;
@@ -167,6 +177,70 @@ namespace Spoonacci
                 data[i] = Mathf.Sin(2f * Mathf.PI * f * t) * env * 0.5f;
             }
             var c = AudioClip.Create("saved", len, 1, sr, false); c.SetData(data, 0); return c;
+        }
+
+        AudioClip MakeCellClank()
+        {
+            // heavy metal clank — low fundamental + harmonics, ringing decay
+            int sr = 44100; int len = sr / 2;
+            float[] data = new float[len];
+            for (int i = 0; i < len; i++)
+            {
+                float t = i / (float)sr;
+                float env = Mathf.Exp(-t * 4f);
+                float s = Mathf.Sin(2f * Mathf.PI * 110f * t) * 0.5f
+                        + Mathf.Sin(2f * Mathf.PI * 165f * t) * 0.3f
+                        + Mathf.Sin(2f * Mathf.PI * 220f * t) * 0.2f
+                        + (Random.value * 2f - 1f) * Mathf.Exp(-t * 80f) * 0.5f;
+                data[i] = s * env * 0.7f;
+            }
+            var c = AudioClip.Create("cell_clank", len, 1, sr, false); c.SetData(data, 0); return c;
+        }
+
+        AudioClip MakeDigScrape()
+        {
+            // shovel-on-dirt: filtered noise burst
+            int sr = 22050; int len = sr / 2;
+            float[] data = new float[len];
+            float prev = 0f;
+            for (int i = 0; i < len; i++)
+            {
+                float t = i / (float)sr;
+                float noise = (Random.value * 2f - 1f);
+                // low-pass filter
+                prev = prev + (noise - prev) * 0.15f;
+                float env = Mathf.Sin(Mathf.PI * t / 0.5f);
+                data[i] = prev * env * 0.7f;
+            }
+            var c = AudioClip.Create("dig_scrape", len, 1, sr, false); c.SetData(data, 0); return c;
+        }
+
+        AudioClip MakeJumpWhoosh()
+        {
+            int sr = 22050; int len = sr / 5;
+            float[] data = new float[len];
+            for (int i = 0; i < len; i++)
+            {
+                float t = i / (float)sr;
+                float env = Mathf.Exp(-t * 12f);
+                data[i] = Mathf.Sin(2f * Mathf.PI * (400f - t * 800f) * t) * env * 0.5f;
+            }
+            var c = AudioClip.Create("jump", len, 1, sr, false); c.SetData(data, 0); return c;
+        }
+
+        AudioClip MakeFootstep()
+        {
+            // quick tap noise
+            int sr = 22050; int len = sr / 16;
+            float[] data = new float[len];
+            for (int i = 0; i < len; i++)
+            {
+                float t = i / (float)sr;
+                float env = Mathf.Exp(-t * 60f);
+                float s = Mathf.Sin(2f * Mathf.PI * 80f * t) * 0.6f + (Random.value * 2f - 1f) * 0.4f;
+                data[i] = s * env * 0.55f;
+            }
+            var c = AudioClip.Create("footstep", len, 1, sr, false); c.SetData(data, 0); return c;
         }
 
         // Classic two-tone alternating police siren (~1.5s loop)

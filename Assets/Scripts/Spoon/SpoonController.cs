@@ -19,6 +19,7 @@ namespace Spoonacci
         bool jumpQueued;
         bool grounded;
         bool wasGrounded;
+        float nextFootstep;
 
         // lunge state — when F bonks a violator we override movement briefly
         public bool LungeActive { get; private set; }
@@ -99,8 +100,16 @@ namespace Spoonacci
             if (jumpQueued)
             {
                 rb.AddForce(Vector3.up * hopForce, ForceMode.VelocityChange);
+                SoundFx.Instance.Jump();
                 jumpQueued = false;
                 grounded = false;
+            }
+
+            // footstep tick — every ~0.35s while moving on ground
+            if (grounded && horiz.sqrMagnitude > 0.04f && Time.time > nextFootstep)
+            {
+                SoundFx.Instance.Footstep();
+                nextFootstep = Time.time + 0.35f;
             }
 
             // landing detection

@@ -64,10 +64,18 @@ namespace Spoonacci
 
             if (digging)
             {
+                // If alarm goes off mid-stage, cancel this stage but keep progress so far
+                if (PrisonAlarm.Active)
+                {
+                    digging = false;
+                    PrisonAlarm.PlayerIsDigging = false;
+                    return;
+                }
                 if (Time.time > currentStageEndsAt)
                 {
                     stagesDone++;
                     SoundFx.Instance.Bonk();
+                    PrisonAlarm.PlayerIsDigging = false;
                     if (stagesDone >= stages)
                     {
                         digging = false;
@@ -75,8 +83,7 @@ namespace Spoonacci
                     }
                     else
                     {
-                        // wait for next E press
-                        digging = false;
+                        digging = false; // wait for next E press
                     }
                 }
                 return;
@@ -90,6 +97,7 @@ namespace Spoonacci
         void StartStage()
         {
             digging = true;
+            PrisonAlarm.PlayerIsDigging = true;
             currentStageEndsAt = Time.time + 1.2f;
             SoundFx.Instance.Swoosh();
         }

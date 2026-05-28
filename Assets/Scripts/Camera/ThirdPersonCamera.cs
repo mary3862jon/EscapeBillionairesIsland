@@ -79,7 +79,7 @@ namespace Spoonacci
             if (mouse != null)
             {
                 float scroll = mouse.scroll.ReadValue().y * 0.01f;
-                distance = Mathf.Clamp(distance - scroll, 2.5f, 14f);
+                distance = Mathf.Clamp(distance - scroll, 3.5f, 14f); // min bumped 2.5→3.5 so camera never sits in the spoon
             }
 
             Quaternion rot = Quaternion.Euler(pitch, yaw, 0f);
@@ -90,9 +90,9 @@ namespace Spoonacci
             Vector3 from = target.position + Vector3.up * 0.6f;
             Vector3 dir = desired - from;
             float reqDist = dir.magnitude;
-            if (reqDist > 0.01f && Physics.SphereCast(from, 0.3f, dir.normalized, out RaycastHit hit, reqDist, ~0, QueryTriggerInteraction.Ignore))
+            if (reqDist > 0.01f && Physics.SphereCast(from, 0.45f, dir.normalized, out RaycastHit hit, reqDist, ~0, QueryTriggerInteraction.Ignore))
             {
-                desired = from + dir.normalized * Mathf.Max(0.8f, hit.distance - collisionPadding);
+                desired = from + dir.normalized * Mathf.Max(1.6f, hit.distance - collisionPadding); // floor at 1.6m so we never sit on the spoon
             }
 
             transform.position = Vector3.Lerp(transform.position, desired, followLerp * Time.deltaTime);

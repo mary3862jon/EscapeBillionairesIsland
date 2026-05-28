@@ -166,6 +166,13 @@ namespace Spoonacci
             // -------- Language toast --------
             { "lang.toast_en", ("🌐 Language: English", "🌐 Language: English") },
             { "lang.toast_ru", ("🌐 Язык: Русский",    "🌐 Язык: Русский") },
+
+            // -------- Warden / Alarm --------
+            { "warden.name",     ("PRISON WARDEN",     "ТЮРЕМНЫЙ НАДЗИРАТЕЛЬ") },
+            { "warden.choose",   ("[E] Bribe ({0} Tokens · you have {1})    ·    [Q] Bonk him out",
+                                  "[E] Подкупить ({0} монет · у тебя {1})    ·    [Q] Вырубить его") },
+            { "warden.knocked",  ("...he's out cold for a while.", "...он отрублен надолго.") },
+            { "alarm.banner",    ("🚨  ALARM!  THE WARDEN SAW YOU DIG  🚨", "🚨  ТРЕВОГА!  НАДЗИРАТЕЛЬ ВИДЕЛ КОПКУ  🚨") },
         };
 
         public static string T(string key)

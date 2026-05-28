@@ -67,6 +67,48 @@ namespace Spoonacci
             }
 
             Play(0, announce: false);
+            // jump to a scene-appropriate track on every scene load
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+            ApplySceneTrack(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
+
+        void OnSceneLoaded(UnityEngine.SceneManagement.Scene s, UnityEngine.SceneManagement.LoadSceneMode mode)
+            => ApplySceneTrack(s.name);
+
+        void ApplySceneTrack(string name)
+        {
+            if (tracks.Count == 0) return;
+            // prison = sneakier tracks (05 Sneaky Snitch or 06 Hitman); island = upbeat 01/03/04; shark = 02/04
+            int wanted = current;
+            if (name.Contains("Cutlery") || name.Contains("Cell"))
+            {
+                // prefer Sneaky Snitch (index 4) if available
+                wanted = FindTrackIndexContaining("Sneaky");
+                if (wanted < 0) wanted = FindTrackIndexContaining("Hitman");
+                if (wanted < 0) wanted = (tracks.Count - 1) % tracks.Count;
+            }
+            else if (name.Contains("Title"))
+            {
+                wanted = FindTrackIndexContaining("Carefree");
+                if (wanted < 0) wanted = 0;
+            }
+            else if (name.Contains("Sample") || name.Contains("Island"))
+            {
+                wanted = FindTrackIndexContaining("Pixelland");
+                if (wanted < 0) wanted = 0;
+            }
+            else if (name.Contains("Shark"))
+            {
+                wanted = FindTrackIndexContaining("Tropical");
+                if (wanted < 0) wanted = 0;
+            }
+            if (wanted >= 0 && wanted != current) Play(wanted, announce: false);
+        }
+
+        int FindTrackIndexContaining(string s)
+        {
+            for (int i = 0; i < trackNames.Count; i++) if (trackNames[i].Contains(s)) return i;
+            return -1;
         }
 
         void Update()

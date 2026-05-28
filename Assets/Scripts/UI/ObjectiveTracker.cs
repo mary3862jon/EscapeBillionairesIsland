@@ -9,6 +9,7 @@ namespace Spoonacci
     {
         GUIStyle titleStyle, objStyle, tokenStyle, doneStyle;
         string sceneKey;
+        public bool expanded = true; // collapsible — click the header arrow
 
         void Awake()
         {
@@ -25,10 +26,11 @@ namespace Spoonacci
             EnsureStyles();
 
             var active = new List<Mission>(MissionManager.ActiveFor(sceneKey));
-            int n = Mathf.Min(active.Count, 6);
+            int n = expanded ? Mathf.Min(active.Count, 6) : 0;
 
             float w = 460f;
-            float h = 60f + n * 36f;
+            float headerH = 44f;
+            float h = headerH + (expanded ? (16f + n * 36f) : 4f);
             float x = Screen.width - w - 20f;
             float y = 70f;
 
@@ -38,16 +40,23 @@ namespace Spoonacci
             GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
             GUI.color = prev;
 
-            GUI.Label(new Rect(x + 14f, y + 8f, w - 28f, 32f), Loc.T("obj.title"), titleStyle);
-            float oy = y + 46f;
-            for (int i = 0; i < n; i++)
+            // header — clickable arrow + title; click to collapse/expand
+            string arrow = expanded ? "▼" : "▶";
+            if (GUI.Button(new Rect(x + 6f, y + 4f, w - 12f, 36f), arrow + "  " + Loc.T("obj.title") + "  (" + active.Count + ")", titleStyle))
+                expanded = !expanded;
+
+            if (expanded)
             {
-                var m = active[i];
-                bool done = m.isComplete != null && m.isComplete();
-                string mark = done ? "✔" : "▢";
-                var s = done ? doneStyle : objStyle;
-                GUI.Label(new Rect(x + 14f, oy, w - 28f, 32f), mark + "  " + Loc.T(m.title), s);
-                oy += 34f;
+                float oy = y + headerH + 6f;
+                for (int i = 0; i < n; i++)
+                {
+                    var m = active[i];
+                    bool done = m.isComplete != null && m.isComplete();
+                    string mark = done ? "✔" : "▢";
+                    var s = done ? doneStyle : objStyle;
+                    GUI.Label(new Rect(x + 14f, oy, w - 28f, 32f), mark + "  " + Loc.T(m.title), s);
+                    oy += 34f;
+                }
             }
 
             // Troll Tokens — separate strip above
@@ -80,7 +89,7 @@ namespace Spoonacci
         void EnsureStyles()
         {
             if (titleStyle == null)
-                titleStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(22), fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.95f, 0.6f) } };
+                titleStyle = new GUIStyle(GUI.skin.button) { fontSize = UiScale.Font(22), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = new Color(1f, 0.95f, 0.6f) }, hover = { textColor = new Color(1f, 1f, 0.8f) } };
             if (objStyle == null)
                 objStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(18), normal = { textColor = Color.white } };
             if (doneStyle == null)

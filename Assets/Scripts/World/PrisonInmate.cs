@@ -46,6 +46,7 @@ namespace Spoonacci
         };
 
         public InmateState state = InmateState.LockedInCell;
+        public int poseIdx = -1; // 0=standing, 1=sitting, 2=lying — randomized in Awake if left at -1
 
         bool playerInside;
         Transform headTransform;
@@ -71,10 +72,36 @@ namespace Spoonacci
 
         void BuildVisual()
         {
-            var mat = MakeMat(color, metallic, smoothness);
+            // STRIPED PRISONER OUTFIT — texture overlay (black/white horizontal stripes)
+            // For simplicity we tint with off-white and add a separate striped stripe mesh on the handle/body.
+            var mat = MakeMat(new Color(0.9f, 0.9f, 0.92f), metallic * 0.4f, smoothness * 0.6f);
+            var stripe = MakeMat(new Color(0.06f, 0.06f, 0.08f), 0.1f, 0.4f);
             var vis = new GameObject("Visual");
             vis.transform.SetParent(transform, false);
             visualRoot = vis.transform;
+
+            // random pose for variety
+            if (poseIdx < 0) poseIdx = Random.Range(0, 3);
+            switch (poseIdx)
+            {
+                case 1: vis.transform.localRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f); vis.transform.localPosition = new Vector3(0f, -0.35f, 0f); break; // sitting
+                case 2: vis.transform.localRotation = Quaternion.Euler(0f, 0f, 90f) * Quaternion.Euler(0f, Random.Range(0f, 360f), 0f); vis.transform.localPosition = new Vector3(0f, 0f, 0f); break; // lying
+                default: break; // standing
+            }
+
+            void StripeRing(Transform parent, Vector3 center, float radius, float height, int count)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    var ring = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                    ring.transform.SetParent(parent, false);
+                    float y = center.y - height * 0.5f + (i + 0.5f) * (height / count);
+                    ring.transform.localPosition = new Vector3(center.x, y, center.z);
+                    ring.transform.localScale = new Vector3(radius * 2.04f, height * 0.07f, radius * 2.04f);
+                    Destroy(ring.GetComponent<Collider>());
+                    ring.GetComponent<Renderer>().sharedMaterial = (i % 2 == 0) ? stripe : mat;
+                }
+            }
 
             var handle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             handle.transform.SetParent(vis.transform, false);
@@ -82,6 +109,8 @@ namespace Spoonacci
             handle.transform.localScale = new Vector3(bodyRadius * 2f, bodyHeight * 0.5f, bodyRadius * 2f);
             Destroy(handle.GetComponent<Collider>());
             handle.GetComponent<Renderer>().sharedMaterial = mat;
+            // overlay horizontal stripes on the handle = prisoner uniform
+            StripeRing(vis.transform, new Vector3(0f, bodyHeight * 0.5f, 0f), bodyRadius, bodyHeight, 6);
 
             var neck = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             neck.transform.SetParent(vis.transform, false);
@@ -219,14 +248,34 @@ namespace Spoonacci
 
     public static class PrisonState
     {
-        public static int Persuaded;
         public static int Total = 15;
-        public static int Unlocked;
         public static int TotalCells = 5;
         public static System.Action OnPersuadedChanged;
 
-        public static void OnInmatePersuaded() { Persuaded++; OnPersuadedChanged?.Invoke(); }
-        public static void OnCellUnlocked() { Unlocked++; }
-        public static void Reset() { Persuaded = 0; Unlocked = 0; }
+        // Persuaded is now COMPUTED from the actual scene state every frame so it can't drift.
+        public static int Persuaded
+        {
+            get
+            {
+                int n = 0;
+                foreach (var pi in Object.FindObjectsByType<PrisonInmate>(FindObjectsSortMode.None))
+                    if (pi != null && pi.state == InmateState.Persuaded) n++;
+                return n;
+            }
+        }
+        public static int Unlocked
+        {
+            get
+            {
+                int n = 0;
+                foreach (var d in Object.FindObjectsByType<PrisonCellDoor>(FindObjectsSortMode.None))
+                    if (d != null && d.unlocked) n++;
+                return n;
+            }
+        }
+
+        public static void OnInmatePersuaded() { OnPersuadedChanged?.Invoke(); }
+        public static void OnCellUnlocked()    { /* counted live now */ }
+        public static void Reset() { /* nothing to reset */ }
     }
 }
