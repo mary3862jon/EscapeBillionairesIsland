@@ -61,8 +61,8 @@ namespace Spoonacci
             { "hud.violator",    ("VIOLATOR",      "НАРУШИТЕЛЬ") },
             { "hud.press_f",     ("Press F to AUTO-BONK!", "Нажми F для АВТО-УДАРА!") },
             { "hud.combo",       ("COMBO!",        "КОМБО!") },
-            { "hud.controls",    ("[WASD] walk · [SPACE] hop · [Q] bonk · [F] auto-bonk · [E] interact · [P] police · [TAB] FPS · [L] lang · [ESC] menu",
-                                  "[WASD] идти · [SPACE] прыжок · [Q] удар · [F] авто-удар · [E] действие · [P] полиция · [TAB] FPS · [L] язык · [ESC] меню") },
+            { "hud.controls",    ("[WASD] walk · [MOUSE] look · [LMB / Q] bonk · [RMB / F] auto-bonk · [WHEEL] zoom · [SPACE] hop · [SHIFT] sprint · [E] interact · [P] police · [L] lang · [ESC] menu",
+                                  "[WASD] идти · [МЫШЬ] обзор · [ЛКМ / Q] удар · [ПКМ / F] авто-удар · [КОЛЕСО] зум · [SPACE] прыжок · [SHIFT] спринт · [E] действие · [P] полиция · [L] язык · [ESC] меню") },
             { "hud.saved",       ("Saved ✔",       "Сохранено ✔") },
 
             // -------- Police Mode --------

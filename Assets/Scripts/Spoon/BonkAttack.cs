@@ -42,10 +42,17 @@ namespace Spoonacci
             var kb = Keyboard.current;
             if (kb == null) return;
 
-            if (kb.fKey.wasPressedThisFrame && CurrentLockOn != null && !ctrl.LungeActive)
+            var mouse = Mouse.current;
+            // F or RMB = auto-lock lunge bonk
+            bool autoLock = kb.fKey.wasPressedThisFrame
+                            || (mouse != null && mouse.rightButton.wasPressedThisFrame);
+            if (autoLock && CurrentLockOn != null && !ctrl.LungeActive)
                 LaunchAt(CurrentLockOn);
 
-            if (kb.qKey.wasPressedThisFrame && Time.time > manualCooldown && !ctrl.LungeActive)
+            // Q or LMB = manual swing bonk
+            bool manualHit = kb.qKey.wasPressedThisFrame
+                             || (mouse != null && mouse.leftButton.wasPressedThisFrame);
+            if (manualHit && Time.time > manualCooldown && !ctrl.LungeActive)
                 ManualSwing();
 
             if (pendingTarget != null)

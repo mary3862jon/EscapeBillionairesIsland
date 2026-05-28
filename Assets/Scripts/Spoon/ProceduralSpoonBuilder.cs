@@ -49,30 +49,45 @@ namespace Spoonacci
             visualGo.transform.SetParent(transform, false);
             Visual = visualGo.transform;
 
-            // 1) Try real CC0 spoon model from Resources (drummyfish/opengameart, public domain)
-            //    OBJ vertex bounds: X=±0.53 (width), Y=-3.03..+0.97 (length 4 units, bowl in +Y, handle in -Y),
-            //    Z=±0.16 (thickness). The model is already vertical — bowl up, handle down.
+            // 1) Try Kenney Food Kit utensil-spoon (CC0). Bounds: X=±0.24 (length), Y=0..0.03 (thickness), Z=±0.06 (width).
+            //    Laid flat on XZ plane. Rotate -90° around Z so length becomes vertical (handle down, bowl up).
+            var kenneyPrefab = Resources.Load<GameObject>("Models/kenney_spoon");
+            if (kenneyPrefab != null)
+            {
+                var pivot = new GameObject("SpoonPivot");
+                pivot.transform.SetParent(Visual, false);
+
+                var instance = Instantiate(kenneyPrefab, pivot.transform);
+                instance.name = "Kenney Spoon";
+                instance.transform.localPosition = Vector3.zero;
+                // Rotate -90° Z → flips long axis from X to Y (vertical). Then 180° Y to ensure bowl points up
+                instance.transform.localRotation = Quaternion.Euler(0f, 0f, -90f);
+                // Original X length = 0.48 → after rotation, vertical height = 0.48 * scale.
+                // Want spoon ~1.2m tall → scale = 2.5
+                instance.transform.localScale = Vector3.one * 2.5f;
+                // Lift so handle bottom sits at world ground. After scale: handle bottom at local Y = 0 (since original X=-0.24 * scale 2.5 = -0.6 in world Y).
+                pivot.transform.localPosition = new Vector3(0f, 0.6f, 0f);
+
+                metalParts = instance.GetComponentsInChildren<Renderer>();
+                if (addFace) AddSimpleEyes(Visual, new Vector3(0f, 1.05f, 0.12f));
+                return;
+            }
+
+            // 2) Fall back to drummyfish CC0 model (the previous one)
             var realPrefab = Resources.Load<GameObject>("Models/spoon");
             if (realPrefab != null)
             {
                 var pivot = new GameObject("SpoonPivot");
                 pivot.transform.SetParent(Visual, false);
-
                 var instance = Instantiate(realPrefab, pivot.transform);
                 instance.name = "Real Spoon Model";
-                instance.transform.localPosition = Vector3.zero;
-                instance.transform.localRotation = Quaternion.identity;
-                // scale so total spoon height = ~1.2m (OBJ is ~4 units tall → scale 0.3)
                 instance.transform.localScale = Vector3.one * 0.3f;
-                // lift pivot so handle bottom (local Y = -0.9 after scale) sits at world ground (Y=0)
                 pivot.transform.localPosition = new Vector3(0f, 0.9f, 0f);
-
                 metalParts = instance.GetComponentsInChildren<Renderer>();
-                // tiny eyes near the bowl (which sits at ~Y=1.2 in spoon local space after scale+lift)
                 if (addFace) AddSimpleEyes(Visual, new Vector3(0f, 1.1f, 0.12f));
                 return;
             }
-            // 2) Procedural fallback (capsule-based bowl)
+            // 3) Procedural fallback (capsule-based bowl)
 
             // HANDLE — thin vertical cylinder
             var handle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);

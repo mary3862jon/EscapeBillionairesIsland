@@ -16,7 +16,8 @@ These tracks may be redistributed and modified provided attribution to Kevin Mac
 
 ## 3D Models
 
-- `Assets/Resources/Models/spoon.{obj,mtl,png}` — **CC0 public domain** spoon model by **drummyfish** (opengameart.org). No attribution required, but credited here voluntarily.
+- `Assets/Resources/Models/kenney_spoon.{obj,mtl}` + `kenney_colormap.png` — **CC0** spoon model by **Kenney** (kenney.nl/assets/food-kit). Public domain.
+- `Assets/Resources/Models/spoon.{obj,mtl,png}` — **CC0 public domain** spoon model by **drummyfish** (opengameart.org). Kept as fallback.
 
 ## To add your own music
 
