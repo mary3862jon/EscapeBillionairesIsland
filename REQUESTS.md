@@ -12,6 +12,10 @@
 - [x] SEXY BIKINI WOMEN everywhere a beach/pool/spa crowd belongs — real feminine figures (hourglass, bikini, hair), not recoloured clothed men. `BikiniWoman.cs` + shared `BikiniWoman.Spawn()` factory, wired into: pool party dancers, beach sunbathers & volleyball, central hub deck chairs, pool swimmers/loungers, main infinity-pool loungers, poolside cocktail bar, tiki-bar guests, salon receptionist. (Bartenders/guards/yacht-staff stay clothed.)
 - [x] Two HUD layout bugs from the audit: token-strip shadow smear + quest-banner overlap on narrow windows.
 
+- [x] Scroll-to-zoom fixed — `ThirdPersonCamera` required scroll magnitude >5, but the new Input System reports ±1 per notch on many systems, so it never fired. Now triggers on any scroll (sign only).
+- [x] Title/main menu redesigned — themed gold-bordered buttons with hover (no more default grey boxes); Continue dims when there's no save.
+- [x] Music MUTE BUTTON added — on-screen toggle on the title screen (top-right) AND in-game (top-left corner). `[M]` key still works too. `MusicPlayer.ToggleMute()`.
+
 ## 🔜 Outstanding / next
 - [ ] Boss fights — turn the 4 billionaires into real humiliation missions (rocket NFT swap, champagne-tower bonk, etc. — see MISSIONS.md).
 - [ ] (add new requests here the instant Boba makes them)

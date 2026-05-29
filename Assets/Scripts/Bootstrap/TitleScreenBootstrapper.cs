@@ -8,7 +8,7 @@ namespace Spoonacci
     {
         GameObject bigSpoon;
         Camera cam;
-        GUIStyle titleStyle, btnStyle, footerStyle;
+        GUIStyle titleStyle, btnStyle, footerStyle, btnDisabledStyle, muteStyle;
 
         void Awake()
         {
@@ -122,16 +122,33 @@ namespace Spoonacci
             var sub = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(26), fontStyle = FontStyle.Italic, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.85f, 0.4f) } };
             GUI.Label(new Rect(tx, ty + 90f, tw, 40f), Loc.T("title.subtitle"), sub);
 
-            // buttons
-            float bw = 380f, bh = 70f;
+            // buttons — themed cards (no more default-skin grey boxes)
+            float bw = 400f, bh = 72f;
             float bx = (Screen.width - bw) * 0.5f;
             float by = Screen.height * 0.45f;
-            if (GUI.Button(new Rect(bx, by, bw, bh), Loc.T("title.new_game"), btnStyle))
+            bool hasSave = System.IO.File.Exists(SaveSystem.Path);
+            if (UiTheme.Button(new Rect(bx, by, bw, bh), Loc.T("title.new_game"), btnStyle))
                 StartNew();
-            if (GUI.Button(new Rect(bx, by + bh + 18f, bw, bh), Loc.T("title.continue"), btnStyle))
-                Continue();
-            if (GUI.Button(new Rect(bx, by + (bh + 18f) * 2f, bw, bh), Loc.T("title.quit"), btnStyle))
+            // Continue is dimmed/disabled when there's no save to load
+            if (hasSave)
+            {
+                if (UiTheme.Button(new Rect(bx, by + bh + 18f, bw, bh), Loc.T("title.continue"), btnStyle))
+                    Continue();
+            }
+            else
+            {
+                UiTheme.Card(new Rect(bx, by + bh + 18f, bw, bh));
+                UiTheme.Label(new Rect(bx, by + bh + 18f, bw, bh), Loc.T("title.continue"), btnDisabledStyle);
+            }
+            if (UiTheme.Button(new Rect(bx, by + (bh + 18f) * 2f, bw, bh), Loc.T("title.quit"), btnStyle))
                 Quit();
+
+            // ── music mute toggle (top-right corner) ──────────────────────────
+            bool muted = MusicPlayer.Instance != null && MusicPlayer.Instance.IsMuted;
+            float mw = 190f, mh = 46f;
+            if (UiTheme.Button(new Rect(Screen.width - mw - 24f, 24f, mw, mh),
+                    muted ? Loc.T("ui.music_off") : Loc.T("ui.music_on"), muteStyle))
+                MusicPlayer.Instance?.ToggleMute();
 
             // footer with save info
             string footer = System.IO.File.Exists(SaveSystem.Path)
@@ -149,7 +166,11 @@ namespace Spoonacci
             if (titleStyle == null)
                 titleStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(80), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.95f, 0.7f) } };
             if (btnStyle == null)
-                btnStyle = new GUIStyle(GUI.skin.button) { fontSize = UiScale.Font(30), fontStyle = FontStyle.Bold };
+                btnStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(30), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = UiTheme.TextMain } };
+            if (btnDisabledStyle == null)
+                btnDisabledStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(30), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(0.55f, 0.55f, 0.6f, 0.7f) } };
+            if (muteStyle == null)
+                muteStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(20), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = UiTheme.GoldSoft } };
             if (footerStyle == null)
                 footerStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(16), normal = { textColor = new Color(0.95f, 0.95f, 0.95f, 0.7f) } };
         }

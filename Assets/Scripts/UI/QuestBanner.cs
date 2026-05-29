@@ -8,7 +8,7 @@ namespace Spoonacci
     // Picks the first active mission for the current scene from MissionManager.
     public class QuestBanner : MonoBehaviour
     {
-        GUIStyle titleStyle, taskStyle;
+        GUIStyle titleStyle, taskStyle, muteStyle;
         string sceneKey;
 
         void Awake() { sceneKey = SceneManager.GetActiveScene().name; }
@@ -41,6 +41,12 @@ namespace Spoonacci
             UiTheme.Label(new Rect(x + 18f, y + 9f, w - 28f, 24f), Loc.T("quest.current"), titleStyle);
             UiTheme.Rule(x + 18f, y + 34f, w - 36f);
             UiTheme.Label(new Rect(x + 18f, y + 40f, w - 34f, 36f), task, taskStyle);
+
+            // ── music mute toggle (top-left corner, above the banner) ─────────
+            bool muted = MusicPlayer.Instance != null && MusicPlayer.Instance.IsMuted;
+            if (UiTheme.Button(new Rect(x, 16f, 188f, 48f),
+                    muted ? Loc.T("ui.music_off") : Loc.T("ui.music_on"), muteStyle))
+                MusicPlayer.Instance?.ToggleMute();
         }
 
         void EnsureStyles()
@@ -49,6 +55,8 @@ namespace Spoonacci
                 titleStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(15), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = UiTheme.GoldSoft } };
             if (taskStyle == null)
                 taskStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(23), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = UiTheme.TextMain } };
+            if (muteStyle == null)
+                muteStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(18), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, normal = { textColor = UiTheme.GoldSoft } };
         }
     }
 }

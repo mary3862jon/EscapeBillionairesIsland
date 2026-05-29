@@ -60,12 +60,15 @@ namespace Spoonacci
                     pitch  = Mathf.Clamp(pitch, pitchMin, pitchMax);
                 }
 
-                // Snap-zoom via scroll wheel
+                // Snap-zoom via scroll wheel. The new Input System reports scroll as
+                // ±1 per notch on some platforms and ±120 on others — only the SIGN
+                // matters here, so use a tiny threshold (the old >5f never fired when
+                // the platform normalised a notch to 1.0, which is why zoom "didn't work").
                 float scroll = mouse.scroll.ReadValue().y;
-                if (Mathf.Abs(scroll) > 5f && Time.unscaledTime > scrollDebounce)
+                if (Mathf.Abs(scroll) > 0.01f && Time.unscaledTime > scrollDebounce)
                 {
                     zoomIndex = Mathf.Clamp(zoomIndex + (scroll > 0 ? -1 : 1), 0, zoomLevels.Length - 1);
-                    scrollDebounce = Time.unscaledTime + 0.15f;
+                    scrollDebounce = Time.unscaledTime + 0.12f;
                 }
             }
 
