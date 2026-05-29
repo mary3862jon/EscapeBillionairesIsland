@@ -64,11 +64,11 @@ namespace Spoonacci
             else if (!BillionaireRegistry.IsBonked("Magnus Tusk"))
                 waypoint.target = FindBossTusk();
             else if (!BillionaireRegistry.IsBonked("Beff Jezos"))
-                waypoint.target = FindBillionaire("Beff Jezos");
+                waypoint.target = FindBoss("Beff Jezos");
             else if (!BillionaireRegistry.IsBonked("Crypto Chad"))
-                waypoint.target = FindBillionaire("Crypto Chad");
+                waypoint.target = FindBoss("Crypto Chad");
             else if (!BillionaireRegistry.IsBonked("Mark Zuckersnort"))
-                waypoint.target = FindBillionaire("Mark Zuckersnort");
+                waypoint.target = FindBoss("Mark Zuckersnort");
             else
                 waypoint.target = null;
         }
@@ -85,6 +85,15 @@ namespace Spoonacci
         {
             var boss = Object.FindFirstObjectByType<MagnusTuskBoss>();
             return boss != null ? boss.transform : null;
+        }
+
+        // Beff/Zuck/Chad are now BossFight components (not BillionaireNPC).
+        // Locate one by its exact bossName (mirrors FindBossTusk).
+        Transform FindBoss(string n)
+        {
+            foreach (var b in Object.FindObjectsByType<BossFight>(FindObjectsSortMode.None))
+                if (b != null && b.bossName == n) return b.transform;
+            return null;
         }
 
         // ---------- WORLD ----------
@@ -314,92 +323,69 @@ namespace Spoonacci
         // ---------- BILLIONAIRE ZONES ----------
         void BuildBeffYacht()
         {
+            // Beff is now a BOSS at his own asymmetric yacht arena (not a corner).
+            // The boss + arena replace the old one-shot BillionaireNPC.
+            Vector3 center = new Vector3(WorldLayout.Beff.x, 0f, WorldLayout.Beff.y);
+
             var z = new GameObject("Beff Jezos Yacht Zone");
-            z.transform.position = new Vector3(-ZONE_R, 0f, -ZONE_R);
+            z.transform.position = center;
             AddLabel(z, "sign.yacht", new Color(0.95f, 0.85f, 0.3f), 32, new Vector3(0f, 12f, 0f));
 
-            // dock
-            MakePrimCube("Dock", z.transform, new Vector3(0f, 0.1f, 8f), new Vector3(6f, 0.3f, 16f), new Color(0.5f, 0.35f, 0.18f), 0f, 0.35f);
-            // yacht (giant capsule)
-            var yacht = MakePrimCube("Hull", z.transform, new Vector3(0f, 1.2f, -14f), new Vector3(8f, 2f, 24f), new Color(0.95f, 0.95f, 1f), 0.05f, 0.6f);
-            yacht.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-            // upper deck
-            MakePrimCube("Upper Deck", z.transform, new Vector3(0f, 3.5f, -18f), new Vector3(7f, 1.6f, 10f), new Color(0.95f, 0.95f, 1f), 0.05f, 0.6f);
-            // bridge tower
-            MakePrimCube("Bridge", z.transform, new Vector3(0f, 5.5f, -22f), new Vector3(4f, 2f, 4f), new Color(0.85f, 0.85f, 0.9f), 0.3f, 0.85f);
-            // helipad ring
-            for (int i = 0; i < 12; i++)
-            {
-                float a = i * 30f * Mathf.Deg2Rad;
-                MakePrimCube("Helipad Trim", z.transform, new Vector3(Mathf.Cos(a) * 3f, 2.3f, -10f + Mathf.Sin(a) * 3f), new Vector3(0.25f, 0.1f, 0.25f), new Color(0.95f, 0.85f, 0.2f), 1f, 0.9f);
-            }
+            // detailed yacht arena (dock, hull, decks, helipad)
+            BeffArenaBuilder.Build(center);
 
-            // Beff Jezos NPC
-            var beff = new GameObject("Beff Jezos");
-            beff.transform.position = z.transform.position + new Vector3(0f, 0f, -10f);
-            var bn = beff.AddComponent<BillionaireNPC>();
-            bn.billionaireName = "Beff Jezos";
-            bn.suitColor = new Color(0.15f, 0.18f, 0.25f);
+            // the boss himself, spawned at the centre (BuildBoss reads transform.position)
+            var bossGo = new GameObject("Beff Jezos");
+            bossGo.transform.position = center;
+            bossGo.AddComponent<BeffJezosBoss>();
 
-            // 4 yacht staff civilians
+            // 4 yacht staff civilians (ambient — kept)
             for (int i = 0; i < 4; i++)
-                SpawnCiv("Yacht Staff " + i, z.transform.position + new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-22f, -8f)), Civilian.Mode.Wander, new Color(0.95f, 0.95f, 0.95f), new Color(0.05f, 0.05f, 0.1f));
+                SpawnCiv("Yacht Staff " + i, center + new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-22f, -8f)), Civilian.Mode.Wander, new Color(0.95f, 0.95f, 0.95f), new Color(0.05f, 0.05f, 0.1f));
         }
 
         void BuildCryptoVault()
         {
+            // Chad is now a BOSS at his own asymmetric vault arena (not a corner).
+            Vector3 center = new Vector3(WorldLayout.Vault.x, 0f, WorldLayout.Vault.y);
+
             var z = new GameObject("Crypto Chad Vault Zone");
-            z.transform.position = new Vector3(ZONE_R, 0f, -ZONE_R);
+            z.transform.position = center;
             AddLabel(z, "sign.vault", new Color(0.4f, 0.95f, 0.9f), 32, new Vector3(0f, 12f, 0f));
 
-            // glass cube building (semi-transparent feel via white emission)
-            var vault = MakePrimCube("Vault", z.transform, new Vector3(0f, 4f, 0f), new Vector3(10f, 8f, 10f), new Color(0.6f, 0.9f, 1f), 0.4f, 0.95f);
-            // neon ring base
-            MakePrimCube("Neon Base", z.transform, new Vector3(0f, 0.1f, 0f), new Vector3(12f, 0.2f, 12f), new Color(0.3f, 0.9f, 1f), 0.3f, 0.85f);
-            // 4 NFT pillars
-            for (int i = 0; i < 4; i++)
-            {
-                float a = i * 90f * Mathf.Deg2Rad;
-                MakePrimCube("NFT Pedestal", z.transform, new Vector3(Mathf.Cos(a) * 3.5f, 0.7f, Mathf.Sin(a) * 3.5f), new Vector3(0.8f, 1.4f, 0.8f), new Color(0.95f, 0.85f, 0.2f), 1f, 0.9f);
-                MakePrimCube("NFT Sphere", z.transform, new Vector3(Mathf.Cos(a) * 3.5f, 1.8f, Mathf.Sin(a) * 3.5f), new Vector3(0.6f, 0.6f, 0.6f), new Color(0.4f, 0.95f, 0.85f), 0.95f, 0.95f);
-            }
-            // Chad
-            var chad = new GameObject("Crypto Chad");
-            chad.transform.position = z.transform.position + new Vector3(0f, 0f, -7f);
-            var cn = chad.AddComponent<BillionaireNPC>();
-            cn.billionaireName = "Crypto Chad";
-            cn.suitColor = new Color(0.05f, 0.4f, 0.45f);
+            // detailed vault arena (glass cube, neon, NFT pillars, candles)
+            ChadVaultArenaBuilder.Build(center);
 
+            // the boss himself, spawned at the centre (BuildBoss reads transform.position)
+            var bossGo = new GameObject("Crypto Chad");
+            bossGo.transform.position = center;
+            bossGo.AddComponent<CryptoChadBoss>();
+
+            // 3 hodlers (ambient — kept)
             for (int i = 0; i < 3; i++)
-                SpawnCiv("Hodler " + i, z.transform.position + new Vector3(Random.Range(-6f, 6f), 0f, Random.Range(-6f, 6f)), Civilian.Mode.Wander, new Color(0.4f, 0.95f, 0.85f), new Color(0.1f, 0.1f, 0.15f));
+                SpawnCiv("Hodler " + i, center + new Vector3(Random.Range(-6f, 6f), 0f, Random.Range(-6f, 6f)), Civilian.Mode.Wander, new Color(0.4f, 0.95f, 0.85f), new Color(0.1f, 0.1f, 0.15f));
         }
 
         void BuildZuckLab()
         {
+            // Zuck is now a BOSS at his own asymmetric lab arena (not a corner).
+            Vector3 center = new Vector3(WorldLayout.Zuck.x, 0f, WorldLayout.Zuck.y);
+
             var z = new GameObject("Zuckersnort Lab Zone");
-            z.transform.position = new Vector3(-ZONE_R, 0f, ZONE_R);
+            z.transform.position = center;
             AddLabel(z, "sign.lab", new Color(0.6f, 1f, 0.4f), 32, new Vector3(0f, 12f, 0f));
 
-            // sterile white box
-            MakePrimCube("Lab Building", z.transform, new Vector3(0f, 3f, 0f), new Vector3(14f, 6f, 10f), new Color(0.95f, 0.97f, 0.97f), 0.1f, 0.7f);
-            // green roof (lizard tribute)
-            MakePrimCube("Lab Roof", z.transform, new Vector3(0f, 6.1f, 0f), new Vector3(14.5f, 0.3f, 10.5f), new Color(0.2f, 0.7f, 0.4f), 0.3f, 0.6f);
-            // big antenna
-            MakePrimCylinder("Antenna", z.transform, new Vector3(0f, 9f, 0f), new Vector3(0.2f, 3f, 0.2f), new Color(0.4f, 0.4f, 0.45f), 0.9f, 0.5f);
-            MakePrimCube("Antenna Dish", z.transform, new Vector3(0f, 11.5f, 0f), new Vector3(2.5f, 0.3f, 2.5f), new Color(0.85f, 0.85f, 0.9f), 0.3f, 0.7f);
-            // glass front
-            MakePrimCube("Glass Front", z.transform, new Vector3(0f, 2.5f, -5.1f), new Vector3(8f, 4f, 0.1f), new Color(0.5f, 0.85f, 1f), 0.5f, 0.95f);
+            // detailed lab arena (sterile box, antenna, holo rings, screens)
+            ZuckLabArenaBuilder.Build(center);
 
-            // Zuck
-            var zuck = new GameObject("Mark Zuckersnort");
-            zuck.transform.position = z.transform.position + new Vector3(0f, 0f, -7f);
-            var zn = zuck.AddComponent<BillionaireNPC>();
-            zn.billionaireName = "Mark Zuckersnort";
-            zn.suitColor = new Color(0.4f, 0.4f, 0.45f); // hoodie
+            // the boss himself, spawned at the centre (BuildBoss reads transform.position)
+            var bossGo = new GameObject("Mark Zuckersnort");
+            bossGo.transform.position = center;
+            bossGo.AddComponent<ZuckersnortBoss>();
 
-            // 4 interns wandering
+            // 4 interns wandering (ambient — kept)
             for (int i = 0; i < 4; i++)
-                SpawnCiv("Intern " + i, z.transform.position + new Vector3(Random.Range(-6f, 6f), 0f, Random.Range(-6f, 6f)), Civilian.Mode.Wander, new Color(0.95f, 0.95f, 0.95f), new Color(0.2f, 0.2f, 0.25f));
+                SpawnCiv("Intern " + i, center + new Vector3(Random.Range(-6f, 6f), 0f, Random.Range(-6f, 6f)), Civilian.Mode.Wander, new Color(0.95f, 0.95f, 0.95f), new Color(0.2f, 0.2f, 0.25f));
         }
 
         void BuildMagnusMansion()

@@ -13,9 +13,9 @@ namespace Spoonacci
     {
         // ---- key anchors (XZ) ------------------------------------------------
         public static readonly Vector2 Origin = new Vector2(0f, 0f);
-        public static readonly Vector2 Beff   = new Vector2(-80f, -80f);
-        public static readonly Vector2 Vault  = new Vector2( 80f, -80f);
-        public static readonly Vector2 Zuck   = new Vector2(-80f,  80f);
+        public static readonly Vector2 Beff   = new Vector2(-54f, -38f);   // yacht, SW water edge
+        public static readonly Vector2 Vault  = new Vector2( 20f, -62f);   // Chad's vault, S
+        public static readonly Vector2 Zuck   = new Vector2(-66f,  22f);   // lab, W
         public static readonly Vector2 Magnus = new Vector2( 50f,  30f);
         public static readonly Vector2 Pool   = new Vector2(-15f,  -2f);
         public static readonly Vector2 Alley  = new Vector2(-22f,  22f);
@@ -56,9 +56,9 @@ namespace Spoonacci
             new Vector3(-22f, 22f, 14f),  // Shady Alley
             new Vector3(6f,   -6f,  7f),  // Fountain
             new Vector3(0f,    0f,  6f),  // player spawn
-            new Vector3(-80f, -80f, 30f), // Beff yacht zone
-            new Vector3( 80f, -80f, 28f), // Crypto vault zone
-            new Vector3(-80f,  80f, 28f), // Zuck lab zone
+            new Vector3(-54f, -38f, 22f), // Beff yacht zone
+            new Vector3( 20f, -62f, 22f), // Crypto vault zone
+            new Vector3(-66f,  22f, 22f), // Zuck lab zone
             new Vector3( 50f,  30f, 22f), // Magnus launch-complex arena
         };
 

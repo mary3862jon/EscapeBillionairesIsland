@@ -82,8 +82,11 @@ namespace Spoonacci
             Register(new Mission("isle.tusk",     "mission.isle.tusk",     () => BillionaireRegistry.IsBonked("Magnus Tusk"), "Sample"));
             Register(new Mission("isle.boss.tusk","mission.isle.boss.tusk",() => BillionaireRegistry.IsBonked("Magnus Tusk"), "Sample"));
             Register(new Mission("isle.beff",     "mission.isle.beff",     () => BillionaireRegistry.IsBonked("Beff Jezos"), "Sample"));
+            Register(new Mission("isle.boss.beff","mission.isle.boss.beff",() => BillionaireRegistry.IsBonked("Beff Jezos"), "Sample"));
             Register(new Mission("isle.chad",     "mission.isle.chad",     () => BillionaireRegistry.IsBonked("Crypto Chad"), "Sample"));
+            Register(new Mission("isle.boss.chad","mission.isle.boss.chad",() => BillionaireRegistry.IsBonked("Crypto Chad"), "Sample"));
             Register(new Mission("isle.zuck",     "mission.isle.zuck",     () => BillionaireRegistry.IsBonked("Mark Zuckersnort"), "Sample"));
+            Register(new Mission("isle.boss.zuck","mission.isle.boss.zuck",() => BillionaireRegistry.IsBonked("Mark Zuckersnort"), "Sample"));
             Register(new Mission("isle.all4",     "mission.isle.all4",     () => BillionaireRegistry.BonkedCount >= 4, "Sample", "isle.tusk", "isle.beff", "isle.chad", "isle.zuck"));
 
             Register(new Mission("shark.fuse",    "mission.shark.fuse",    () => SharkFusionState.Fused, "Shark"));

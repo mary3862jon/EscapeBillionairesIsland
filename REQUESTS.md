@@ -22,9 +22,10 @@ Spec: each billionaire = a 3-phase "clout-bar" humiliation fight (Minions → si
 - **AAA detail bar** — multi-part procedural meshes + real textures/metallic/emission (new `BossTextures`). NO single-cube "3rd-grader" props. Drones = rotors+gimbal+LEDs; rockets = stages+bell+plume.
 - **Police-mode rule** — in police mode the bosses go passive EXCEPT **Magnus Tusk = God-Boss** who fights even in police mode. Normal mode = all bosses fight.
 - [x] **Boss 1 — Magnus Tusk (God-Boss, rocket pad)** — DONE & compile-verified. Reusable `BossFight` framework (3-phase clout fight), detailed `BossDrone` (rotors/gimbal/LEDs), `BossCloutBar` HUD, new `BossTextures` (brushed-metal/carbon/concrete/rust/hazard/tarmac), `MagnusArenaBuilder` (gantry/tanks/floodlights/tarmac), `MagnusTuskBoss` (launches multi-stage rockets, fights even in police mode). Anchor moved to asymmetric (50,30); quest `isle.boss.tusk` added.
-- [ ] Boss 2 — Beff Jezos (yacht / champagne tower)
-- [ ] Boss 3 — Mark Zuckersnort (AI drone swarm)
-- [ ] Boss 4 — Crypto Chad (pump-and-dump coins)
+- [x] Boss 2 — Beff Jezos (mega-yacht + champagne-tower topple; butler drones). Anchor → (-54,-38). compile-verified.
+- [x] Boss 3 — Mark Zuckersnort (AI datacenter; selfie-drone swarm + holo shockwaves). Anchor → (-66,22). compile-verified.
+- [x] Boss 4 — Crypto Chad (neon vault/casino; pump-and-dump giant coins + crash wave). Anchor → (20,-62). compile-verified.
+- All 3 reuse the BossFight framework, isGodBoss=false (passive in police mode), each completes its isle.* + isle.boss.* quest on defeat.
 - [ ] (add new requests here the instant Boba makes them)
 
 ## 📌 Standing rules for the game
