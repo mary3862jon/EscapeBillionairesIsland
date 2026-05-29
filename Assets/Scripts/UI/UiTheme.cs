@@ -40,6 +40,9 @@ namespace Spoonacci
         // ---- public draw helpers --------------------------------------------
 
         // Full HUD panel: soft drop-shadow + rounded translucent body + gold border.
+        // NOTE: we draw via GUI.Box (not GUIStyle.Draw) so it's safe in every GUI
+        // event, not just Repaint — calling .Draw() directly floods the console with
+        // "control 0 ... not a repaint event" errors every frame and freezes the game.
         public static void Panel(Rect r)
         {
             Ensure();
@@ -47,8 +50,8 @@ namespace Spoonacci
             GUI.color = Color.white;
             // drop shadow, nudged down a touch so the card looks lifted
             var sr = new Rect(r.x - 10f, r.y - 6f, r.width + 20f, r.height + 22f);
-            _shadowStyle.Draw(sr, false, false, false, false);
-            _cardStyle.Draw(r, false, false, false, false);
+            GUI.Box(sr, GUIContent.none, _shadowStyle);
+            GUI.Box(r, GUIContent.none, _cardStyle);
             GUI.color = prev;
         }
 
@@ -58,9 +61,9 @@ namespace Spoonacci
             Ensure();
             var prev = GUI.color;
             GUI.color = new Color(0f, 0f, 0f, 0.35f);
-            _solidDraw(new Rect(r.x + 2f, r.y + 3f, r.width, r.height)); // tight contact shadow
+            GUI.DrawTexture(new Rect(r.x + 2f, r.y + 3f, r.width, r.height), _solid); // contact shadow
             GUI.color = Color.white;
-            _cardLiteStyle.Draw(r, false, false, false, false);
+            GUI.Box(r, GUIContent.none, _cardLiteStyle);
             GUI.color = prev;
         }
 
@@ -93,8 +96,6 @@ namespace Spoonacci
             s.normal.textColor = keep;
             GUI.Label(r, text, s);
         }
-
-        static void _solidDraw(Rect r) { GUI.DrawTexture(r, _solid); }
 
         // ---- texture generation (lazy, cached) ------------------------------
 
