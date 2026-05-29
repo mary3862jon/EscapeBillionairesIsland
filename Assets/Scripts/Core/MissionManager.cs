@@ -80,6 +80,7 @@ namespace Spoonacci
             Register(new Mission("isle.tokens100","mission.isle.tokens100",() => GameState.TrollTokens >= 100, "Sample"));
             Register(new Mission("isle.bust",     "mission.isle.bust",     () => GameState.PoliceMode && GameState.PerfectBonks >= 10, "Sample"));
             Register(new Mission("isle.tusk",     "mission.isle.tusk",     () => BillionaireRegistry.IsBonked("Magnus Tusk"), "Sample"));
+            Register(new Mission("isle.boss.tusk","mission.isle.boss.tusk",() => BillionaireRegistry.IsBonked("Magnus Tusk"), "Sample"));
             Register(new Mission("isle.beff",     "mission.isle.beff",     () => BillionaireRegistry.IsBonked("Beff Jezos"), "Sample"));
             Register(new Mission("isle.chad",     "mission.isle.chad",     () => BillionaireRegistry.IsBonked("Crypto Chad"), "Sample"));
             Register(new Mission("isle.zuck",     "mission.isle.zuck",     () => BillionaireRegistry.IsBonked("Mark Zuckersnort"), "Sample"));

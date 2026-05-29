@@ -67,6 +67,15 @@ namespace Spoonacci
                                   "[WASD] идти · [ПКМ зажать] обзор · [ЛКМ] удар · [F] авто-удар · [КОЛЕСО] зум · [SPACE] прыжок · [SHIFT] спринт · [E] действие · [P] полиция · [L] язык · [ESC] меню") },
             { "hud.saved",       ("Saved ✔",       "Сохранено ✔") },
 
+            // -------- Boss fights --------
+            { "boss.clout",            ("CLOUT",        "ХАЙП") },
+            { "boss.bonked",           ("BONKED!",      "ПРИБИТ!") },
+            { "boss.defeated",         ("DEFEATED!",    "ПОВЕРЖЕН!") },
+            { "boss.phase.minions",    ("Drone swarm",  "Рой дронов") },
+            { "boss.phase.gimmick",    ("Bonk the boss!", "Бей босса!") },
+            { "boss.phase.humiliation",("Humiliation",  "Унижение") },
+            { "boss.phase.defeated",   ("Defeated",     "Повержен") },
+
             // -------- Police Mode --------
             { "police.on",  ("🚨 POLICE MODE — siren active", "🚨 РЕЖИМ ПОЛИЦИИ — сирена включена") },
             { "police.off", ("Press [P] for Police Mode",      "Нажми [P] для режима полиции") },
@@ -89,7 +98,8 @@ namespace Spoonacci
             { "mission.isle.bonk5",    ("Bonk 5 violators",                          "Ударь 5 нарушителей") },
             { "mission.isle.tokens100",("Earn 100 Troll Tokens",                     "Заработай 100 Тролль-монет") },
             { "mission.isle.bust",     ("Enter Police Mode (P) and bust dealers",    "Включи режим полиции (P) и арестуй дилеров") },
-            { "mission.isle.tusk",     ("Bonk Magnus Tusk (mansion)",                "Ударь Магнуса Таска (особняк)") },
+            { "mission.isle.tusk",     ("Bonk Magnus Tusk (launch pad)",             "Ударь Магнуса Таска (стартовая площадка)") },
+            { "mission.isle.boss.tusk",("Humiliate Magnus Tusk at his launch pad",   "Унизь Магнуса Таска на его стартовой площадке") },
             { "mission.isle.beff",     ("Bonk Beff Jezos (yacht NW)",                "Ударь Беффа Джезоса (яхта СЗ)") },
             { "mission.isle.chad",     ("Bonk Crypto Chad (vault NE)",               "Ударь Крипто Чада (хранилище СВ)") },
             { "mission.isle.zuck",     ("Bonk Mark Zuckersnort (lab SW)",            "Ударь Марка Цукерснорта (лаба ЮЗ)") },

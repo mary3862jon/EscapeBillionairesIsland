@@ -16,7 +16,7 @@ namespace Spoonacci
         public static readonly Vector2 Beff   = new Vector2(-80f, -80f);
         public static readonly Vector2 Vault  = new Vector2( 80f, -80f);
         public static readonly Vector2 Zuck   = new Vector2(-80f,  80f);
-        public static readonly Vector2 Magnus = new Vector2( 80f,  80f);
+        public static readonly Vector2 Magnus = new Vector2( 50f,  30f);
         public static readonly Vector2 Pool   = new Vector2(-15f,  -2f);
         public static readonly Vector2 Alley  = new Vector2(-22f,  22f);
         public static readonly Vector2 Fountain = new Vector2(6f, -6f);
@@ -59,7 +59,7 @@ namespace Spoonacci
             new Vector3(-80f, -80f, 30f), // Beff yacht zone
             new Vector3( 80f, -80f, 28f), // Crypto vault zone
             new Vector3(-80f,  80f, 28f), // Zuck lab zone
-            new Vector3( 80f,  80f, 28f), // Magnus mansion zone
+            new Vector3( 50f,  30f, 22f), // Magnus launch-complex arena
         };
 
         // ---- geometry helpers -----------------------------------------------

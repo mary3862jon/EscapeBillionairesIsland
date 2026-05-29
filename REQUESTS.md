@@ -16,8 +16,15 @@
 - [x] Title/main menu redesigned — themed gold-bordered buttons with hover (no more default grey boxes); Continue dims when there's no save.
 - [x] Music MUTE BUTTON added — on-screen toggle on the title screen (top-right) AND in-game (top-left corner). `[M]` key still works too. `MusicPlayer.ToggleMute()`.
 
-## 🔜 Outstanding / next
-- [ ] Boss fights — turn the 4 billionaires into real humiliation missions (rocket NFT swap, champagne-tower bonk, etc. — see MISSIONS.md).
+## 🔜 Outstanding / next — BOSS FIGHTS (4, one-by-one, each its own commit)
+Spec: each billionaire = a 3-phase "clout-bar" humiliation fight (Minions → signature Gimmick → Humiliation finisher) in a detailed arena. Rules locked with Boba:
+- **Asymmetric placement** — scatter the bosses, NOT the 4 tidy ±80 corners.
+- **AAA detail bar** — multi-part procedural meshes + real textures/metallic/emission (new `BossTextures`). NO single-cube "3rd-grader" props. Drones = rotors+gimbal+LEDs; rockets = stages+bell+plume.
+- **Police-mode rule** — in police mode the bosses go passive EXCEPT **Magnus Tusk = God-Boss** who fights even in police mode. Normal mode = all bosses fight.
+- [x] **Boss 1 — Magnus Tusk (God-Boss, rocket pad)** — DONE & compile-verified. Reusable `BossFight` framework (3-phase clout fight), detailed `BossDrone` (rotors/gimbal/LEDs), `BossCloutBar` HUD, new `BossTextures` (brushed-metal/carbon/concrete/rust/hazard/tarmac), `MagnusArenaBuilder` (gantry/tanks/floodlights/tarmac), `MagnusTuskBoss` (launches multi-stage rockets, fights even in police mode). Anchor moved to asymmetric (50,30); quest `isle.boss.tusk` added.
+- [ ] Boss 2 — Beff Jezos (yacht / champagne tower)
+- [ ] Boss 3 — Mark Zuckersnort (AI drone swarm)
+- [ ] Boss 4 — Crypto Chad (pump-and-dump coins)
 - [ ] (add new requests here the instant Boba makes them)
 
 ## 📌 Standing rules for the game

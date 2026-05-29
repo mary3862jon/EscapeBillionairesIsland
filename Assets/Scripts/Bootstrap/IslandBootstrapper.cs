@@ -62,7 +62,7 @@ namespace Spoonacci
             if (GameState.JustEscaped && !GameState.WearingCivilianClothes && salonAttendantTransform != null)
                 waypoint.target = salonAttendantTransform;
             else if (!BillionaireRegistry.IsBonked("Magnus Tusk"))
-                waypoint.target = FindBillionaire("Magnus Tusk");
+                waypoint.target = FindBossTusk();
             else if (!BillionaireRegistry.IsBonked("Beff Jezos"))
                 waypoint.target = FindBillionaire("Beff Jezos");
             else if (!BillionaireRegistry.IsBonked("Crypto Chad"))
@@ -78,6 +78,13 @@ namespace Spoonacci
             foreach (var b in Object.FindObjectsByType<BillionaireNPC>(FindObjectsSortMode.None))
                 if (b != null && b.billionaireName == n) return b.transform;
             return null;
+        }
+
+        // Magnus is a MagnusTuskBoss (not a BillionaireNPC), so route the waypoint to him directly.
+        Transform FindBossTusk()
+        {
+            var boss = Object.FindFirstObjectByType<MagnusTuskBoss>();
+            return boss != null ? boss.transform : null;
         }
 
         // ---------- WORLD ----------
@@ -397,39 +404,29 @@ namespace Spoonacci
 
         void BuildMagnusMansion()
         {
-            var z = new GameObject("Magnus Tusk Mansion Zone");
-            z.transform.position = new Vector3(ZONE_R, 0f, ZONE_R);
-            AddLabel(z, "sign.tusk", new Color(0.95f, 0.8f, 0.2f), 32, new Vector3(0f, 12f, 0f));
+            // Magnus is now a GOD-BOSS at his own asymmetric launch complex (not a corner).
+            // The boss + arena replace the old one-shot BillionaireNPC mansion.
+            Vector3 center = new Vector3(WorldLayout.Magnus.x, 0f, WorldLayout.Magnus.y);
 
-            // marble patio
-            MakePrimCubeTex("Patio", z.transform, new Vector3(0f, 0.05f, 0f), new Vector3(20f, 0.2f, 14f), ProceduralTextures.Marble, new Color(0.97f, 0.97f, 1f), 0.1f, 0.7f, new Vector2(10f, 7f));
-            // mansion body
-            MakePrimCubeTex("Mansion", z.transform, new Vector3(0f, 3f, 5f), new Vector3(18f, 6f, 8f), ProceduralTextures.Marble, new Color(1f, 0.97f, 0.9f), 0.1f, 0.6f, new Vector2(9f, 4f));
-            // gold columns
-            for (int side = -1; side <= 1; side += 2)
-                for (int row = 0; row < 3; row++)
-                {
-                    MakePrimCylinder("Column", z.transform, new Vector3(side * 7f, 2.5f, -3f + row * 3f), new Vector3(0.5f, 2.5f, 0.5f), new Color(0.95f, 0.85f, 0.4f), 1f, 0.9f);
-                }
-            // little rocket on the lawn
-            MakePrimCylinder("Rocket Body", z.transform, new Vector3(7f, 3f, -6f), new Vector3(0.7f, 3f, 0.7f), new Color(0.95f, 0.95f, 0.98f), 0.3f, 0.85f);
-            var nose = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            nose.transform.SetParent(z.transform, false);
-            nose.transform.localPosition = new Vector3(7f, 6.2f, -6f);
-            nose.transform.localScale = new Vector3(0.8f, 1f, 0.8f);
-            Destroy(nose.GetComponent<Collider>());
-            nose.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(1f, 0.3f, 0.3f), 0.4f, 0.85f);
+            var z = new GameObject("Magnus Tusk Launch Zone");
+            z.transform.position = center;
+            AddLabel(z, "sign.tusk", new Color(0.95f, 0.8f, 0.2f), 32, new Vector3(0f, 18f, 0f));
 
-            // Magnus
-            var mt = new GameObject("Magnus Tusk");
-            mt.transform.position = z.transform.position + new Vector3(-2f, 0f, -3f);
-            var bn = mt.AddComponent<BillionaireNPC>();
-            bn.billionaireName = "Magnus Tusk";
-            bn.suitColor = new Color(0.05f, 0.08f, 0.18f);
+            // detailed SpaceX-style launch complex (tarmac, gantry, fuel tanks, floodlights)
+            MagnusArenaBuilder.Build(center);
 
-            // mansion guards
+            // the GOD-BOSS himself, spawned at the pad centre (BuildBoss reads transform.position)
+            var bossGo = new GameObject("Magnus Tusk");
+            bossGo.transform.position = center;
+            bossGo.AddComponent<MagnusTuskBoss>();
+
+            // a few mansion guards patrolling the perimeter of the complex
             for (int i = 0; i < 4; i++)
-                SpawnCiv("Mansion Guard " + i, z.transform.position + new Vector3(Random.Range(-9f, 9f), 0f, Random.Range(-6f, 4f)), Civilian.Mode.Wander, new Color(0.1f, 0.1f, 0.15f), new Color(0.05f, 0.05f, 0.08f));
+            {
+                float a = i * 90f * Mathf.Deg2Rad;
+                Vector3 gp = center + new Vector3(Mathf.Cos(a) * 12f, 0f, Mathf.Sin(a) * 12f);
+                SpawnCiv("Mansion Guard " + i, gp, Civilian.Mode.Wander, new Color(0.1f, 0.1f, 0.15f), new Color(0.05f, 0.05f, 0.08f));
+            }
         }
 
         // ---------- ALLEY / EVERYTHING ELSE ----------
