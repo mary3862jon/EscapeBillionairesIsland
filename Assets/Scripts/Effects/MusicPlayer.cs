@@ -111,6 +111,15 @@ namespace Spoonacci
             return -1;
         }
 
+        // ---- public mute API (used by the on-screen mute button + [M] key) ----
+        public bool IsMuted => muted;
+        public void ToggleMute()
+        {
+            muted = !muted;
+            if (src != null) src.mute = muted;
+            Toast(muted ? "♪ MUTED" : "♪ unmuted");
+        }
+
         void Update()
         {
             var kb = Keyboard.current;

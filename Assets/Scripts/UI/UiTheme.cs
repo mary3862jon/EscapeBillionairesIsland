@@ -87,6 +87,25 @@ namespace Spoonacci
             GUI.color = prev;
         }
 
+        static GUIStyle _hit;
+
+        // A themed clickable button: rounded card + warm gold hover wash + left tab.
+        // Returns true on click. Pass the label's GUIStyle (centered usually).
+        public static bool Button(Rect r, string label, GUIStyle labelStyle)
+        {
+            Ensure();
+            if (_hit == null) _hit = new GUIStyle();
+            bool hover = r.Contains(Event.current.mousePosition);
+            Card(r);
+            if (hover)
+            {
+                Accent(r, new Color(1f, 0.82f, 0.35f, 0.13f));            // warm hover wash
+                Accent(new Rect(r.x + 1f, r.y + 6f, 4f, r.height - 12f), Gold); // gold left tab
+            }
+            Label(r, label, labelStyle);
+            return GUI.Button(r, GUIContent.none, _hit);
+        }
+
         // Text with a 1px drop-shadow for legibility over any background.
         public static void Label(Rect r, string text, GUIStyle s)
         {

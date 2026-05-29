@@ -19,6 +19,8 @@ namespace Spoonacci
             { "title.new_game",   ("NEW GAME",  "НОВАЯ ИГРА") },
             { "title.continue",   ("CONTINUE",  "ПРОДОЛЖИТЬ") },
             { "title.quit",       ("QUIT",      "ВЫЙТИ") },
+            { "ui.music_on",      ("♪ Music: ON",  "♪ Музыка: ВКЛ") },
+            { "ui.music_off",     ("♪ Music: OFF", "♪ Музыка: ВЫКЛ") },
             { "title.save_found", ("Save: found ✔",   "Сохранение: найдено ✔") },
             { "title.no_save",    ("Save: no save yet", "Сохранение: пока нет") },
             { "title.tokens",     ("Tokens",    "Монеты") },
