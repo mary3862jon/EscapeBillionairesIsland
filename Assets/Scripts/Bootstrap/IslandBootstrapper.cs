@@ -189,7 +189,7 @@ namespace Spoonacci
             BuildSkinKiosk();
             BuildBar();
             BuildDeckChairs();
-            // Pool is now built by the richer Features/PoolBuilder via IslandExpansion.
+            // Pool is now built by Features/PoolBasinBuilder + PoolPartyBuilder via IslandExpansion.
         }
 
         void BuildSalon()

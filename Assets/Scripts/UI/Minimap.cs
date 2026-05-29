@@ -9,8 +9,9 @@ namespace Spoonacci
     public class Minimap : MonoBehaviour
     {
         public float worldHalfExtent = 125f; // island spans roughly +/-125
-        public float size = 200f;            // on-screen square size (pixels, pre-scale)
+        public float size = 172f;            // on-screen square size (pixels, pre-scale)
         public float margin = 16f;
+        public float topInset = 156f;        // sits BELOW the top-left quest banner
 
         Transform player;
         readonly List<BillionaireNPC> targets = new List<BillionaireNPC>();
@@ -38,9 +39,11 @@ namespace Spoonacci
             EnsureRefs();
             if (dot == null) dot = Texture2D.whiteTexture;
 
+            // Top-LEFT, tucked under the quest banner, so it never overlaps the
+            // top-right Active Missions / Troll Tokens panel.
             float s = size * UiScale.Factor;
-            float x0 = Screen.width - s - margin;
-            float y0 = margin;
+            float x0 = margin;
+            float y0 = topInset * UiScale.Factor;
             var panel = new Rect(x0, y0, s, s);
 
             // backdrop + border
