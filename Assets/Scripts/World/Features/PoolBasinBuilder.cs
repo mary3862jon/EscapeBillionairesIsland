@@ -195,6 +195,14 @@ namespace Spoonacci
 
             // parasol umbrella beside the lounger
             BuildParasol(t, new Vector3(0.9f, 0f, -0.4f), idx);
+
+            // recline a bikini woman on most loungers (skip ~1 in 4 so a couple sit empty)
+            if (idx % 4 != 3)
+            {
+                Vector3 seatWorld = t.TransformPoint(new Vector3(0f, 0.55f, 0.05f));
+                BikiniWoman.Spawn("Lounger" + idx + "_Sunbather", seatWorld,
+                    Civilian.Mode.Sunbathe, t.eulerAngles.y);
+            }
         }
 
         private static void BuildParasol(Transform parent, Vector3 local, int idx)
@@ -298,6 +306,12 @@ namespace Spoonacci
                 float x = -1.3f + i * 1.3f;
                 BuildKit.Cylinder("StoolSeat" + i, t, new Vector3(x, 0.75f, 1.2f), new Vector3(0.45f, 0.08f, 0.45f), new Color(0.9f, 0.3f, 0.4f), 0.1f, 0.5f);
                 BuildKit.Cylinder("StoolLeg" + i, t, new Vector3(x, 0.37f, 1.2f), new Vector3(0.1f, 0.37f, 0.1f), new Color(0.7f, 0.7f, 0.72f), 0.6f, 0.6f);
+                // two bikini women standing at the bar, facing the counter
+                if (i < 2)
+                {
+                    Vector3 spot = t.TransformPoint(new Vector3(x, 0f, 1.55f));
+                    BikiniWoman.Spawn("BarPatron" + i, spot, Civilian.Mode.Idle, t.eulerAngles.y + 180f);
+                }
             }
 
             // tiki-style thatch canopy over the bar (pass-through)

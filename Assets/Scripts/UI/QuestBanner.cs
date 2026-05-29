@@ -27,8 +27,10 @@ namespace Spoonacci
             }
             if (task == null) task = Loc.T("quest.freeroam");
 
-            // Shifted LEFT and shrunk so it never overlaps the top-right mission panel (which is 460 wide)
-            float w = Mathf.Min(Screen.width * 0.55f, 900f);
+            // Shifted LEFT and clamped so it can NEVER reach the top-right mission cards
+            // (those are 460 wide at x = Screen.width-480), even on narrow windows.
+            float rightEdge = Screen.width - 480f - 16f;
+            float w = Mathf.Clamp(Mathf.Min(Screen.width * 0.55f, 900f), 200f, Mathf.Max(220f, rightEdge - 20f));
             float h = 82f;
             float x = 20f;
             float y = 70f;

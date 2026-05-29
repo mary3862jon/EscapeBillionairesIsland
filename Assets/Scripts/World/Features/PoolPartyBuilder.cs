@@ -141,11 +141,6 @@ namespace Spoonacci
                 (new Color(1f, 0.4f, 0.75f), new Color(0.95f, 0.2f, 0.5f)),     // rose
                 (new Color(0.2f, 1f, 0.85f), new Color(0.1f, 0.8f, 0.7f)),      // teal
             };
-            Color[] tanShades = {
-                new Color(0.86f, 0.62f, 0.42f), new Color(0.78f, 0.54f, 0.36f),
-                new Color(0.90f, 0.68f, 0.48f), new Color(0.72f, 0.48f, 0.32f),
-                new Color(0.84f, 0.58f, 0.40f), new Color(0.80f, 0.55f, 0.38f),
-            };
             Color[] hairCols = {
                 new Color(0.12f, 0.08f, 0.05f), new Color(0.35f, 0.22f, 0.10f),
                 new Color(0.85f, 0.72f, 0.40f), new Color(0.55f, 0.30f, 0.12f),
@@ -168,31 +163,23 @@ namespace Spoonacci
             {
                 Vector3 world = C + dancerLocals[i];
                 var bk = bikinis[i % bikinis.Length];
-                var c = BuildKit.Civ("BikiniDancer" + i, world, Civilian.Mode.Idle, bk.top, bk.bottom);
-                c.skinColor = tanShades[i % tanShades.Length];
+
+                // Build INACTIVE first so we can set the bikini/hair colours BEFORE
+                // Awake() runs BuildBody() — otherwise the figure builds with defaults.
+                var go = new GameObject("BikiniDancer" + i);
+                go.SetActive(false);
+                go.transform.position = world;
+                var w = go.AddComponent<BikiniWoman>();
+                w.mode = Civilian.Mode.Idle;
+                w.bikiniTop = bk.top;
+                w.bikiniBottom = bk.bottom;
+                w.hairColor = hairCols[i % hairCols.Length];
+                go.SetActive(true);   // now BuildBody() runs with the right colours
 
                 // Take full control of the transform for dancing.
-                var rb = c.GetComponent<Rigidbody>();
+                var rb = w.GetComponent<Rigidbody>();
                 if (rb != null) rb.isKinematic = true;
-
-                var dm = c.gameObject.AddComponent<DanceMove>();
-
-                // hair sphere parented to the head (collider removed for flair)
-                if (c.HeadTransform != null)
-                {
-                    var hair = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    hair.name = "DancerHair";
-                    hair.transform.SetParent(c.HeadTransform, false);
-                    hair.transform.localPosition = new Vector3(0f, 0.45f, -0.18f);
-                    hair.transform.localScale = new Vector3(1.25f, 1.05f, 1.25f);
-                    var col = hair.GetComponent<Collider>();
-                    if (col != null) Object.Destroy(col);
-                    var mr = hair.GetComponent<Renderer>();
-                    var mat = new Material(ShaderCache.Lit) { color = hairCols[i % hairCols.Length] };
-                    mat.SetFloat("_Metallic", 0f);
-                    mat.SetFloat("_Smoothness", 0.4f);
-                    mr.sharedMaterial = mat;
-                }
+                go.AddComponent<DanceMove>();
             }
         }
 

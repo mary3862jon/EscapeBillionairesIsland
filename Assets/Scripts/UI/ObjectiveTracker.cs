@@ -37,9 +37,11 @@ namespace Spoonacci
             float x = Screen.width - w - 20f;
             float y = 70f;
 
-            // ── Troll Tokens strip (its own little card) ──────────────────────
+            // ── Troll Tokens strip (its own little chip) ──────────────────────
+            // Use Card (light contact shadow) not Panel, so its big drop-shadow
+            // doesn't smear over the missions panel header just below it.
             float ty = 16f, tH = 48f;
-            UiTheme.Panel(new Rect(x, ty, w, tH));
+            UiTheme.Card(new Rect(x, ty, w, tH));
             UiTheme.Accent(new Rect(x + 1f, ty + 10f, 3f, tH - 20f), UiTheme.TextWarn);
             UiTheme.Label(new Rect(x + 18f, ty + 8f, w - 28f, 36f), "💰 " + GameState.TrollTokens + "  " + Loc.T("hud.tokens"), tokenStyle);
 

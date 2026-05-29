@@ -215,13 +215,9 @@ namespace Spoonacci
             a.crewName = "Coiffeur Cucchiaio"; a.color = new Color(1f, 0.65f, 0.8f); a.metallic = 0.6f; a.smoothness = 0.85f;
             salonAttendantTransform = att.transform;
 
-            // human receptionist behind counter
-            var recep = new GameObject("Receptionist");
-            recep.transform.position = salon.transform.position + new Vector3(1.5f, 0f, -1.7f);
-            var rc = recep.AddComponent<Civilian>();
-            rc.mode = Civilian.Mode.Idle;
-            rc.shirtColor = new Color(0.95f, 0.55f, 0.75f);
-            rc.pantsColor = new Color(0.4f, 0.1f, 0.3f);
+            // bikini-clad receptionist behind the counter (spa vibe)
+            BikiniWoman.Spawn("Receptionist", salon.transform.position + new Vector3(1.5f, 0f, -1.7f),
+                Civilian.Mode.Idle, 180f, new Color(0.95f, 0.4f, 0.7f));
 
             // flag posts
             for (int i = -1; i <= 1; i += 2)
@@ -262,13 +258,11 @@ namespace Spoonacci
             lbl.transform.localPosition = new Vector3(0f, 4f, 6f);
             var l = lbl.AddComponent<WorldLabel>();
             l.text = "sign.pool"; l.color = new Color(0.45f, 0.75f, 1f); l.fontSize = 28;
-            // 3 swimmers + 3 loungers
+            // 3 bikini swimmers (wading) + 3 reclining bikini loungers
             for (int i = 0; i < 3; i++)
             {
-                var sw = SpawnCiv("Swimmer " + i, pool.transform.position + new Vector3(-3f + i * 3f, 0.3f, 0f), Civilian.Mode.Idle);
-                sw.shirtColor = new Color(Random.value, Random.value, Random.value); sw.pantsColor = sw.shirtColor;
-                var lng = SpawnCiv("Lounger " + i, pool.transform.position + new Vector3(-3f + i * 3f, 0.3f, 5f), Civilian.Mode.Sunbathe);
-                lng.shirtColor = new Color(Random.value, Random.value, Random.value); lng.pantsColor = new Color(Random.value, Random.value, Random.value);
+                BikiniWoman.Spawn("Swimmer " + i, pool.transform.position + new Vector3(-3f + i * 3f, 0.3f, 0f), Civilian.Mode.Idle, 180f);
+                BikiniWoman.Spawn("Lounger " + i, pool.transform.position + new Vector3(-3f + i * 3f, 0.55f, 5f), Civilian.Mode.Sunbathe, 180f);
                 MakePrimCube("Lounger Chair", pool.transform, new Vector3(-3f + i * 3f, 0.12f, 5f), new Vector3(0.9f, 0.1f, 2f), new Color(0.95f, 0.5f, 0.55f), 0f, 0.6f);
             }
         }
@@ -287,10 +281,10 @@ namespace Spoonacci
             // bottles
             for (int i = -3; i <= 3; i++)
                 MakePrimCylinder("Bottle", bar.transform, new Vector3(i * 0.65f, 1.3f, -0.2f), new Vector3(0.13f, 0.22f, 0.13f), i % 2 == 0 ? new Color(0.3f, 0.6f, 0.3f) : new Color(0.7f, 0.4f, 0.2f), 0.4f, 0.9f);
-            // bartender + guests
+            // clothed bartender + bikini-clad guests at the bar
             SpawnCiv("Bartender", bar.transform.position + new Vector3(0f, 0f, 0.9f), Civilian.Mode.Idle, new Color(0.95f, 0.95f, 0.95f), new Color(0.1f, 0.1f, 0.15f));
             for (int i = -2; i <= 2; i += 2)
-                SpawnCiv("Guest " + i, bar.transform.position + new Vector3(i * 0.9f, 0f, -1.8f), Civilian.Mode.Idle);
+                BikiniWoman.Spawn("Guest " + i, bar.transform.position + new Vector3(i * 0.9f, 0f, -1.8f), Civilian.Mode.Idle, 180f);
         }
 
         void BuildDeckChairs()
@@ -299,7 +293,7 @@ namespace Spoonacci
             {
                 Vector3 pos = new Vector3(-5f + i * 2f, 0f, 14f);
                 MakePrimCube("Deck Chair", null, pos + Vector3.up * 0.12f, new Vector3(0.8f, 0.1f, 1.8f), new Color(0.95f, 0.5f, 0.55f), 0f, 0.6f);
-                SpawnCiv("Sunbather " + i, pos + Vector3.up * 0.25f, Civilian.Mode.Sunbathe);
+                BikiniWoman.Spawn("Sunbather " + i, pos + Vector3.up * 0.55f, Civilian.Mode.Sunbathe, 0f);
                 // umbrella
                 MakePrimCylinder("Pole", null, pos + new Vector3(0f, 1.3f, 0.8f), new Vector3(0.08f, 1.3f, 0.08f), new Color(0.4f, 0.3f, 0.2f), 0f, 0.4f);
                 var canopy = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -460,7 +454,7 @@ namespace Spoonacci
             var lbl = new GameObject("AlleyLabel");
             lbl.transform.SetParent(alley.transform, false);
             lbl.transform.localPosition = new Vector3(0f, 6f, -6.5f);
-            var l = lbl.AddComponent<WorldLabel>(); l.text = "sign.alley"; l.color = new Color(1f, 0.4f, 0.3f); l.fontSize = 24;
+            var l = lbl.AddComponent<WorldLabel>(); l.text = "sign.alley"; l.color = new Color(1f, 0.55f, 0.42f); l.fontSize = 24;
 
             // 3 drug dealers
             for (int i = 0; i < 3; i++)

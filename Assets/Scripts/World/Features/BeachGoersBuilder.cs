@@ -87,13 +87,21 @@ namespace Spoonacci
                 var tc = towel.GetComponent<Collider>();
                 if (tc != null) Object.Destroy(tc);
 
-                // Sunbather — Civ takes WORLD pos. Lounge on the towel under the shade.
+                // Sunbather — a bikini woman lounging on the towel under the shade.
+                // Build INACTIVE so bikini/hair colours are set before BuildBody() runs.
                 Vector3 towelWorld = cluster.transform.TransformPoint(new Vector3(0.9f, 0f, 0f));
-                var bather = BuildKit.Civ("Sunbather_" + placed, towelWorld, Civilian.Mode.Sunbathe,
-                    RandomShirt(), RandomTrunks());
-                bather.transform.rotation = Quaternion.Euler(0f, cluster.transform.eulerAngles.y + 90f, 0f);
-                bather.skinColor = new Color(
-                    Random.Range(0.78f, 0.98f), Random.Range(0.58f, 0.78f), Random.Range(0.45f, 0.62f));
+                Color biki = BikiniColor();
+                var bGo = new GameObject("Sunbather_" + placed);
+                bGo.SetActive(false);
+                bGo.transform.position = towelWorld;
+                var bather = bGo.AddComponent<BikiniWoman>();
+                bather.mode = Civilian.Mode.Sunbathe;
+                bather.bikiniTop = biki;
+                bather.bikiniBottom = biki;
+                bather.hairColor = BeachHair();
+                bGo.SetActive(true);
+                // recline on the towel, facing out from the umbrella
+                bather.transform.rotation = Quaternion.Euler(-74f, cluster.transform.eulerAngles.y + 90f, 0f);
             }
         }
 
@@ -157,8 +165,7 @@ namespace Spoonacci
                 Vector3 local = new Vector3(
                     Random.Range(-2.0f, 2.0f), 0f, pside * Random.Range(1.4f, 2.6f));
                 Vector3 world = court.transform.TransformPoint(local);
-                var pl = BuildKit.Civ("Volleyer_" + i, world, Civilian.Mode.Wander,
-                    RandomShirt(), RandomTrunks());
+                var pl = BikiniWoman.Spawn("Volleyer_" + i, world, Civilian.Mode.Wander);
                 pl.walkSpeed = Random.Range(1.6f, 2.4f);
                 pl.patrolCenter = world;
                 pl.patrolRadius = 2.0f; // courtside only
@@ -280,6 +287,29 @@ namespace Spoonacci
                 new Color(0.15f, 0.35f, 0.65f), new Color(0.70f, 0.20f, 0.25f),
                 new Color(0.20f, 0.50f, 0.40f), new Color(0.35f, 0.30f, 0.55f),
                 new Color(0.90f, 0.60f, 0.20f),
+            };
+            return c[Random.Range(0, c.Length)];
+        }
+
+        static Color BikiniColor()
+        {
+            Color[] c =
+            {
+                new Color(1f, 0.15f, 0.55f),  new Color(0.15f, 0.85f, 1f),
+                new Color(0.95f, 0.85f, 0.1f), new Color(0.5f, 1f, 0.3f),
+                new Color(0.9f, 0.2f, 0.2f),   new Color(0.75f, 0.3f, 1f),
+                new Color(1f, 0.4f, 0.75f),    new Color(0.1f, 0.1f, 0.12f),
+            };
+            return c[Random.Range(0, c.Length)];
+        }
+
+        static Color BeachHair()
+        {
+            Color[] c =
+            {
+                new Color(0.12f, 0.08f, 0.05f), new Color(0.35f, 0.22f, 0.10f),
+                new Color(0.85f, 0.72f, 0.40f), new Color(0.55f, 0.30f, 0.12f),
+                new Color(0.05f, 0.05f, 0.06f), new Color(0.90f, 0.45f, 0.55f),
             };
             return c[Random.Range(0, c.Length)];
         }

@@ -194,7 +194,7 @@ namespace Spoonacci
             }
         }
 
-        static Material MakeMat(Color c, float metallic, float smoothness)
+        protected static Material MakeMat(Color c, float metallic, float smoothness)
         {
             var sh = ShaderCache.Lit;
             var m = new Material(sh) { color = c };
