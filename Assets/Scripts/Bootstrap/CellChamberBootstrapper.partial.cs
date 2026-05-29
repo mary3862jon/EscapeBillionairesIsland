@@ -344,8 +344,17 @@ namespace Spoonacci
             float spacing = PRISON_W / (float)CELL_COUNT;
             float heroCellX = -PRISON_W * 0.5f + spacing * 0.5f;
             spoon.transform.position = new Vector3(heroCellX, 0.5f, PRISON_D * 0.25f - 2.5f);
-            spoon.AddComponent<Rigidbody>();
+            var srb = spoon.AddComponent<Rigidbody>();
+            // continuous collision + interpolation + upright lock so a fast spoon can't
+            // tip over and tunnel through the thin prison walls.
+            srb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            srb.interpolation = RigidbodyInterpolation.Interpolate;
+            srb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             spoon.AddComponent<CapsuleCollider>();
+            // invisible wall just inside the 50x30 prison so the player can never get out
+            var fall = spoon.AddComponent<FallGuard>();
+            fall.boundsX = PRISON_W * 0.5f - 1f;   // 24
+            fall.boundsZ = PRISON_D * 0.5f - 1f;    // 14
             spoon.AddComponent<ProceduralSpoonBuilder>();
             spoon.AddComponent<SpoonTypeSwitcher>();
             spoon.AddComponent<SpoonAnimator>();
