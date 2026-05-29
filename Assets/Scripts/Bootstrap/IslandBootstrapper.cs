@@ -138,7 +138,8 @@ namespace Spoonacci
             srb.interpolation = RigidbodyInterpolation.Interpolate;
             srb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             spoon.AddComponent<CapsuleCollider>();
-            spoon.AddComponent<FallGuard>(); // teleport back up if it ever ends up below the world
+            var fall = spoon.AddComponent<FallGuard>(); // back up if below world, in if past the edge
+            fall.boundsXZ = WorldLayout.Bounds - 1f;    // invisible wall just inside the perimeter hedge
             spoon.AddComponent<ProceduralSpoonBuilder>();
             spoon.AddComponent<SpoonTypeSwitcher>();
             spoon.AddComponent<SpoonAnimator>();
@@ -260,7 +261,7 @@ namespace Spoonacci
             lbl.transform.SetParent(pool.transform, false);
             lbl.transform.localPosition = new Vector3(0f, 4f, 6f);
             var l = lbl.AddComponent<WorldLabel>();
-            l.text = "sign.pool"; l.color = new Color(0.1f, 0.4f, 0.7f); l.fontSize = 28;
+            l.text = "sign.pool"; l.color = new Color(0.45f, 0.75f, 1f); l.fontSize = 28;
             // 3 swimmers + 3 loungers
             for (int i = 0; i < 3; i++)
             {
@@ -282,7 +283,7 @@ namespace Spoonacci
             var roof = MakePrimCubeTex("Roof", bar.transform, new Vector3(0f, 3.3f, 0.4f), new Vector3(6.5f, 0.2f, 2.0f), ProceduralTextures.Leaves, new Color(0.85f, 0.65f, 0.4f), 0f, 0.3f, new Vector2(4f, 2f));
             roof.transform.localRotation = Quaternion.Euler(15f, 0f, 0f);
             var lbl = new GameObject("BarLabel"); lbl.transform.SetParent(bar.transform, false); lbl.transform.localPosition = new Vector3(0f, 4f, 0f);
-            var l = lbl.AddComponent<WorldLabel>(); l.text = "sign.bar"; l.color = new Color(0.55f, 0.3f, 0.05f); l.fontSize = 26;
+            var l = lbl.AddComponent<WorldLabel>(); l.text = "sign.bar"; l.color = new Color(1f, 0.72f, 0.32f); l.fontSize = 26;
             // bottles
             for (int i = -3; i <= 3; i++)
                 MakePrimCylinder("Bottle", bar.transform, new Vector3(i * 0.65f, 1.3f, -0.2f), new Vector3(0.13f, 0.22f, 0.13f), i % 2 == 0 ? new Color(0.3f, 0.6f, 0.3f) : new Color(0.7f, 0.4f, 0.2f), 0.4f, 0.9f);

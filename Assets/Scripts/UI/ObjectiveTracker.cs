@@ -7,7 +7,7 @@ namespace Spoonacci
     // Top-right active mission panel (driven by MissionManager) + Troll Tokens counter.
     public class ObjectiveTracker : MonoBehaviour
     {
-        GUIStyle titleStyle, objStyle, tokenStyle, doneStyle;
+        GUIStyle titleStyle, objStyle, tokenStyle, doneStyle, statStyle, hitStyle;
         string sceneKey;
         public bool expanded = true; // collapsible — click the header arrow
 
@@ -32,69 +32,72 @@ namespace Spoonacci
             int statRows = (expanded && isCell) ? 3 : 0;
 
             float w = 460f;
-            float headerH = 44f;
-            float h = headerH + (expanded ? (16f + n * 36f + (statRows > 0 ? (8f + statRows * 34f) : 0f)) : 4f);
+            float headerH = 46f;
+            float h = headerH + (expanded ? (14f + n * 36f + (statRows > 0 ? (10f + statRows * 34f) : 0f)) : 6f);
             float x = Screen.width - w - 20f;
             float y = 70f;
 
-            // panel
-            var prev = GUI.color;
-            GUI.color = new Color(0f, 0f, 0f, 0.82f);
-            GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
-            GUI.color = prev;
+            // ── Troll Tokens strip (its own little card) ──────────────────────
+            float ty = 16f, tH = 48f;
+            UiTheme.Panel(new Rect(x, ty, w, tH));
+            UiTheme.Accent(new Rect(x + 1f, ty + 10f, 3f, tH - 20f), UiTheme.TextWarn);
+            UiTheme.Label(new Rect(x + 18f, ty + 8f, w - 28f, 36f), "💰 " + GameState.TrollTokens + "  " + Loc.T("hud.tokens"), tokenStyle);
 
-            // header
-            string arrow = expanded ? "▼" : "▶";
+            // ── Active-missions panel ─────────────────────────────────────────
+            UiTheme.Panel(new Rect(x, y, w, h));
+
+            // header (transparent clickable region over the card)
+            string arrow = expanded ? "▾" : "▸";
             int total = active.Count + statRows;
-            if (GUI.Button(new Rect(x + 6f, y + 4f, w - 12f, 36f), arrow + "  " + Loc.T("obj.title") + "  (" + total + ")", titleStyle))
+            UiTheme.Accent(new Rect(x + 1f, y + 11f, 3f, headerH - 18f), UiTheme.Gold);
+            UiTheme.Label(new Rect(x + 18f, y + 7f, w - 32f, 34f), arrow + "  " + Loc.T("obj.title") + "   (" + total + ")", titleStyle);
+            if (GUI.Button(new Rect(x, y, w, headerH), GUIContent.none, hitStyle))
                 expanded = !expanded;
 
             if (expanded)
             {
-                float oy = y + headerH + 6f;
+                UiTheme.Rule(x + 18f, y + headerH - 2f, w - 36f);
+                float oy = y + headerH + 8f;
                 for (int i = 0; i < n; i++)
                 {
                     var m = active[i];
                     bool done = m.isComplete != null && m.isComplete();
-                    string mark = done ? "✔" : "▢";
+                    string mark = done ? "✔" : "○";
                     var s = done ? doneStyle : objStyle;
-                    GUI.Label(new Rect(x + 14f, oy, w - 28f, 32f), mark + "  " + Loc.T(m.title), s);
+                    UiTheme.Label(new Rect(x + 22f, oy, w - 36f, 32f), mark + "   " + Loc.T(m.title), s);
                     oy += 34f;
                 }
 
                 // Prison stats INSIDE the same panel — same style
                 if (isCell)
                 {
-                    oy += 6f;
+                    oy += 8f;
+                    UiTheme.Rule(x + 18f, oy - 4f, w - 36f);
                     int rem = Mathf.Max(0, PrisonState.Total - PrisonState.Persuaded);
                     string s1 = Loc.T("prison.cells")     + "  " + PrisonState.Unlocked + " / " + PrisonState.TotalCells;
                     string s2 = Loc.T("prison.persuaded") + "  " + PrisonState.Persuaded + " / " + PrisonState.Total;
                     string s3 = Loc.T("prison.resisting") + " " + rem;
-                    var stat = new GUIStyle(objStyle); stat.normal.textColor = new Color(1f, 0.85f, 0.5f);
-                    GUI.Label(new Rect(x + 14f, oy, w - 28f, 28f), "🔓  " + s1, stat); oy += 34f;
-                    GUI.Label(new Rect(x + 14f, oy, w - 28f, 28f), "🥄  " + s2, stat); oy += 34f;
-                    GUI.Label(new Rect(x + 14f, oy, w - 28f, 28f), "💢  " + s3, stat);
+                    UiTheme.Label(new Rect(x + 22f, oy, w - 36f, 28f), "🔓  " + s1, statStyle); oy += 34f;
+                    UiTheme.Label(new Rect(x + 22f, oy, w - 36f, 28f), "🥄  " + s2, statStyle); oy += 34f;
+                    UiTheme.Label(new Rect(x + 22f, oy, w - 36f, 28f), "💢  " + s3, statStyle);
                 }
             }
-
-            // Troll Tokens strip above
-            float ty = 16f;
-            GUI.color = new Color(0f, 0f, 0f, 0.82f);
-            GUI.DrawTexture(new Rect(x, ty, w, 48f), Texture2D.whiteTexture);
-            GUI.color = prev;
-            GUI.Label(new Rect(x + 14f, ty + 8f, w - 28f, 36f), "💰 " + GameState.TrollTokens + " " + Loc.T("hud.tokens"), tokenStyle);
         }
 
         void EnsureStyles()
         {
             if (titleStyle == null)
-                titleStyle = new GUIStyle(GUI.skin.button) { fontSize = UiScale.Font(22), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = new Color(1f, 0.95f, 0.6f) }, hover = { textColor = new Color(1f, 1f, 0.8f) } };
+                titleStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(21), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = UiTheme.GoldSoft } };
             if (objStyle == null)
-                objStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(18), normal = { textColor = Color.white } };
+                objStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(18), alignment = TextAnchor.MiddleLeft, normal = { textColor = UiTheme.TextMain } };
             if (doneStyle == null)
-                doneStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(18), normal = { textColor = new Color(0.6f, 1f, 0.6f) } };
+                doneStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(18), alignment = TextAnchor.MiddleLeft, normal = { textColor = UiTheme.TextDone } };
+            if (statStyle == null)
+                statStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(18), alignment = TextAnchor.MiddleLeft, normal = { textColor = UiTheme.GoldSoft } };
             if (tokenStyle == null)
-                tokenStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(26), fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.55f, 0.1f) } };
+                tokenStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(25), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft, normal = { textColor = UiTheme.TextWarn } };
+            if (hitStyle == null)
+                hitStyle = new GUIStyle(); // invisible click target over the card header
         }
     }
 }

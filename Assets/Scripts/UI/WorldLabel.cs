@@ -10,7 +10,7 @@ namespace Spoonacci
     {
         public string text = "";
         public int fontSize = 24;
-        public Color color = Color.black;
+        public Color color = new Color(0.97f, 0.96f, 0.92f, 1f); // warm white — reads on the dark sign
         public Vector3 worldOffset = Vector3.zero;
         public float maxVisibleDistance = 35f;
         // The thing this label describes. Occlusion is tested against THIS, so a name
@@ -84,25 +84,14 @@ namespace Spoonacci
             // measure text width to pick a snug background plate
             GUIContent content = new GUIContent(display);
             Vector2 sz = style.CalcSize(content);
-            float pad = 18f;
-            float w = sz.x + pad * 2f;
-            float h = sz.y + pad;
+            float padX = 16f, padY = 9f;
+            float w = sz.x + padX * 2f;
+            float h = sz.y + padY * 2f;
             var rect = new Rect(sp.x - w * 0.5f, Screen.height - sp.y - h * 0.5f, w, h);
 
-            // opaque sign-like background
-            var prev = GUI.color;
-            GUI.color = new Color(0.05f, 0.05f, 0.08f, 1f);
-            GUI.DrawTexture(rect, Texture2D.whiteTexture);
-            // gold border
-            GUI.color = new Color(0.85f, 0.7f, 0.25f, 1f);
-            float b = 2f;
-            GUI.DrawTexture(new Rect(rect.x, rect.y, rect.width, b), Texture2D.whiteTexture);
-            GUI.DrawTexture(new Rect(rect.x, rect.yMax - b, rect.width, b), Texture2D.whiteTexture);
-            GUI.DrawTexture(new Rect(rect.x, rect.y, b, rect.height), Texture2D.whiteTexture);
-            GUI.DrawTexture(new Rect(rect.xMax - b, rect.y, b, rect.height), Texture2D.whiteTexture);
-            GUI.color = prev;
-
-            GUI.Label(rect, display, style);
+            // rounded, translucent, gold-bordered sign that matches the HUD
+            UiTheme.Card(rect);
+            UiTheme.Label(rect, display, style);
         }
     }
 }

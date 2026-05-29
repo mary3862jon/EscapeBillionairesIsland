@@ -26,7 +26,7 @@ namespace Spoonacci
             banner.GetComponent<Renderer>().sharedMaterial = MakeMat(new Color(0.95f, 0.5f, 0.75f), 0.3f, 0.6f);
             var label = banner.AddComponent<WorldLabel>();
             label.text = "sign.skinkit";
-            label.color = new Color(0.6f, 0.15f, 0.45f);
+            label.color = new Color(1f, 0.5f, 0.82f);
             label.fontSize = 22;
 
             // 12 mini-spoon icons in a 4x3 grid
