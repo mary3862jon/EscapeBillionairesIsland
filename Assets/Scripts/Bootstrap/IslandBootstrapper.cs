@@ -26,6 +26,7 @@ namespace Spoonacci
             gameObject.AddComponent<PauseMenu>();
             gameObject.AddComponent<QuestBanner>();
             gameObject.AddComponent<LanguageToggle>();
+            gameObject.AddComponent<Minimap>();
             BuildGround();
             BuildOcean();
             BuildSky();
@@ -39,11 +40,13 @@ namespace Spoonacci
             BuildCryptoVault();
             BuildZuckLab();
             BuildMagnusMansion();
-            BuildShadyAlley();
             BuildPalmEdges();
             BuildCrowd();
             BuildViolationSpawner();
             BuildWaypoint();
+            // All richer features (pool, alley, paths, vegetation, perimeter, cyclists, props)
+            // live in self-contained builders under World/Features. See IslandExpansion.
+            IslandExpansion.Build(transform);
         }
 
         WaypointMarker waypoint;
@@ -80,10 +83,14 @@ namespace Spoonacci
         // ---------- WORLD ----------
         void BuildGround()
         {
-            var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            // SOLID, thick ground (not a one-sided Plane). A Plane has a single-sided
+            // collider + back-face culling, so the player could tunnel through and then
+            // see the whole world from below. A thick Cube is collidable from every side
+            // and renders its underside, killing both fatal bugs.
+            var ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
             ground.name = "Beach";
-            ground.transform.position = Vector3.zero;
-            ground.transform.localScale = new Vector3(ISLE / 10f, 1f, ISLE / 10f);
+            ground.transform.position = new Vector3(0f, -2f, 0f); // top surface sits at y=0
+            ground.transform.localScale = new Vector3(ISLE, 4f, ISLE);
             ground.GetComponent<Renderer>().sharedMaterial = ShaderCache.MakeTextured(
                 ProceduralTextures.Sand, new Color(0.98f, 0.94f, 0.78f), 0f, 0.18f, new Vector2(40f, 40f));
         }
@@ -124,8 +131,14 @@ namespace Spoonacci
         {
             spoon = new GameObject("Sir Spoonacci");
             spoon.transform.position = new Vector3(0f, 0.5f, 0f);
-            spoon.AddComponent<Rigidbody>();
+            var srb = spoon.AddComponent<Rigidbody>();
+            // continuous collision + interpolation so a fast/hopping spoon can't tunnel
+            // through the ground; freeze tip-over so it stays upright.
+            srb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            srb.interpolation = RigidbodyInterpolation.Interpolate;
+            srb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             spoon.AddComponent<CapsuleCollider>();
+            spoon.AddComponent<FallGuard>(); // teleport back up if it ever ends up below the world
             spoon.AddComponent<ProceduralSpoonBuilder>();
             spoon.AddComponent<SpoonTypeSwitcher>();
             spoon.AddComponent<SpoonAnimator>();
@@ -174,9 +187,9 @@ namespace Spoonacci
         {
             BuildSalon();
             BuildSkinKiosk();
-            BuildPool();
             BuildBar();
             BuildDeckChairs();
+            // Pool is now built by the richer Features/PoolBuilder via IslandExpansion.
         }
 
         void BuildSalon()
