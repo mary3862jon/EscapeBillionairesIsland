@@ -129,8 +129,15 @@ namespace Spoonacci
         {
             spoon = new GameObject("Sir Spoonacci");
             spoon.transform.position = new Vector3(0f, 0.5f, 12f);
-            spoon.AddComponent<Rigidbody>();
+            var srb = spoon.AddComponent<Rigidbody>();
+            srb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            srb.interpolation = RigidbodyInterpolation.Interpolate;
+            srb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             spoon.AddComponent<CapsuleCollider>();
+            // wall the SIDES only — south (-z) stays open so the player can walk into
+            // the ocean to trigger the shark fusion.
+            var fall = spoon.AddComponent<FallGuard>();
+            fall.boundsX = 28f;
             spoon.AddComponent<ProceduralSpoonBuilder>();
             spoon.AddComponent<SpoonTypeSwitcher>();
             spoon.AddComponent<SpoonAnimator>();

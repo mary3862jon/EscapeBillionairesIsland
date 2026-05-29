@@ -8,7 +8,7 @@
 ## ✅ Done & verified
 - [x] HUD redesign — rounded translucent gold-bordered cards, soft shadow, text shadows (no more flat black boxes with loud yellow text). `UiTheme.cs`, `QuestBanner`, `ObjectiveTracker`, `WorldLabel`.
 - [x] Fix HUD freeze — panels drawn via `GUI.Box`, not `GUIStyle.Draw` (was flooding the console every frame).
-- [x] Can't walk off the map — invisible soft wall at the play-area edge. `FallGuard.boundsXZ`.
+- [x] Can't walk off the map — invisible soft wall on the player in EVERY playable scene: island (square), prison/Cutlery chamber (rectangular 50x30), shark scene (sides only, ocean open). `FallGuard` boundsXZ/boundsX/boundsZ. First pass only covered the island — prison was still escapable.
 - [x] SEXY BIKINI WOMEN everywhere a beach/pool/spa crowd belongs — real feminine figures (hourglass, bikini, hair), not recoloured clothed men. `BikiniWoman.cs` + shared `BikiniWoman.Spawn()` factory, wired into: pool party dancers, beach sunbathers & volleyball, central hub deck chairs, pool swimmers/loungers, main infinity-pool loungers, poolside cocktail bar, tiki-bar guests, salon receptionist. (Bartenders/guards/yacht-staff stay clothed.)
 - [x] Two HUD layout bugs from the audit: token-strip shadow smear + quest-banner overlap on narrow windows.
 
