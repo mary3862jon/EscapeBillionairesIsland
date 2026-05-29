@@ -19,7 +19,7 @@ namespace Spoonacci
         float _shownFrac = 1f;       // eased fill so it drains smoothly
         float _victoryUntil;         // > now while the victory flash plays
 
-        GUIStyle _nameStyle, _phaseStyle, _cloutStyle;
+        GUIStyle _nameStyle, _phaseStyle, _cloutStyle, _hintStyle;
 
         public void Track(BossFight b)
         {
@@ -61,6 +61,24 @@ namespace Spoonacci
 
             var panel = new Rect(x, y, w, h);
             UiTheme.Panel(panel);
+
+            // BIG action-plan banner just above the bar — tells the player exactly what to
+            // do this phase (smash drones / dodge + bonk the boss). Pulses to draw the eye.
+            if (!win)
+            {
+                string hint = _boss.ActionHint;
+                if (!string.IsNullOrEmpty(hint))
+                {
+                    float hw = Mathf.Min(Screen.width * 0.72f, 1040f);
+                    float hh = 50f;
+                    var hintRect = new Rect((Screen.width - hw) * 0.5f, y - hh - 12f, hw, hh);
+                    UiTheme.Card(hintRect);
+                    UiTheme.Accent(new Rect(hintRect.x + 1f, hintRect.y + 8f, 3f, hh - 16f), UiTheme.TextWarn);
+                    float pulse = 0.78f + 0.22f * Mathf.Sin(Time.unscaledTime * 5f);
+                    _hintStyle.normal.textColor = new Color(1f, 0.86f * pulse, 0.4f * pulse, 1f);
+                    UiTheme.Label(hintRect, hint, _hintStyle);
+                }
+            }
 
             float pad = 18f;
             // boss name (top-left of panel)
@@ -114,6 +132,8 @@ namespace Spoonacci
                 _phaseStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(15), fontStyle = FontStyle.Italic, alignment = TextAnchor.MiddleRight };
             if (_cloutStyle == null)
                 _cloutStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(14), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
+            if (_hintStyle == null)
+                _hintStyle = new GUIStyle(GUI.skin.label) { fontSize = UiScale.Font(21), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
         }
     }
 }

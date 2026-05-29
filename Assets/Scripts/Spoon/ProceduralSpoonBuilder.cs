@@ -50,6 +50,9 @@ namespace Spoonacci
             runtimeMat = null;
             BuildBody();
             ApplySkin(skinColor, metallic, smoothness);
+            // rebind the animator to the NEW visual so the bonk swing / waddle keep working
+            var anim = GetComponent<SpoonAnimator>();
+            if (anim != null) anim.Rebind(Visual);
         }
 
         void BuildBody()

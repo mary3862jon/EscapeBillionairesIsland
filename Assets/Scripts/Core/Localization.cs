@@ -75,6 +75,12 @@ namespace Spoonacci
             { "boss.phase.gimmick",    ("Bonk the boss!", "Бей босса!") },
             { "boss.phase.humiliation",("Humiliation",  "Унижение") },
             { "boss.phase.defeated",   ("Defeated",     "Повержен") },
+            { "boss.hint.minions",     ("⚔ SMASH THE DRONES — get close & swing [LMB] / [Q]!   ({0} left)",
+                                        "⚔ БЕЙ ДРОНЫ — подойди и бей [ЛКМ] / [Q]!   (осталось {0})") },
+            { "boss.hint.gimmick",     ("⚔ DODGE his attack, then BONK {0} — get close & swing [LMB]!",
+                                        "⚔ УВернись от атаки, потом БЕЙ {0} — подойди и бей [ЛКМ]!") },
+            { "boss.hint.humiliation", ("💥 GOT HIM! Finish the humiliation…",
+                                        "💥 ПОПАЛ! Заверши унижение…") },
 
             // -------- Police Mode --------
             { "police.on",  ("🚨 POLICE MODE — siren active", "🚨 РЕЖИМ ПОЛИЦИИ — сирена включена") },

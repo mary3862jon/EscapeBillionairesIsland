@@ -172,9 +172,9 @@ namespace Spoonacci
 
             if (_target == null) { Hover(dt); return; }
 
-            // strafe orbit around the player
+            // strafe orbit around the player — kept low enough to actually be bonkable
             _orbitAngle += dt * 0.9f;
-            Vector3 center = _target.position + Vector3.up * 2.6f;
+            Vector3 center = _target.position + Vector3.up * 1.7f;
             Vector3 want = center + new Vector3(Mathf.Cos(_orbitAngle), 0f, Mathf.Sin(_orbitAngle)) * _orbitRadius;
             _bobPhase += dt * 2.2f;
             want.y += Mathf.Sin(_bobPhase) * 0.35f;
@@ -231,12 +231,15 @@ namespace Spoonacci
                       || (mouse != null && mouse.leftButton.wasPressedThisFrame);
             if (!swung) return;
 
+            // Use HORIZONTAL distance + a generous range so a swing connects with a
+            // hovering drone you're facing (3D distance made them unhittable from the ground).
             Vector3 to = transform.position - _target.position;
-            float d = to.magnitude;
-            if (d > 2.8f) return;
             Vector3 flat = to; flat.y = 0f;
+            float d = flat.magnitude;
+            if (d > 4.0f) return;
+            if (Mathf.Abs(to.y) > 3.2f) return;        // can't reach a drone way overhead
             float dot = Vector3.Dot(_target.forward, flat.normalized);
-            if (dot < 0.35f) return;
+            if (dot < 0.3f) return;
             _bonkCooldown = Time.time + 0.3f;
             TakeHit(20f, _target.position);
         }

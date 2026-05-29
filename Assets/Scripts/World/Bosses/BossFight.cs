@@ -39,6 +39,24 @@ namespace Spoonacci
         public Phase  CurrentPhase { get; private set; } = Phase.Idle;
         public string PhaseLabel   { get; private set; } = "";
 
+        // Drones still flying this phase (for the on-screen action plan).
+        public int DronesAlive => Mathf.Max(0, _drones.Count - _dronesDown);
+
+        // Big, explicit "what do I DO" instruction shown by the clout bar.
+        public string ActionHint
+        {
+            get
+            {
+                switch (CurrentPhase)
+                {
+                    case Phase.Minions:     return string.Format(Loc.T("boss.hint.minions"), DronesAlive);
+                    case Phase.Gimmick:     return string.Format(Loc.T("boss.hint.gimmick"), bossName);
+                    case Phase.Humiliation: return Loc.T("boss.hint.humiliation");
+                    default:                return "";
+                }
+            }
+        }
+
         // ---- internals -------------------------------------------------------
         protected Transform player;
         SpoonController _spoon;

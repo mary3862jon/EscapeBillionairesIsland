@@ -43,9 +43,28 @@ namespace Spoonacci
         public void TriggerLandSquash() { landingPulse = 1f; }
         public void TriggerBonkSwing() { bonkTimer = 0.35f; }
 
+        // Re-point at a freshly rebuilt visual (SpoonTypeSwitcher rebuilds the mesh on
+        // keys 1-9). Without this the animator keeps a reference to the DESTROYED old
+        // visual and all animation — including the bonk swing — silently dies.
+        public void Rebind(Transform v)
+        {
+            visual = v;
+            if (visual != null)
+            {
+                baseLocalPos = visual.localPosition;
+                baseLocalRot = visual.localRotation;
+            }
+        }
+
         void LateUpdate()
         {
-            if (visual == null) return;
+            // self-heal if the visual was rebuilt and we weren't rebound
+            if (visual == null)
+            {
+                var b = GetComponent<ProceduralSpoonBuilder>();
+                if (b != null && b.Visual != null) Rebind(b.Visual);
+                if (visual == null) return;
+            }
 
             Vector3 horiz = rb != null ? rb.linearVelocity : Vector3.zero;
             horiz.y = 0f;
