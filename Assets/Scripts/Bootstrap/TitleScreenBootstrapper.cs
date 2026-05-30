@@ -51,6 +51,7 @@ namespace Spoonacci
             _ = MusicPlayer.Instance;
             gameObject.AddComponent<PostFxBoost>();
             gameObject.AddComponent<LanguageToggle>();
+            gameObject.AddComponent<GuiFontInstaller>(); // GTA-style bold font + outline on ALL text
             // No PauseMenu on the title screen — title already has its own buttons
             BuildScene();
         }
@@ -62,13 +63,13 @@ namespace Spoonacci
 
             tickerMsgs = new[]
             {
-                "🔥 NEW: 4 BOSS FIGHTS JUST DROPPED",
-                "👑 Magnus Tusk humiliated moments ago",
-                "🥄 2,481,903 billionaires bonked worldwide",
-                "⚡ SEASON 1 — limited time",
-                "🏝️ Trending #1 on the island",
-                "💎 Unlock the Golden Ladle skin this week only",
-                "🚀 Yacht raid + Datacenter heist now LIVE",
+                "NEW: 4 BOSS FIGHTS JUST DROPPED",
+                "Magnus Tusk humiliated moments ago",
+                "2,481,903 billionaires bonked worldwide",
+                "SEASON 1 — limited time",
+                "Trending #1 on the island",
+                "Unlock the Golden Ladle skin this week only",
+                "Yacht raid + Datacenter heist now LIVE",
             };
 
             // ── moody night-sky / deep teal ambience (premium attract mood) ──
@@ -426,30 +427,23 @@ namespace Spoonacci
 
             DrawTicker(W);
 
-            // ── TITLE ──
+            // ── TITLE ── (sits on a dark cinematic scrim so it reads over the skyline)
             string title = "SIR  SPOONACCI";
-            float tw = Mathf.Min(1100f, W - 80f); float th = 110f;
-            float tx = (W - tw) * 0.5f; float ty = 56f;
-            // soft glow: layered alpha copies behind
-            var glow = new GUIStyle(titleStyle);
-            for (int g = 3; g >= 1; g--)
-            {
-                glow.normal.textColor = new Color(1f, 0.85f, 0.35f, 0.10f);
-                float o = g * 2f;
-                GUI.Label(new Rect(tx - o, ty, tw, th), title, glow);
-                GUI.Label(new Rect(tx + o, ty, tw, th), title, glow);
-                GUI.Label(new Rect(tx, ty - o, tw, th), title, glow);
-                GUI.Label(new Rect(tx, ty + o, tw, th), title, glow);
-            }
-            var shadow = new GUIStyle(titleStyle); shadow.normal.textColor = new Color(0f, 0f, 0f, 0.7f);
-            GUI.Label(new Rect(tx + 4, ty + 5, tw, th), title, shadow);
-            GUI.Label(new Rect(tx, ty, tw, th), title, titleStyle);
+            float tw = Mathf.Min(1100f, W - 80f); float th = 116f;
+            float tx = (W - tw) * 0.5f; float ty = H * 0.11f;
 
-            // subtitle / tagline
-            GUI.Label(new Rect(tx, ty + 96f, tw, 38f), Loc.T("title.subtitle"), subStyle);
-            // social proof
-            GUI.Label(new Rect(tx, ty + 132f, tw, 30f),
-                "★★★★★  \"the funniest spoon game ever\"", starStyle);
+            // letterbox scrim band behind the title block (dark → fades out)
+            float scrimY = ty - 22f, scrimH = 230f;
+            UiTheme.Accent(new Rect(0f, scrimY, W, scrimH), new Color(0f, 0f, 0f, 0.42f));
+            UiTheme.Accent(new Rect(0f, scrimY, W, 2f), new Color(UiTheme.Gold.r, UiTheme.Gold.g, UiTheme.Gold.b, 0.25f));
+            UiTheme.Accent(new Rect(0f, scrimY + scrimH - 2f, W, 2f), new Color(UiTheme.Gold.r, UiTheme.Gold.g, UiTheme.Gold.b, 0.25f));
+
+            // big heavy gold title with a thick crisp outline (GTA-style)
+            UiTheme.Outline(new Rect(tx, ty, tw, th), title, titleStyle, 3f, new Color(0f, 0f, 0f, 1f));
+            // subtitle / tagline + social proof
+            UiTheme.Label(new Rect(tx, ty + th - 8f, tw, 40f), Loc.T("title.subtitle"), subStyle);
+            UiTheme.Label(new Rect(tx, ty + th + 30f, tw, 30f),
+                "★★★★★   \"the funniest spoon game ever\"", starStyle);
 
             // ── NEW / SEASON 1 BADGE (top-left, glowing) ──
             DrawBadge(pulse);
@@ -564,7 +558,7 @@ namespace Spoonacci
             int ss = (int)(remain % 60f);
             var cd = new GUIStyle(countdownStyle) { alignment = TextAnchor.MiddleCenter };
             GUI.Label(new Rect(rx, y, boxW, boxH),
-                string.Format("⚡ SEASON ENDS  {0:00}:{1:00}:{2:00}", hh, mm, ss), cd);
+                string.Format("SEASON ENDS  {0:00}:{1:00}:{2:00}", hh, mm, ss), cd);
         }
 
         // ── styles ──────────────────────────────────────────────────────────────

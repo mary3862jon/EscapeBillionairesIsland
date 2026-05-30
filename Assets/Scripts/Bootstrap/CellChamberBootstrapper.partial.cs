@@ -19,6 +19,7 @@ namespace Spoonacci
             gameObject.AddComponent<PauseMenu>();
             gameObject.AddComponent<QuestBanner>();
             gameObject.AddComponent<LanguageToggle>();
+            gameObject.AddComponent<GuiFontInstaller>(); // GTA-style bold font + outline on ALL text
             DampenAmbient();
             BuildOuterStructure();
             BuildCells();

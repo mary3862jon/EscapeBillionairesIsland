@@ -29,6 +29,7 @@ Spec: each billionaire = a 3-phase "clout-bar" humiliation fight (Minions → si
 - [x] Bonk effect dies after switching spoon (keys 1-9) — `RebuildFromCurrentType` destroyed the visual but `SpoonAnimator` kept the dead ref. Now rebinds the animator on rebuild (+ self-heal). Swing/waddle survive every switch.
 - [x] Boss fight had "no action plan" — drones orbited at 2.6m (unreachable; 3D bonk range 2.8m) so you literally couldn't hit them. Lowered orbit to 1.7m + horizontal-distance bonk (range 4m). Added a big pulsing action-plan banner on the clout bar ("SMASH THE DRONES…", "DODGE then BONK <boss>…") + drone counter, EN/RU.
 - [x] Title screen — full modern/FOMO rebuild: hero spoon on a glowing pedestal, orbiting cinematic camera, 3-point lighting + searchlights, neon island skyline + 4 boss-arena icons, raining coins/confetti; overlay = pulsing NEW GAME CTA, scrolling FOMO ticker, live-player counter, Season-1 countdown, NEW badge, 5-star line. New Game/Continue/Quit/mute wiring preserved. compile-verified.
+- [x] GTA-tier TEXT everywhere — global bold OS font (`UiFonts`/`GuiFontInstaller`, Bahnschrift/Impact/Arial Black…) inherited by ALL IMGUI text; `UiTheme.Label` now draws an 8-direction crisp outline + drop-shadow so text reads over any background. Stripped tofu-emoji from all localized strings + title (kept ♪ ✔ ★ ● ▶). Title screen recomposed: big heavy outlined gold title on a cinematic dark scrim (was thin/dark/lost behind the skyline).
 - [ ] (add new requests here the instant Boba makes them)
 
 ## 📌 Standing rules for the game

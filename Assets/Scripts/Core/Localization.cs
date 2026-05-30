@@ -54,7 +54,7 @@ namespace Spoonacci
             { "common.unlim",  ("Unlimited", "Без лимита") },
 
             // -------- Quest Banner --------
-            { "quest.current",  ("⭐ CURRENT QUEST", "⭐ ТЕКУЩЕЕ ЗАДАНИЕ") },
+            { "quest.current",  ("CURRENT QUEST", "ТЕКУЩЕЕ ЗАДАНИЕ") },
             { "quest.freeroam", ("Free roam — explore, bonk, save (F5), press ESC to pause",
                                  "Свободный режим — исследуй, бей, сохраняй (F5), ESC для паузы") },
 
@@ -75,22 +75,22 @@ namespace Spoonacci
             { "boss.phase.gimmick",    ("Bonk the boss!", "Бей босса!") },
             { "boss.phase.humiliation",("Humiliation",  "Унижение") },
             { "boss.phase.defeated",   ("Defeated",     "Повержен") },
-            { "boss.hint.minions",     ("⚔ SMASH THE DRONES — get close & swing [LMB] / [Q]!   ({0} left)",
-                                        "⚔ БЕЙ ДРОНЫ — подойди и бей [ЛКМ] / [Q]!   (осталось {0})") },
-            { "boss.hint.gimmick",     ("⚔ DODGE his attack, then BONK {0} — get close & swing [LMB]!",
-                                        "⚔ УВернись от атаки, потом БЕЙ {0} — подойди и бей [ЛКМ]!") },
-            { "boss.hint.humiliation", ("💥 GOT HIM! Finish the humiliation…",
-                                        "💥 ПОПАЛ! Заверши унижение…") },
+            { "boss.hint.minions",     ("SMASH THE DRONES — get close & swing [LMB] / [Q]!   ({0} left)",
+                                        "БЕЙ ДРОНЫ — подойди и бей [ЛКМ] / [Q]!   (осталось {0})") },
+            { "boss.hint.gimmick",     ("DODGE his attack, then BONK {0} — get close & swing [LMB]!",
+                                        "УВернись от атаки, потом БЕЙ {0} — подойди и бей [ЛКМ]!") },
+            { "boss.hint.humiliation", ("GOT HIM! Finish the humiliation…",
+                                        "ПОПАЛ! Заверши унижение…") },
 
             // -------- Police Mode --------
-            { "police.on",  ("🚨 POLICE MODE — siren active", "🚨 РЕЖИМ ПОЛИЦИИ — сирена включена") },
+            { "police.on",  ("POLICE MODE — siren active", "РЕЖИМ ПОЛИЦИИ — сирена включена") },
             { "police.off", ("Press [P] for Police Mode",      "Нажми [P] для режима полиции") },
 
             // -------- Prison stats --------
             { "prison.stats",     ("PRISON STATS",         "СТАТИСТИКА ТЮРЬМЫ") },
-            { "prison.cells",     ("🔓 Cells unlocked:",   "🔓 Открыто камер:") },
-            { "prison.persuaded", ("🥄 Persuaded:",        "🥄 Уговорено:") },
-            { "prison.resisting", ("💢 Still resisting:",  "💢 Сопротивляются:") },
+            { "prison.cells",     ("Cells unlocked:",   "Открыто камер:") },
+            { "prison.persuaded", ("Persuaded:",        "Уговорено:") },
+            { "prison.resisting", ("Still resisting:",  "Сопротивляются:") },
 
             // -------- Mission tracker --------
             { "obj.title", ("ACTIVE MISSIONS", "АКТИВНЫЕ ЗАДАНИЯ") },
@@ -132,42 +132,42 @@ namespace Spoonacci
             { "crime.DEALING SHADY SUBSTANCES", ("DEALING SHADY SUBSTANCES", "ТОРГУЕТ ЗАПРЕЩЁНКОЙ") },
 
             // -------- World labels (signs) --------
-            { "sign.salon",     ("✨ SALON  CUCCHIAIO ✨", "✨ САЛОН  КУККЬЯЙО ✨") },
-            { "sign.pool",      ("🏊 INFINITY POOL",         "🏊 БЕСКОНЕЧНЫЙ БАССЕЙН") },
-            { "sign.bar",       ("🍹 TIKI BAR",              "🍹 ТИКИ-БАР") },
-            { "sign.alley",     ("⚠ SHADY ALLEY — Police Mode (P) to bust", "⚠ ТЁМНЫЙ ПЕРЕУЛОК — режим полиции (P) для арестов") },
-            { "sign.mansion",   ("💰 BILLIONAIRE MANSION",   "💰 ОСОБНЯК МИЛЛИАРДЕРА") },
-            { "sign.yacht",     ("🛥  BEFF JEZOS YACHT",     "🛥  ЯХТА БЕФФА ДЖЕЗОСА") },
-            { "sign.vault",     ("💎  CRYPTO CHAD VAULT",    "💎  ХРАНИЛИЩЕ КРИПТО ЧАДА") },
-            { "sign.lab",       ("🧪  ZUCKERSNORT AI LAB",   "🧪  ИИ-ЛАБА ЦУКЕРСНОРТА") },
-            { "sign.tusk",      ("💰  MAGNUS TUSK MANSION",  "💰  ОСОБНЯК МАГНУСА ТАСКА") },
-            { "sign.skinkit",   ("✨ SKIN COLLECTION ✨",     "✨ КОЛЛЕКЦИЯ СКИНОВ ✨") },
-            { "sign.prison",    ("🏚 THE CUTLERY CHAMBER — Prison Wing 7", "🏚 СТОЛОВАЯ КАМЕРА — Тюремное крыло 7") },
+            { "sign.salon",     ("SALON  CUCCHIAIO ", "САЛОН  КУККЬЯЙО ") },
+            { "sign.pool",      ("INFINITY POOL",         "БЕСКОНЕЧНЫЙ БАССЕЙН") },
+            { "sign.bar",       ("TIKI BAR",              "ТИКИ-БАР") },
+            { "sign.alley",     ("SHADY ALLEY — Police Mode (P) to bust", "ТЁМНЫЙ ПЕРЕУЛОК — режим полиции (P) для арестов") },
+            { "sign.mansion",   ("BILLIONAIRE MANSION",   "ОСОБНЯК МИЛЛИАРДЕРА") },
+            { "sign.yacht",     (" BEFF JEZOS YACHT",     " ЯХТА БЕФФА ДЖЕЗОСА") },
+            { "sign.vault",     (" CRYPTO CHAD VAULT",    " ХРАНИЛИЩЕ КРИПТО ЧАДА") },
+            { "sign.lab",       (" ZUCKERSNORT AI LAB",   " ИИ-ЛАБА ЦУКЕРСНОРТА") },
+            { "sign.tusk",      (" MAGNUS TUSK MANSION",  " ОСОБНЯК МАГНУСА ТАСКА") },
+            { "sign.skinkit",   ("SKIN COLLECTION ",     "КОЛЛЕКЦИЯ СКИНОВ ") },
+            { "sign.prison",    ("THE CUTLERY CHAMBER — Prison Wing 7", "СТОЛОВАЯ КАМЕРА — Тюремное крыло 7") },
 
             // -------- Prompts (E/Q triggers) --------
-            { "prompt.pickaxe",      ("⛏ PRESS E TO GRAB THE PICKAXE",        "⛏ НАЖМИ E ЧТОБЫ ВЗЯТЬ КИРКУ") },
-            { "prompt.dig_start",    ("⛏ PRESS E TO START DIGGING",            "⛏ НАЖМИ E ЧТОБЫ НАЧАТЬ КОПАТЬ") },
-            { "prompt.dig_again",    ("⛏ PRESS E AGAIN",                       "⛏ НАЖМИ E ЕЩЁ РАЗ") },
+            { "prompt.pickaxe",      ("PRESS E TO GRAB THE PICKAXE",        "НАЖМИ E ЧТОБЫ ВЗЯТЬ КИРКУ") },
+            { "prompt.dig_start",    ("PRESS E TO START DIGGING",            "НАЖМИ E ЧТОБЫ НАЧАТЬ КОПАТЬ") },
+            { "prompt.dig_again",    ("PRESS E AGAIN",                       "НАЖМИ E ЕЩЁ РАЗ") },
             { "prompt.dig_stage",    ("DIG STAGE",                              "ЭТАП КОПКИ") },
             { "prompt.need_pickaxe", ("...you need a pickaxe. (Check the hay pile in your cell.)",
                                       "...нужна кирка. (Посмотри в стоге сена в твоей камере.)") },
             { "prompt.need_persuade",("...the stone won't budge alone. Persuade all 15 inmates first.",
                                       "...камень один не сдвинуть. Сначала уговори всех 15 заключённых.") },
-            { "prompt.cell_unlock",  ("🔓 PRESS E TO UNLOCK",                  "🔓 НАЖМИ E ЧТОБЫ ОТКРЫТЬ") },
+            { "prompt.cell_unlock",  ("PRESS E TO UNLOCK",                  "НАЖМИ E ЧТОБЫ ОТКРЫТЬ") },
 
             // -------- Salon --------
             { "salon.menu_title",  ("DITCH THE POLICE UNIFORM",    "СНЯТЬ ПОЛИЦЕЙСКУЮ ФОРМУ") },
             { "salon.pay",         ("[E] Pay 30 Troll Tokens (you have {0})", "[E] Заплати 30 Тролль-монет (у тебя {0})") },
             { "salon.threaten",    ("[Q] Threaten the Coiffeur (free, but rude)", "[Q] Запугать парикмахера (бесплатно, но грубо)") },
-            { "salon.entry_neg",   ("✨ SALON CUCCHIAIO ✨  [E] PAY 30 tokens   ·   [Q] THREATEN for free",
-                                    "✨ САЛОН КУККЬЯЙО ✨  [E] ЗАПЛАТИ 30 монет · [Q] ЗАПУГАТЬ бесплатно") },
-            { "salon.entry_cycle", ("✨ SALON CUCCHIAIO ✨   Wearing: {0}   ·   [E] next skin",
-                                    "✨ САЛОН КУККЬЯЙО ✨   Носит: {0}   ·   [E] следующий скин") },
-            { "salon.now_wearing", ("✨ Now wearing: {0}   ·   [E] next", "✨ Теперь носит: {0}   ·   [E] следующий") },
-            { "salon.paid_ok",     ("✨ The Coiffeur smiles. You blend in beautifully now.",
-                                    "✨ Парикмахер улыбается. Теперь ты прекрасно сливаешься с толпой.") },
-            { "salon.threatened",  ("⚠ You threatened the Coiffeur. She fled in tears. You wear what you like now.",
-                                    "⚠ Ты запугал парикмахера. Она убежала в слезах. Носи что хочешь.") },
+            { "salon.entry_neg",   ("SALON CUCCHIAIO  [E] PAY 30 tokens   ·   [Q] THREATEN for free",
+                                    "САЛОН КУККЬЯЙО  [E] ЗАПЛАТИ 30 монет · [Q] ЗАПУГАТЬ бесплатно") },
+            { "salon.entry_cycle", ("SALON CUCCHIAIO   Wearing: {0}   ·   [E] next skin",
+                                    "САЛОН КУККЬЯЙО   Носит: {0}   ·   [E] следующий скин") },
+            { "salon.now_wearing", ("Now wearing: {0}   ·   [E] next", "Теперь носит: {0}   ·   [E] следующий") },
+            { "salon.paid_ok",     ("The Coiffeur smiles. You blend in beautifully now.",
+                                    "Парикмахер улыбается. Теперь ты прекрасно сливаешься с толпой.") },
+            { "salon.threatened",  ("You threatened the Coiffeur. She fled in tears. You wear what you like now.",
+                                    "Ты запугал парикмахера. Она убежала в слезах. Носи что хочешь.") },
             { "salon.no_tokens",   ("...not enough tokens (need 30). Bonk more violators or [Q] threaten.",
                                     "...не хватает монет (нужно 30). Бей больше нарушителей или [Q] запугай.") },
 
@@ -178,22 +178,22 @@ namespace Spoonacci
                                 "АКТ 2 — Столовая камера. Возьми кирку, открой 4 других камеры, уговори все 15 ложек копать.") },
             { "intro.shark",   ("ACT 3 — Walk into the ocean. A shark awaits.",
                                 "АКТ 3 — Иди в океан. Тебя ждёт акула.") },
-            { "intro.shark2",  ("🦈 SPOON-SHARK MODE — WASD swim · SPACE dash · roam the ocean",
-                                "🦈 РЕЖИМ ЛОЖКА-АКУЛА — WASD плыть · SPACE рывок · рассекай океан") },
+            { "intro.shark2",  ("SPOON-SHARK MODE — WASD swim · SPACE dash · roam the ocean",
+                                "РЕЖИМ ЛОЖКА-АКУЛА — WASD плыть · SPACE рывок · рассекай океан") },
 
             // -------- Loose-stone digging --------
             { "dig.tunnel",    ("Tunnel dug!", "Туннель вырыт!") },
 
             // -------- Language toast --------
-            { "lang.toast_en", ("🌐 Language: English", "🌐 Language: English") },
-            { "lang.toast_ru", ("🌐 Язык: Русский",    "🌐 Язык: Русский") },
+            { "lang.toast_en", ("Language: English", "Language: English") },
+            { "lang.toast_ru", ("Язык: Русский",    "Язык: Русский") },
 
             // -------- Warden / Alarm --------
             { "warden.name",     ("PRISON WARDEN",     "ТЮРЕМНЫЙ НАДЗИРАТЕЛЬ") },
             { "warden.choose",   ("[E] Bribe ({0} Tokens · you have {1})    ·    [Q] Bonk him out",
                                   "[E] Подкупить ({0} монет · у тебя {1})    ·    [Q] Вырубить его") },
             { "warden.knocked",  ("...he's out cold for a while.", "...он отрублен надолго.") },
-            { "alarm.banner",    ("🚨  ALARM!  THE WARDEN SAW YOU DIG  🚨", "🚨  ТРЕВОГА!  НАДЗИРАТЕЛЬ ВИДЕЛ КОПКУ  🚨") },
+            { "alarm.banner",    (" ALARM!  THE WARDEN SAW YOU DIG  ", " ТРЕВОГА!  НАДЗИРАТЕЛЬ ВИДЕЛ КОПКУ  ") },
         };
 
         public static string T(string key)

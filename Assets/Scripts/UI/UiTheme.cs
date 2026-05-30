@@ -106,12 +106,37 @@ namespace Spoonacci
             return GUI.Button(r, GUIContent.none, _hit);
         }
 
-        // Text with a 1px drop-shadow for legibility over any background.
+        // Crisp AAA text: a dark OUTLINE (8 directions) + a soft drop-shadow + the
+        // fill on top. Reads cleanly over any background (busy skyline, neon, etc.)
+        // and gives the heavy "game UI" edge instead of thin flat IMGUI text.
+        static readonly Vector2[] _ring8 =
+        {
+            new Vector2(-1f,-1f), new Vector2(0f,-1f), new Vector2(1f,-1f),
+            new Vector2(-1f, 0f),                      new Vector2(1f, 0f),
+            new Vector2(-1f, 1f), new Vector2(0f, 1f), new Vector2(1f, 1f),
+        };
         public static void Label(Rect r, string text, GUIStyle s)
         {
+            Outline(r, text, s, 1f, new Color(0f, 0f, 0f, 0.92f));
+        }
+
+        // Outlined text with a tunable outline thickness (scaled for DPI).
+        public static void Outline(Rect r, string text, GUIStyle s, float px, Color outline)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+            float o = Mathf.Max(1f, px * UiScale.Factor);
             var keep = s.normal.textColor;
-            s.normal.textColor = new Color(0f, 0f, 0f, 0.65f);
-            GUI.Label(new Rect(r.x + 1.5f, r.y + 1.5f, r.width, r.height), text, s);
+
+            // soft drop-shadow first (offset, slightly transparent)
+            s.normal.textColor = new Color(0f, 0f, 0f, 0.55f);
+            GUI.Label(new Rect(r.x + o * 2f, r.y + o * 2.4f, r.width, r.height), text, s);
+
+            // 8-direction outline
+            s.normal.textColor = outline;
+            for (int i = 0; i < _ring8.Length; i++)
+                GUI.Label(new Rect(r.x + _ring8[i].x * o, r.y + _ring8[i].y * o, r.width, r.height), text, s);
+
+            // fill on top
             s.normal.textColor = keep;
             GUI.Label(r, text, s);
         }
