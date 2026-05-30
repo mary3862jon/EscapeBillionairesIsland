@@ -94,14 +94,37 @@ namespace Spoonacci
         // Phase 3: one-shot finisher gag.
         protected abstract void DoHumiliation();
 
-        // Whether this boss is allowed to fight right now.
-        protected virtual bool CanEngage() => isGodBoss || !GameState.PoliceMode;
+        // Whether this boss is allowed to fight right now. Cheat codes override the
+        // shipped behaviour via GameState.BossMode.
+        protected virtual bool CanEngage()
+        {
+            switch (GameState.BossMode)
+            {
+                case BossBehaviour.Silenced: return false;        // peace — nobody fights
+                case BossBehaviour.Ally:     return false;        // won't fight YOU (escort runs separately)
+                case BossBehaviour.Attack:   return true;         // always aggressive, even in police mode
+                default:                     return isGodBoss || !GameState.PoliceMode;
+            }
+        }
+
+        // ---- ally escort (cheat: "bossally") --------------------------------
+        readonly List<BossDrone> _allyDrones = new List<BossDrone>();
 
         // ---------------------------------------------------------------------
         protected virtual void Update()
         {
-            if (Defeated) return;
+            if (Defeated) { if (_allyDrones.Count > 0) ClearAllyEscort(); return; }
             float dt = Time.deltaTime;
+
+            // Ally mode: the boss stands down and lends you a friendly drone that
+            // hunts violators for you. Handled entirely here; normal fight is skipped.
+            if (GameState.BossMode == BossBehaviour.Ally)
+            {
+                if (_bar != null) _bar.gameObject.SetActive(false);
+                TickAllyEscort();
+                return;
+            }
+            if (_allyDrones.Count > 0) ClearAllyEscort();   // left ally mode → dismiss escort
 
             bool playerNear = player != null &&
                               Vector3.Distance(transform.position, player.position) <= arenaRadius;
@@ -189,6 +212,41 @@ namespace Spoonacci
             if (SoundFx.Instance != null) { SoundFx.Instance.LevelUp(); SoundFx.Instance.Sparkle(); }
             // victory flash on the bar, then it hides itself
             if (_bar != null) _bar.FlashVictory();
+        }
+
+        // Cheat: instantly humiliate + defeat this boss (rewards + quest credit),
+        // regardless of phase, distance, or boss mode.
+        public void ForceWin()
+        {
+            if (Defeated) return;
+            _clout = 0f;
+            ClearAllyEscort();
+            EnsureBar();
+            if (_bar != null) _bar.gameObject.SetActive(true);
+            SafeDoHumiliation();        // play the finisher gag right now
+            EnterPhase(Phase.Defeated); // marks bonked, pays out, flashes victory
+        }
+
+        // ---- ally escort ----------------------------------------------------
+        // Keep one friendly drone alive that orbits the player and zaps violators.
+        void TickAllyEscort()
+        {
+            if (player == null) return;
+            _allyDrones.RemoveAll(d => d == null || !d.Alive);
+            if (_allyDrones.Count == 0)
+            {
+                var go = new GameObject(bossName + " Ally Drone");
+                go.transform.position = player.position + Vector3.up * 2.5f + player.right * 2f;
+                var d = go.AddComponent<BossDrone>();
+                d.Init(player, this, 999999f, friendly: true);  // effectively un-killable escort
+                _allyDrones.Add(d);
+            }
+        }
+
+        void ClearAllyEscort()
+        {
+            foreach (var d in _allyDrones) if (d != null) Destroy(d.gameObject);
+            _allyDrones.Clear();
         }
 
         // ---- bonk → clout (mirrors BonkAttack.ManualSwing gating) ------------

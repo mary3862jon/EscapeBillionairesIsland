@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace Spoonacci
 {
+    // How the bosses should behave (driven by cheat codes; Normal = shipped behaviour).
+    //   Normal   – non-god bosses fight unless police mode; god boss always fights.
+    //   Silenced – all bosses go passive and quiet (never engage).
+    //   Attack   – all bosses engage on sight, even in police mode.
+    //   Ally      – bosses won't fight you; instead each spawns a friendly drone escort
+    //               that hunts the nearest violator for you.
+    public enum BossBehaviour { Normal, Silenced, Attack, Ally }
+
     // Global progression state — currency, bonk count, mission flags, etc.
     public static class GameState
     {
@@ -11,6 +19,7 @@ namespace Spoonacci
         public static int Bonks;
         public static int PerfectBonks;
         public static bool PoliceMode;
+        public static BossBehaviour BossMode = BossBehaviour.Normal; // set by cheat codes
         public static bool CellCrewAllTalked;
         public static bool TunnelDug;
         public static bool JustEscaped;            // set on cell dig, consumed on first island spawn
@@ -26,7 +35,8 @@ namespace Spoonacci
         public static void Reset()
         {
             TrollTokens = 0; Bonks = 0; PerfectBonks = 0;
-            PoliceMode = false; CellCrewAllTalked = false; TunnelDug = false;
+            PoliceMode = false; BossMode = BossBehaviour.Normal;
+            CellCrewAllTalked = false; TunnelDug = false;
             JustEscaped = false; WearingCivilianClothes = false; CurrentSkinIndex = 0;
             _talked.Clear();
             OnChanged?.Invoke();

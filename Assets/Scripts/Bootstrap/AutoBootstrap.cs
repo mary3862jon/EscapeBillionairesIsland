@@ -28,6 +28,11 @@ namespace Spoonacci
             var ___ = MusicPlayer.Instance;
             MissionManager.BootstrapDefaults();
 
+            // GTA-style typed cheat codes — available in every gameplay scene.
+            // (idempotent + DontDestroyOnLoad, so it survives scene loads.)
+            if (!(s.name ?? "").Contains("Title"))
+                CheatConsole.EnsureExists();
+
             // already spawned? skip.
             if (Object.FindFirstObjectByType<IslandBootstrapper>() != null) return;
             if (Object.FindFirstObjectByType<CellChamberBootstrapper>() != null) return;

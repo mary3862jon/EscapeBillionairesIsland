@@ -34,15 +34,30 @@ namespace Spoonacci
         // bonk detection (drone isn't a Civilian → mirror BonkAttack manual swing test)
         float _bonkCooldown;
 
-        public void Init(Transform target, BossFight owner, float hp)
+        // friendly = ally-escort drone (cheat "bossally"): orbits the player and
+        // zaps the nearest VIOLATOR for you instead of firing harmless tracers at you.
+        bool _friendly;
+
+        public void Init(Transform target, BossFight owner, float hp, bool friendly = false)
         {
             _target = target;
             _owner = owner;
             _hp = Mathf.Max(1f, hp);
+            _friendly = friendly;
             _orbitAngle = Random.value * Mathf.PI * 2f;
-            _orbitRadius = Random.Range(5.5f, 8.5f);
+            _orbitRadius = friendly ? Random.Range(2.4f, 3.2f) : Random.Range(5.5f, 8.5f);
             _bobPhase = Random.value * Mathf.PI * 2f;
             _nextFire = Time.time + Random.Range(1.5f, 3f);
+
+            // Build() already ran in Awake (red lens). Recolor an ally drone's lens
+            // friendly-blue so you can tell it's on your side.
+            if (friendly && _lens != null)
+            {
+                var fm = ShaderCache.MakeMat(new Color(0.1f, 0.6f, 1f), 0f, 1f);
+                fm.EnableKeyword("_EMISSION");
+                fm.SetColor("_EmissionColor", new Color(0.1f, 0.6f, 1f) * 3f);
+                _lens.GetComponent<Renderer>().sharedMaterial = fm;
+            }
         }
 
         void Awake() { Build(); }
@@ -187,14 +202,39 @@ namespace Spoonacci
             if (_gimbal != null)
                 _gimbal.LookAt(_target.position + Vector3.up * 1.4f);
 
-            // periodic harmless tracer
+            // periodic attack: enemy drones fire harmless tracers at you; ally
+            // escorts zap the nearest violator for you.
             if (Time.time >= _nextFire)
             {
-                Fire();
-                _nextFire = Time.time + Random.Range(2.2f, 3.6f);
+                if (_friendly) ZapViolator();
+                else           Fire();
+                _nextFire = Time.time + (_friendly ? Random.Range(1.0f, 1.8f) : Random.Range(2.2f, 3.6f));
             }
 
-            DetectBonk();
+            if (!_friendly) DetectBonk();   // your escort can't be bonked down
+        }
+
+        // Ally escort: KO the nearest violator (same effect as a player bonk).
+        void ZapViolator()
+        {
+            var v = ViolatorRegistry.NearestTo(transform.position, 22f);
+            if (v == null) return;
+            if (SoundFx.Instance != null) SoundFx.Instance.Swoosh();
+            if (_lens != null)
+            {
+                var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                go.name = "AllyTracer";
+                go.transform.position = _lens.position;
+                go.transform.localScale = Vector3.one * 0.2f;
+                Destroy(go.GetComponent<Collider>());
+                var m = ShaderCache.MakeMat(new Color(0.1f, 0.6f, 1f), 0f, 1f);
+                m.EnableKeyword("_EMISSION");
+                m.SetColor("_EmissionColor", new Color(0.1f, 0.6f, 1f) * 4f);
+                go.GetComponent<Renderer>().sharedMaterial = m;
+                Vector3 dir = (v.transform.position + Vector3.up - _lens.position).normalized;
+                go.AddComponent<DroneTracer>().Launch(dir);
+            }
+            v.ReceiveBonk(transform.position);
         }
 
         void Hover(float dt)
